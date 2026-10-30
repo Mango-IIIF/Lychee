@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { mount, tick, unmount } from 'svelte';
 import RightInspector from './RightInspector.svelte';
-import { createMangoAnnotation, projectToResolved } from '../canonical';
+import { createMangoAnnotation, projectToResolved } from '@mango-iiif/iiif-viewer/core';
 
 const annotation = () =>
   projectToResolved(

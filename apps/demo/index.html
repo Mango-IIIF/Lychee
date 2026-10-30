@@ -1,122 +1,28 @@
-<!-- 
- 
-Well aren't you a curious one?
-
-There's nothing to see here! 
-
--->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mango Story Viewer Demo</title>
+    <title>Mango Annotation Editor</title>
     <link rel="stylesheet" href="demo.css" />
   </head>
   <body>
-    <div class="page page--story-viewer">
+    <div class="page">
       <header class="hero">
-        <div class="hero__title">Mango Story Viewer</div>
+        <div class="hero__title">Mango Annotation Editor</div>
+        <p class="hero__subtitle">
+          Create and edit W3C Web Annotations on IIIF resources
+        </p>
       </header>
 
-      <section class="viewer-shell">
-        <div class="story-picker">
-          <label for="story-picker">Story</label>
-          <select id="story-picker"></select>
-        </div>
-
-        <mango-viewer
-          mode="story-viewer"
-          config='{"showThumbnails":false,"showSearch":false,"showMetadata":false,"showAnnotations":false,"showTools":false}'
-        ></mango-viewer>
-
-        <nav class="viewer-actions" aria-label="Story actions">
-          <a class="viewer-actions__link" href="story-edit.html">Edit this story</a>
-          <a class="viewer-actions__link" href="story-builder.html">
-            Build a story from scratch
-          </a>
-          <a class="viewer-actions__link" href="annotation-editor.html">
-            Open annotation editor
-          </a>
-          <a class="viewer-actions__link" href="annotation-editor-wellcome.html">
-            Open Wellcome annotation editor
-          </a>
-          <a class="viewer-actions__link" href="viewer-cdn.html">
-            Open CDN viewer demo
-          </a>
-          <a class="viewer-actions__link" href="cookbook.html">
-            Open cookbook demo
-          </a>
-          <a class="viewer-actions__link" href="config.html">
-            Configure the viewer
-          </a>
-          <a class="viewer-actions__link" href="story-layers.html">
-            Layers Transition Demo
-          </a>
-          <a class="viewer-actions__link" href="embed-third-party.html">
-            Third-party embed harness
-          </a>
-        </nav>
-      </section>
+      <nav class="viewer-actions" aria-label="Demos">
+        <a class="viewer-actions__link" href="annotation-editor.html">
+          Open annotation editor
+        </a>
+        <a class="viewer-actions__link" href="annotation-editor-wellcome.html">
+          Open Wellcome annotation editor
+        </a>
+      </nav>
     </div>
-
-    <script type="module" src="dist/mango-viewer-element.js"></script>
-    <script>
-      /*
-       * The published stories are served from GitHub Pages, which sets
-       * `access-control-allow-origin: *`, so this page can load them straight
-       * from the domain they are actually published on rather than from a
-       * local copy that might have drifted.
-       */
-      const PUBLISHED = 'https://404mike.github.io/uv4-manifest/mango/stories';
-      const STORIES = [
-        { label: 'Demo story (local)', url: 'test-story/demo.json' },
-        { label: 'Layers transition (local)', url: 'test-story/layers.json' },
-        { label: 'Paris Street; Rainy Day', url: `${PUBLISHED}/paris-street-rainy-day.json` },
-        { label: 'The Bedroom', url: `${PUBLISHED}/the-bedroom.json` },
-        { label: 'A Sunday on La Grande Jatte', url: `${PUBLISHED}/grande-jatte.json` },
-        { label: 'Stoke-by-Nayland', url: `${PUBLISHED}/stoke-by-nayland.json` },
-        { label: 'St John on Patmos', url: `${PUBLISHED}/st-john-patmos.json` },
-        { label: 'Fountain, Villa Torlonia', url: `${PUBLISHED}/fountain-villa-torlonia.json` },
-        { label: 'Göttingen (plain AnnotationPage)', url: `${PUBLISHED}/gottingen-story.json` },
-      ];
-
-      const picker = document.getElementById('story-picker');
-
-      for (const { label, url } of STORIES) {
-        const option = document.createElement('option');
-        option.value = url;
-        option.textContent = label;
-        picker.append(option);
-      }
-
-      /*
-       * `iiif-content` is the only place the story is named — the element
-       * carries no `story-url` of its own. It is the IIIF Content State
-       * parameter and the element already reads it, so a link into this demo
-       * looks like a link into any other IIIF viewer, and what is on screen
-       * always matches what is in the address bar.
-       *
-       * A bare visit gets the default written into the URL before the element
-       * upgrades. This script is classic and the element's is a module, so
-       * this runs first and the element sees the parameter already there.
-       */
-      const params = new URLSearchParams(location.search);
-      const requested = params.get('iiif-content');
-      const known = STORIES.some((s) => s.url === requested);
-      if (!known) {
-        params.set('iiif-content', STORIES[0].url);
-        history.replaceState(null, '', `${location.pathname}?${params}`);
-      }
-      picker.value = known ? requested : STORIES[0].url;
-
-      picker.addEventListener('change', () => {
-        const url = new URL(location.href);
-        url.searchParams.set('iiif-content', picker.value);
-        // Reload rather than swapping the attribute: the element builds a
-        // fair amount of state from the story it opened with.
-        location.assign(url.toString());
-      });
-    </script>
   </body>
 </html>

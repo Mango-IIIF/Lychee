@@ -6,6 +6,7 @@ export default defineConfig({
   root: resolve(__dirname, 'src'),
   resolve: {
     conditions: ['browser'],
+    dedupe: ['svelte', '@lucide/svelte', '@mango-iiif/annotation', '@mango-iiif/w3c-parser'],
   },
   plugins: [
     svelte({

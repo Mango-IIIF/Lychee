@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ChapterAnnotationTool } from '../../../core/types/story';
+import type { AnnotationTool } from '@mango-iiif/iiif-viewer/core';
 import {
   ANNOTATION_TOOLS,
   DRAWING_ANNOTATION_TOOLS,
@@ -8,12 +8,12 @@ import {
 
 /**
  * Compile-time half of the exhaustiveness guard. A tool added to
- * `ChapterAnnotationTool` stops this object satisfying the Record, so tsc fails
+ * `AnnotationTool` stops this object satisfying the Record, so tsc fails
  * here first; updating it then fails the assertion below until the shared list
  * gains the tool too. Between them, a new tool cannot reach one palette and
  * miss the other.
  */
-const EVERY_TOOL: Record<ChapterAnnotationTool, true> = {
+const EVERY_TOOL: Record<AnnotationTool, true> = {
   select: true,
   rectangle: true,
   polygon: true,

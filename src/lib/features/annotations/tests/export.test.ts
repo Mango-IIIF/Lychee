@@ -1,10 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parseWebAnnotationPage, projectAnnotation } from '@mango-iiif/w3c-parser';
-import { createMangoAnnotation, projectToResolved } from '../canonical';
+import {
+  buildLayerStylesheet,
+  createMangoAnnotation,
+  DRAFT_ID_PREFIX,
+  MANGO_NOTE_KEY,
+  projectToResolved,
+  styleClassForLayer,
+} from '@mango-iiif/iiif-viewer/core';
 import { exportAnnotationPage, isPublishable } from '../export';
 import { createHostRepository, RepositoryError, adoptAssignedId } from '../repository';
-import { MANGO_NOTE_KEY, DRAFT_ID_PREFIX } from '../profile';
-import { buildLayerStylesheet, styleClassForLayer } from '../style';
 import publicationFixture from './fixtures/publication-validation.json';
 
 const CANVAS = 'https://example.org/canvas/1';

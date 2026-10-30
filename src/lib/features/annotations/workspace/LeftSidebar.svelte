@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from '../../../core/i18n';
-  import type { ChapterAnnotationTool as Tool } from '../../../core/types/story';
+  import type { AnnotationTool as Tool } from '@mango-iiif/iiif-viewer/core';
   import { ANNOTATION_TOOLS, annotationToolLabelKey } from '../annotationTools';
   import type { AnnotationLayer } from '../layers';
 

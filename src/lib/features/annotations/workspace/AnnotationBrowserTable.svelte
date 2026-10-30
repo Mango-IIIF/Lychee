@@ -1,8 +1,10 @@
 <script lang="ts">
   import { t } from '../../../core/i18n';
-  import type { ResolvedAnnotation } from '../../../iiif/annotationResolver';
+  import {
+    type ResolvedAnnotation,
+    searchTextFor,
+  } from '@mango-iiif/iiif-viewer/core';
   import type { LayerItem } from './LeftSidebar.svelte';
-  import { searchTextFor } from '../canonical';
 
   interface Props {
     annotations?: ResolvedAnnotation[];

@@ -1,17 +1,17 @@
 <script lang="ts">
   import { t } from '../../../core/i18n';
-  import type { ResolvedAnnotation } from '../../../iiif/annotationResolver';
-  import type { LayerItem } from './LeftSidebar.svelte';
   import {
+    type AnnotationSaveState,
     AUTHORING_PURPOSES,
+    authoringMotivations,
     DEFAULT_MOTIVATION,
+    isExpertMotivation,
+    isForeign,
     motivationPresets,
     presetForMotivation,
-    authoringMotivations,
-    isExpertMotivation,
-  } from '../profile';
-  import { isForeign } from '../model';
-  import type { AnnotationSaveState } from '../model';
+    type ResolvedAnnotation,
+  } from '@mango-iiif/iiif-viewer/core';
+  import type { LayerItem } from './LeftSidebar.svelte';
   import { summariseDiagnostics, toMangoDiagnostics } from '../diagnostics';
   import LanguageTabs from '../LanguageTabs.svelte';
   import { normaliseAuthoringLanguages } from '../languages';

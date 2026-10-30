@@ -1,179 +1,66 @@
 # Getting started
 
-This guide covers the two most common ways to use Mango: as a standalone viewer
-on an existing website and as an npm dependency in an application.
-
-## Before you begin
-
-You need a publicly reachable IIIF Presentation 2 or 3 Manifest or Collection
-URL. The resource and everything it references must allow browser requests from
-the site where Mango is hosted. See [deployment and accessibility](Deployment-and-Accessibility)
-for CORS and production guidance.
-
-The viewer has a default height of 720px, capped by the small viewport so it
-fits on phones. Set a height with ordinary CSS or `--mango-viewer-height` to
-change it; the parent does not need an explicit height.
-
-## Option 1: add Mango to an existing website
-
-This route is suitable for a CMS template, static website, exhibition microsite,
-or a page that does not use a JavaScript build system.
+## On a web page
 
 ```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Collection item</title>
-    <style>
-      .viewer-shell {
-        width: 100%;
-        height: min(75vh, 800px);
-        min-height: 420px;
-      }
+<script type="module" src="https://unpkg.com/@mango-iiif/annotate/src/dist/mango-annotation-editor.js"></script>
 
-      mango-viewer {
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>Collection item</h1>
-      <div class="viewer-shell">
-        <mango-viewer
-          mode="viewer"
-          manifest-id="https://example.org/iiif/manifest.json"
-          config='{"theme":"light","language":"en"}'
-        ></mango-viewer>
-      </div>
-    </main>
-
-    <script
-      type="module"
-      src="https://cdn.jsdelivr.net/npm/@mango-iiif/iiif-viewer@latest"
-    ></script>
-  </body>
-</html>
+<mango-annotation-editor
+  manifest-id="https://iiif.io/api/cookbook/recipe/0005-image-service/manifest.json"
+  config='{"annotations":{"languages":["en","cy"]}}'
+></mango-annotation-editor>
 ```
 
-`@latest` is convenient while evaluating Mango. Pin an exact package version
-before deploying to production.
+| Attribute     | Value                                                         |
+| ------------- | ------------------------------------------------------------- |
+| `manifest-id` | URL of a IIIF Presentation 2 or 3 manifest                    |
+| `config`      | JSON: the viewer's config plus an `annotations` block         |
+| `plugins`     | Viewer plugins for the stage (set as a property, not in HTML) |
 
-### Show a Collection
+The element is 720px tall, or the viewport height if that is smaller. Set a
+different height with ordinary CSS or the custom property:
 
-`manifest-id` also accepts a IIIF Collection URL. In `viewer` mode Mango opens
-the first Manifest in the Collection and adds a Collection panel to the sidebar
-for browsing the rest of the hierarchy. Set `showCollection: false` in `config`
-to hide the panel.
-
-### Change the displayed item
-
-The Manifest URL is reactive:
-
-```js
-const viewer = document.querySelector("mango-viewer");
-viewer.setAttribute("manifest-id", nextManifestUrl);
+```css
+mango-annotation-editor {
+  --mango-viewer-height: 900px;
+}
 ```
 
-For a site with a manifest search or item picker, update the same viewer rather
-than inserting a new script for every item.
+When the annotation list is open the element grows by 230px so the list has a
+box of its own rather than taking height off the canvas.
 
-## Option 2: install Mango with npm
-
-Install Mango and its Svelte peer dependency:
+## In an application
 
 ```bash
-npm install @mango-iiif/iiif-viewer svelte
+npm install @mango-iiif/annotate @mango-iiif/iiif-viewer svelte
 ```
-
-Register the custom element once in your application entry point:
 
 ```js
-import "@mango-iiif/iiif-viewer/element";
+import "@mango-iiif/annotate/element";
 ```
 
-Then use it in HTML or a framework template:
+or, in Svelte:
 
-```html
-<mango-viewer
-  mode="viewer"
-  manifest-id="https://example.org/iiif/manifest.json"
-></mango-viewer>
+```svelte
+<script>
+  import { AnnotationEditor } from "@mango-iiif/annotate";
+  import "@mango-iiif/iiif-viewer/style.css";
+  import "@mango-iiif/annotate/style.css";
+</script>
+
+<AnnotationEditor manifestId="https://example.org/iiif/manifest.json" />
 ```
 
-When creating the element from JavaScript, object configuration can be assigned
-as a property:
+## Editing
 
-```js
-await customElements.whenDefined("mango-viewer");
-
-const viewer = document.createElement("mango-viewer");
-viewer.mode = "viewer";
-viewer.manifestId = "https://example.org/iiif/manifest.json";
-viewer.config = {
-  theme: "light",
-  language: "en",
-  showMetadata: true,
-  showSearch: true,
-};
-document.querySelector("#viewer-host").append(viewer);
-```
-
-See [application integrations](Integrations) for React, Vue, Svelte, and the
-`Mango` class API.
-
-## Choose a mode
-
-The same custom element supports several experiences:
-
-| Mode                | Purpose                         | Primary input                   |
-| ------------------- | ------------------------------- | ------------------------------- |
-| `viewer`            | Browse a Manifest or Collection | `manifest-id`                   |
-| `workspace`         | Arrange multiple viewer windows | viewer UI                       |
-| `annotation-editor` | Draw and export annotations     | `manifest-id`                   |
-| `story-viewer`      | Play a guided narrative         | `story-url` or `story`          |
-| `story-builder`     | Author and export a narrative   | optional `story-url` or `story` |
-
-Example annotation editor:
-
-```html
-<mango-viewer
-  mode="annotation-editor"
-  manifest-id="https://example.org/iiif/manifest.json"
-></mango-viewer>
-```
-
-Example story viewer:
-
-```html
-<mango-viewer
-  mode="story-viewer"
-  story-url="/stories/exhibition-tour.json"
-></mango-viewer>
-```
-
-## Next steps
-
-1. Review all [configuration options](Configuration).
-2. Match the viewer to your [theme and languages](Theming-and-Languages).
-3. Add [event listeners](Event-Handling) for analytics or surrounding UI.
-4. Read the [deployment checklist](Deployment-and-Accessibility) before
-   publishing.
-
-## Troubleshooting a blank viewer
-
-Check these in order:
-
-1. No site CSS sets the viewer's height to zero or `auto` inside a collapsed
-   container.
-2. The browser console does not show a CORS or Content Security Policy error.
-3. The Manifest URL returns JSON over HTTPS without requiring an interactive
-   login.
-4. Image, media, annotation, search, and caption URLs referenced by the manifest
-   are also reachable from the browser.
-5. If using npm, the element registration import runs before the element is
-   created.
+- Pick a tool on the left — Rectangle, Point, Polygon, Freehand or Line — and
+  draw on the canvas. Rectangle and Point can also be created at the centre of
+  the current view from the keyboard.
+- A new shape is a draft until **Save Annotation**. **Cancel** discards a draft,
+  or restores an existing annotation to how it was before editing began.
+- Undo and redo are on the toolbar and on Ctrl/Cmd+Z and Shift+Ctrl/Cmd+Z, when
+  focus is not in a text field.
+- Leaving an unsaved edit — selecting another annotation or turning the page —
+  asks before discarding it.
+- Layers group annotations by colour. Hiding a layer takes its annotations off
+  the canvas but leaves them in the list, so they can still be found and moved.

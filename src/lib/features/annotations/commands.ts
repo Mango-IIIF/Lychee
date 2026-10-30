@@ -13,7 +13,7 @@
  * step down is the canvas package's".
  */
 
-import type { ResolvedAnnotation } from '../../iiif/annotationResolver';
+import type { ResolvedAnnotation } from '@mango-iiif/iiif-viewer/core';
 
 /** Something that can undo and redo its own geometry steps. */
 export type GeometryHistory = {

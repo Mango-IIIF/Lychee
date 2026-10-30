@@ -13,7 +13,7 @@ import {
   STORY_LABEL_SIZING,
   fitRectangleLabelLayout,
 } from '../rectangleLabelLayout';
-import { hintsFromInlineStyle } from '../style';
+import { hintsFromInlineStyle } from '@mango-iiif/iiif-viewer/core';
 
 /** Exactly what the story builder writes for a drawing annotation. */
 const storyTargetStyle = (color: string, fill: string) =>

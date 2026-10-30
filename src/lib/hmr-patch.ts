@@ -12,7 +12,7 @@ if (typeof window !== "undefined" && window.customElements) {
       return;
     }
 
-    if (name === "mango-viewer") {
+    if (name === "mango-annotation-editor") {
       const originalConnected = constructor.prototype.connectedCallback;
       constructor.prototype.connectedCallback = function (this: HTMLElement) {
         const result = originalConnected

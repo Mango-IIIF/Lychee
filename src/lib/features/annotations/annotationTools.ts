@@ -1,9 +1,9 @@
 import type { Component } from 'svelte';
 import { MapPin, Minus, MousePointer2, Pencil, Pentagon, Square } from '@lucide/svelte';
-import type { ChapterAnnotationTool } from '../../core/types/story';
+import type { AnnotationTool } from '@mango-iiif/iiif-viewer/core';
 
 export type AnnotationToolDefinition = {
-  id: ChapterAnnotationTool;
+  id: AnnotationTool;
   icon: Component;
 };
 
@@ -30,5 +30,5 @@ export const DRAWING_ANNOTATION_TOOLS: readonly AnnotationToolDefinition[] =
   ANNOTATION_TOOLS.filter((tool) => tool.id !== 'select');
 
 /** Translation key for a tool's label. Shared so the wording cannot diverge. */
-export const annotationToolLabelKey = (tool: ChapterAnnotationTool): string =>
+export const annotationToolLabelKey = (tool: AnnotationTool): string =>
   `viewer.panels.annotations.editor.tools.${tool}`;

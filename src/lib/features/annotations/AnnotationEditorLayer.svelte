@@ -11,12 +11,17 @@
     type ShapeData,
   } from '@mango-iiif/annotation';
   import { serializeWebAnnotation } from '@mango-iiif/w3c-parser';
-  import { createMangoAnnotation, shapeTool } from './canonical';
-  import { buildLayerStylesheet, hintsFromInlineStyle, styleClassForLayer } from './style';
+  import {
+    type AnnotationTool as Tool,
+    buildLayerStylesheet,
+    createMangoAnnotation,
+    hintsFromInlineStyle,
+    type ResolvedAnnotation,
+    shapeTool,
+    styleClassForLayer,
+  } from '@mango-iiif/iiif-viewer/core';
   import { EDITOR_LABEL_SIZING, type LabelSizing } from './rectangleLabelLayout';
-  import type { ResolvedAnnotation } from '../../iiif/annotationResolver';
   import type { LayerItem } from './workspace/LeftSidebar.svelte';
-  import type { ChapterAnnotationTool as Tool } from '../../core/types/story';
 
   interface Props {
     enabled?: boolean;
@@ -277,10 +282,10 @@
        *
        * A window listener sits outside the custom element's shadow root, where
        * composed keyboard events are retargeted from the real textarea/input
-       * to `<mango-viewer>`. The annotation package then cannot recognise an
-       * editing target and treats Backspace as "delete selected annotation".
-       * Listening on the internal viewer root preserves the original target
-       * for both the standalone inspector and the story-builder inspector.
+       * to `<mango-annotation-editor>`. The annotation package then cannot
+       * recognise an editing target and treats Backspace as "delete selected
+       * annotation". Listening on the embedded viewer's root keeps shortcuts on
+       * the canvas, and leaves typing in the inspector alone.
        */
       keyboardTarget:
         viewer.container.closest<HTMLElement>('.viewer') ?? viewer.container,

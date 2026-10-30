@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createCommandStack, labelForPatch, type GeometryHistory } from '../commands';
-import type { ResolvedAnnotation } from '../../../iiif/annotationResolver';
+import type { ResolvedAnnotation } from '@mango-iiif/iiif-viewer/core';
 
 const annotation = (text: string): ResolvedAnnotation => ({ id: 'anno-1', text });
 

@@ -1,64 +1,9 @@
-import type { AVPlayerConfig } from '@mango-iiif/av/core';
-import type { SaveConfig } from '../../story/storySerializer';
+import type { ViewerConfig } from '@mango-iiif/iiif-viewer/core';
 
-export type ViewerConfig = {
-  language?: string;
-  theme?: 'dark' | 'light' | 'sepia' | 'midnight' | 'ringo' | string;
-  allowCreateMode?: boolean;
-  showThumbnails?: boolean;
-  showCollection?: boolean;
-  showMetadata?: boolean;
-  showSearch?: boolean;
-  showAnnotations?: boolean;
-  showTools?: boolean;
-  showLayers?: boolean;
-  showSettings?: boolean;
-  plugins?: Record<string, unknown>;
-  sidebar?: {
-    enabled?: boolean;
-    open?: boolean;
-    activePanel?: string;
-    position?: 'left' | 'right';
-  };
-  osd?: {
-    preserveViewport?: boolean; // If true, maintains viewport state across canvas changes
-    showNavigator?: boolean;
-    showRotationControl?: boolean;
-    clickToZoomEnabled?: boolean;
-  };
-  /** Raw OpenSeadragon options. Viewer-managed element and tile sources are ignored. */
-  osdConfig?: Record<string, unknown>;
-  /** Raw attributes/properties applied to the @google/model-viewer element. */
-  modelConfig?: Record<string, unknown>;
-  pdf?: {
-    page?: number;
-  };
-  /** Audio/video player, controls, transcript, request, and playback options. */
-  av?: AVPlayerConfig;
-  /** Standalone annotation-authoring setup. */
+/** The viewer's config, plus the editor's own authoring setup. */
+export type AnnotateConfig = ViewerConfig & {
   annotations?: {
     /** Allowed BCP 47 languages shown by the annotation language switch. */
     languages?: string[];
-  };
-  initialCanvasIndex?: number;
-  initialLayoutMode?: 'single' | 'two-page' | 'continuous' | 'gallery';
-  initialRotation?: number;
-  initialViewBox?: {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-  };
-  story?: {
-    enabled?: boolean;
-    showDebug?: boolean;
-    languages?: string[];
-    /** Public HTTP(S) identifier used for new story AnnotationPage exports. */
-    annotationPageId?: string;
-    /** Optional chapter Annotation base. Defaults to `${annotationPageId}/annotation/`. */
-    annotationBase?: string;
-    /** Prevent authors from changing host-supplied canonical identifiers. */
-    identifiersLocked?: boolean;
-    save?: SaveConfig;
   };
 };

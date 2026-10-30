@@ -7,7 +7,7 @@ type MangoShadowRoot = ShadowRoot & {
 };
 type MangoWindow = Window &
   typeof globalThis & {
-    __setMangoViewerCss?: typeof setCssText;
+    __setMangoAnnotateCss?: typeof setCssText;
   };
 
 function setCssText(text: string): void {
@@ -23,7 +23,7 @@ function setCssText(text: string): void {
 }
 
 if (typeof window !== "undefined") {
-  (window as MangoWindow).__setMangoViewerCss = setCssText;
+  (window as MangoWindow).__setMangoAnnotateCss = setCssText;
 }
 
 export function injectViewerCss(host: HTMLElement, attempts = 12): void {
@@ -64,9 +64,9 @@ function applyCss(root: ShadowRoot): void {
 
   // Fallback to style tag insertion
   const inject = () => {
-    if (root.querySelector("style[data-mango-viewer-css]")) return;
+    if (root.querySelector("style[data-mango-annotate-css]")) return;
     const style = document.createElement("style");
-    style.dataset.mangoViewerCss = "mango-viewer-css";
+    style.dataset.mangoAnnotateCss = "mango-annotate-css";
     style.textContent = cssText;
     root.prepend(style);
   };

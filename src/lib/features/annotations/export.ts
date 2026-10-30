@@ -24,18 +24,19 @@ import {
   type SerializationProfile,
   type ValidationResult,
 } from '@mango-iiif/w3c-parser';
-import type { ResolvedAnnotation } from '../../iiif/annotationResolver';
-import { translate } from '../../core/i18n';
-import { createMangoAnnotation, shapeFromResolved } from './canonical';
-import { toMangoDiagnostics, type MangoDiagnostic } from './diagnostics';
 import {
   APPLICATION_EXTENSION_KEYS,
+  createMangoAnnotation,
   DRAFT_PAGE_ID_PREFIX,
-  PRIVATE_EXTENSION_KEYS,
   isDraftId,
   isHttpId,
   mangoProfiles,
-} from './profile';
+  PRIVATE_EXTENSION_KEYS,
+  type ResolvedAnnotation,
+  shapeFromResolved,
+} from '@mango-iiif/iiif-viewer/core';
+import { translate } from '../../core/i18n';
+import { toMangoDiagnostics, type MangoDiagnostic } from './diagnostics';
 
 export type ExportOptions = {
   /** Public HTTP(S) identifier for the page. A draft URN when absent. */

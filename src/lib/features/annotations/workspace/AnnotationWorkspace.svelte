@@ -1,13 +1,15 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import type { ResolvedAnnotation } from '../../../iiif/annotationResolver';
-  import type { AnnotationSaveState } from '../model';
+  import type {
+    AnnotationSaveState,
+    AnnotationTool as Tool,
+    ResolvedAnnotation,
+  } from '@mango-iiif/iiif-viewer/core';
   import LeftSidebar, { type LayerItem } from './LeftSidebar.svelte';
   import RightInspector from './RightInspector.svelte';
   import AnnotationBrowserTable from './AnnotationBrowserTable.svelte';
   import { t } from '../../../core/i18n';
 
-  import type { ChapterAnnotationTool as Tool } from '../../../core/types/story';
 
   interface Props {
     annotations?: ResolvedAnnotation[];

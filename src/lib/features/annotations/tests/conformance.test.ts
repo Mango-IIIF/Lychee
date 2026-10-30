@@ -18,10 +18,14 @@ import {
   projectAnnotation,
   serializeWebAnnotation,
 } from '@mango-iiif/w3c-parser';
-import { applyPatch, createMangoAnnotation, resolveAnnotationJson } from '../canonical';
+import {
+  applyPatch,
+  createMangoAnnotation,
+  parseAnnotationCss,
+  projectToResolved,
+  resolveAnnotationJson,
+} from '@mango-iiif/iiif-viewer/core';
 import { exportAnnotationPage } from '../export';
-import { projectToResolved } from '../canonical';
-import { parseAnnotationCss } from '../style';
 
 const CANVAS = 'https://iiif.io/api/cookbook/recipe/0001/canvas/p1';
 

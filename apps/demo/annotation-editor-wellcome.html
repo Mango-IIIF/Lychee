@@ -19,19 +19,17 @@
       </header>
 
       <section class="viewer-shell">
-        <mango-viewer
+        <mango-annotation-editor
           manifest-id="https://iiif.wellcomecollection.org/presentation/v2/b18035723"
-          mode="annotation-editor"
-          config='{"showThumbnails":false,"showSearch":false,"showMetadata":false,"showAnnotations":true,"showTools":false}'
-        ></mango-viewer>
+        ></mango-annotation-editor>
       </section>
     </div>
-    <script type="module" src="dist/mango-viewer-element.js"></script>
+    <script type="module" src="dist/mango-annotation-editor.js"></script>
     <script>
-      const viewer = document.querySelector('mango-viewer');
-      if (viewer) {
-        viewer.addEventListener('exportAnnotations', (event) => {
-          console.log('Exported Annotations:', event.detail.annotations);
+      const editor = document.querySelector('mango-annotation-editor');
+      if (editor) {
+        editor.addEventListener('exportAnnotationPage', (event) => {
+          console.log('Exported AnnotationPage:', event.detail.page);
         });
       }
     </script>

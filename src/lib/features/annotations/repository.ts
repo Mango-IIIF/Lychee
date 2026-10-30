@@ -21,8 +21,10 @@ import {
   type CanonicalAnnotationPage,
   type JsonObject,
 } from '@mango-iiif/w3c-parser';
-import { resolvePageJson } from './canonical';
-import type { ResolvedAnnotation } from '../../iiif/annotationResolver';
+import {
+  type ResolvedAnnotation,
+  resolvePageJson,
+} from '@mango-iiif/iiif-viewer/core';
 
 /** Why a repository call failed, in terms the UI can act on. */
 export type RepositoryErrorKind =
