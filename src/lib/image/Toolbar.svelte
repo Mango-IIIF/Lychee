@@ -295,9 +295,11 @@
 </div>
 
 <style>
+  /* Spans the image, stopping above the stage's controls, so the tools never cover them. */
   .anno-toolbar-wrap {
     position: absolute;
     top: 12px;
+    bottom: calc(12px + var(--anno-controls-height, 0px));
     left: 12px;
     z-index: 20;
     display: flex;
@@ -320,7 +322,14 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    max-height: 100%;
     padding: 4px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .anno-tool {
+    flex: none;
   }
 
   .anno-tool {
@@ -345,6 +354,7 @@
   }
 
   .anno-sep {
+    flex: none;
     height: 1px;
     margin: 3px 6px;
     background: var(--viewer-toolbar-separator, rgba(255, 255, 255, 0.14));
@@ -352,6 +362,8 @@
 
   .anno-smart {
     width: 260px;
+    max-height: 100%;
+    overflow-y: auto;
     padding: 8px;
     font-size: 13px;
   }
@@ -498,6 +510,35 @@
   @keyframes anno-spin {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  /* Narrow stages are short too: the tools go in a row along the top instead. */
+  @container anno-stage (width <= 520px) {
+    .anno-toolbar-wrap {
+      top: 8px;
+      right: 8px;
+      left: 8px;
+      flex-direction: column;
+    }
+
+    .anno-toolbar {
+      flex-direction: row;
+      max-width: 100%;
+      max-height: none;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .anno-sep {
+      flex: none;
+      width: 1px;
+      height: auto;
+      margin: 6px 3px;
+    }
+
+    .anno-smart {
+      width: min(260px, 100%);
     }
   }
 </style>
