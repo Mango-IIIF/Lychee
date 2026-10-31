@@ -2,8 +2,10 @@
 
 Mango Annotate is a IIIF annotation editor built on the
 [Mango IIIF viewer](https://github.com/Mango-IIIF/Mango). It opens a IIIF
-Presentation manifest, lets people draw and describe annotations on its
-canvases, and exports them as a W3C Web Annotation `AnnotationPage`.
+Presentation manifest, lets people draw and describe annotations on images (with
+[Annotorious](https://annotorious.dev/)) or on moments in audio and video (with
+[RAMP](https://github.com/samvera-labs/ramp)), and exports them as a W3C Web
+Annotation `AnnotationPage`.
 
 ## Start here
 

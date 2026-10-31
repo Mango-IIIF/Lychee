@@ -1,0 +1,46 @@
+{
+  "title": "Test manifests",
+  "items": [
+    {
+      "id": "constabulary",
+      "type": "image",
+      "title": "Cardiganshire Constabulary register of criminals",
+      "collection": "National Library of Wales",
+      "date": "1897-1933",
+      "description": "Photographs, descriptions and records from a Cardiganshire constabulary register.",
+      "manifest": "manifests/constabulary.json",
+      "thumbnail": "images/constabulary.jpg",
+      "notice": "Historic records reflect the language and attitudes of their time."
+    },
+    {
+      "id": "margaret-young",
+      "type": "audio",
+      "title": "Margaret Young - Voices from the Factory Floor",
+      "collection": "Women's Archive Wales",
+      "date": "2014",
+      "description": "Memories of more than five decades at Corgi, from hosiery and knitwear to factory customs.",
+      "manifest": "manifests/iiif-pcw-550555/manifest.json",
+      "thumbnail": "images/factory.jpg",
+      "notice": "Recording copyright Women's Archive Wales 2014. Creative Archive Licence. Transcript, chapters and suggested annotations are unreviewed drafts."
+    },
+    {
+      "id": "danny-frisby",
+      "type": "video",
+      "title": "Danny Frisby - British Army Veteran",
+      "collection": "Veterans' stories",
+      "date": "2017",
+      "description": "Danny describes military training, deployment to Bosnia and serving with a frontline infantry unit.",
+      "manifest": "manifests/iiif-pcw-574604/manifest.json",
+      "notice": "Copyright Veteran Films. Creative Archive Licence. Unreviewed draft transcript and annotations. Content advisory: traumatic combat experiences and potentially flickering images; adult audiences."
+    },
+    {
+      "id": "cookbook-image-service",
+      "type": "image",
+      "title": "IIIF Cookbook: image service",
+      "collection": "IIIF Cookbook",
+      "date": "",
+      "description": "A single image with a IIIF Image API service.",
+      "manifest": "https://iiif.io/api/cookbook/recipe/0005-image-service/manifest.json"
+    }
+  ]
+}

@@ -1,0 +1,512 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "http://localhost:5173/iiif-pcw-550555/annotations.json",
+  "type": "AnnotationPage",
+  "label": {
+    "en": [
+      "Suggested annotations (unreviewed)"
+    ]
+  },
+  "items": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/margaret-young",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Margaret Young",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Person",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=0,3282.385"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/corgi",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Corgi Hosiery",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=0,3282.385"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/ammanford",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Ammanford / Rhydaman",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Place",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.wikidata.org/wiki/Q2472406",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Ammanford / Rhydaman"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=0,3282.385"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/hosiery",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Hosiery production",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=190,422"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/wages",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Wages and targets",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=422,565"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/unions",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Trade unions",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=565,800"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/knitwear",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Knitwear",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.wikidata.org/wiki/Q20825828",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Knitwear"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=800,990"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/birthdays",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Birthday customs",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=990,1141"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/working-conditions",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Working conditions",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=1141,1427"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/safety",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Workplace safety",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=1427,1640"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/home-working",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Home working",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=1640,2030"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/factory-trips",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Factory outings",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=2030,2260"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/friendship",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Workplace friendship",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=2517,2778"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/retirement",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Retirement customs",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=2778,3025"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/repairs",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Hand repairs",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=3025,3282.385"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/factory-photo",
+      "type": "Annotation",
+      "motivation": "linking",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Corgi factory photograph, 1950s",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Collection item",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.peoplescollection.wales/items/550561",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Corgi factory photograph, 1950s"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=0,3282.385"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/project-notes",
+      "type": "Annotation",
+      "motivation": "linking",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Original timestamped interview notes",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Collection item",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.lleisiaumenywodffatri.cymru/uploads/VSW065.2.pdf",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Original timestamped interview notes"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=0,3282.385"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/annotation/source-interview",
+      "type": "Annotation",
+      "motivation": "linking",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated or suggested draft, unreviewed"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Original interview on PCW",
+          "language": "en",
+          "format": "text/plain",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Collection item",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.peoplescollection.wales/items/550555",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Original interview on PCW"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=0,3282.385"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "source": "https://www.peoplescollection.wales/items/574604",
+  "retrieved": "2026-10-19",
+  "playbackId": "01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE",
+  "playbackUrl": "https://stream.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE.m3u8",
+  "durationSeconds": 846.64,
+  "durationEvidence": "Sum of video HLS EXTINF durations; audio stream reports 846.646 seconds.",
+  "dimensionsEvidence": "1280x720 rendition in the public Mux master playlist.",
+  "transcript": {
+    "engine": "faster-whisper 1.2.1",
+    "model": "base.en",
+    "language": "en",
+    "status": "machine-generated, unreviewed",
+    "segments": 146,
+    "speakerDiarization": false,
+    "coverage": "Detected speech only. Music, silence, titles and closing credits are not described. No manual verification against audio has been performed."
+  },
+  "chapters": {
+    "status": "suggested, unreviewed",
+    "basis": "Semantic divisions suggested from the machine transcript",
+    "count": 8
+  },
+  "annotations": {
+    "status": "suggested, unreviewed",
+    "count": 9,
+    "entityClassEncoding": "TextualBody with purpose classifying",
+    "notes": {
+      "danny-frisby": "Catalogue-level person tag from the PCW title; not a claim that this name is spoken throughout.",
+      "british-army": "Army service discussed in the draft transcript.",
+      "bosnia": "Bosnia is mentioned in the draft transcript; timing and interpretation require review.",
+      "peacekeeping": "Plain-text subject tag suggested from the draft transcript.",
+      "united-nations": "UN duties discussed in this part of the draft transcript.",
+      "northern-ireland": "Northern Ireland is mentioned in the draft transcript.",
+      "search-rescue": "Plain-text subject tag suggested from the draft transcript.",
+      "wales": "Wales is mentioned in the draft transcript.",
+      "source-item": "Catalogue-level link to the source item, applying to the recording as a whole."
+    },
+    "authorityChecks": {
+      "Q222595": "British Army",
+      "Q225": "Bosnia and Herzegovina",
+      "Q1065": "United Nations",
+      "Q26": "Northern Ireland",
+      "Q25": "Wales"
+    },
+    "authorityCheckDate": "2026-10-19",
+    "authorityCaveat": "Identity labels checked; relevance and placement in the recording remain unreviewed."
+  },
+  "licence": "https://www.peoplescollection.wales/help/copyright/creative-archive-licence",
+  "copyrightHolder": "Veteran Films",
+  "hosting": "Manifest IDs use the local development origin. Rebuild with --base-url before hosting elsewhere. Do not replace the stable Mux URL with expiring CDN rendition URLs."
+}

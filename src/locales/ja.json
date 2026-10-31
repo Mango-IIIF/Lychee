@@ -1,140 +1,269 @@
 {
-  "viewer": {
-    "panels": {
-      "annotations": {
-        "export": "注釈をエクスポート",
-        "exportDraftOnly": "下書きをダウンロードしました。公開前にページと注釈へ HTTP(S) ID を割り当ててください。",
-        "exportPublicationReady": "公開可能な IIIF をダウンロードしました。",
-        "editor": {
-          "workspaceLabel": "注釈エディターのワークスペース",
-          "discardNavigationConfirmation": "未保存の注釈を破棄して、このキャンバスから移動しますか？",
-          "publicationPageIdRequired": "公開する IIIF AnnotationPage には HTTP(S) ID が必要です。",
-          "createTitle": "注釈を作成",
-          "createAtViewCentre": "現在のビュー中央に{type}を作成し、正確な座標を入力",
-          "collapseToolsPanel": "描画ツールを折りたたむ",
-          "expandToolsPanel": "描画ツールを展開",
-          "collapseDetailsPanel": "注釈の詳細を折りたたむ",
-          "expandDetailsPanel": "注釈の詳細を展開",
-          "toolsPanel": "ツールとレイヤー",
-          "showList": "注釈リストを表示",
-          "hideList": "注釈リストを非表示",
-          "detailsTitle": "注釈の詳細",
-          "details": "詳細",
-          "motivation": "動機 (Motivation)",
-          "layer": "レイヤー",
-          "layersLabel": "レイヤー一覧",
-          "addLayer": "レイヤーを追加",
-          "setLayerColour": "{layer} の色を設定",
-          "label": "ラベル",
-          "labelPlaceholder": "注釈のラベル",
-          "text": "テキスト",
-          "textPlaceholder": "注釈テキストを入力...",
-          "tags": "タグ",
-          "tagPlaceholder": "タグを入力してEnterキーを押す",
-          "addTag": "追加",
-          "removeTag": "タグ「{tag}」を削除",
-          "notes": "メモ",
-          "privateNotes": "プライベートメモ",
-          "notesPlaceholder": "非公開の研究メモを入力...",
-          "saveAnnotation": "注釈を保存",
-          "saveChanges": "変更を保存",
-          "deleteAnnotation": "注釈を削除",
-          "empty": "注釈を選択して詳細を確認してください。",
-          "rectanglePlacement": "長方形配置エディタ",
-          "id": "ID",
-          "type": "タイプ",
-          "searchPlaceholder": "注釈を検索",
-          "pagination": "{current} / {total}",
-          "newAnnotation": "新しい注釈",
-          "selectAnnotation": "{annotation}を選択",
-          "showLayer": "レイヤーを表示",
-          "hideLayer": "レイヤーを非表示",
-          "layers": {
-            "research": "研究メモ",
-            "transcription": "翻刻・文字起こし",
-            "highlights": "ハイライト",
-            "mine": "自分の注釈"
-          },
-          "tools": {
-            "select": "選択 / パン",
-            "rectangle": "長方形",
-            "polygon": "多角形",
-            "point": "ポイント",
-            "freehand": "フリーハンド",
-            "line": "直線"
-          },
-          "task": "タスク",
-          "motivationPresets": {
-            "comment": "この領域にコメントする",
-            "describe": "この領域を説明する",
-            "transcribe": "ここのテキストを翻刻する",
-            "tag": "この領域にタグを付ける",
-            "highlight": "この領域を強調する",
-            "classify": "この領域を分類する",
-            "identify": "これが何かを特定する",
-            "paint": "キャンバスの内容（上級者向け）"
-          },
-          "motivations": {
-            "other": "その他（{motivation}）"
-          },
-          "rawMotivation": "モチベーションを直接指定する",
-          "paintingWarning": "他のビューアは painting 注釈をキャンバスの内容として扱います。",
-          "translations": "テキストの言語",
-          "removeTranslation": "{language} のテキストを削除",
-          "noLanguage": "言語なし",
-          "textDirection": "文字方向",
-          "direction": {
-            "ltr": "左から右",
-            "rtl": "右から左",
-            "auto": "自動"
-          },
-          "bodyPurpose": "ボディの目的",
-          "privateNotesHint": "プライベートメモは Mango 内にとどまり、書き出しには含まれません。",
-          "advanced": "保持されたデータ",
-          "advancedHint": "読み取り専用。受け取ったまま保持し、変更せずに書き戻します。",
-          "provenance": {
-            "manifest": "マニフェスト由来",
-            "external": "注釈ページ由来",
-            "local": "ここで作成",
-            "override": "あなたの編集",
-            "draft": "下書き",
-            "persisted": "保存済み"
-          },
-          "readOnlyHint": "編集すると、あなたが所有するコピーが作成されます。",
-          "renderOnlyHint": "この図形はここでは編集できませんが、そのまま保持されます。",
-          "saveState": {
-            "failed": "保存できませんでした"
-          },
-          "cancel": "キャンセル",
-          "drawInLayer": "{layer} に描画",
-          "undo": "元に戻す",
-          "redo": "やり直す",
-          "confirmDelete": "「{name}」を削除しますか？元に戻せます。",
-          "filterByLayer": "レイヤーで絞り込む",
-          "allLayers": "すべてのレイヤー",
-          "sortBy": "並べ替え",
-          "listCount": "{total} 件中 {shown} 件を表示",
-          "sort": {
-            "document": "ドキュメント順",
-            "label": "ラベル",
-            "type": "種類",
-            "layer": "レイヤー"
-          },
-          "renameLayer": "{layer} の名前を変更",
-          "moveLayerUp": "レイヤーを上へ",
-          "moveLayerDown": "レイヤーを下へ",
-          "restoreLayer": "{layer} を戻す",
-          "archivedLayers": "アーカイブ済みレイヤー（{count}）",
-          "position": "位置",
-          "positionHint": "画像のピクセル単位。ドラッグと同じく、変更は 1 つの取り消し単位です。",
-          "layerOptions": "{layer} のオプション",
-          "rename": "名前を変更",
-          "archive": "アーカイブ"
-        }
-      }
-    }
-  },
   "about": {
     "description": "Mango is an open-source, W3C Annotation and IIIF-compliant deep zoom viewer and interactive story creation suite designed for high-resolution manuscript, artwork, and spatial media exploration."
+  },
+  "annotate": {
+    "stage": "注釈ステージ",
+    "loading": "資料を読み込んでいます…",
+    "loadError": "資料を読み込めませんでした。",
+    "warnings": {
+      "invalidConfig": "注釈エディターの設定が無効です:"
+    },
+    "export": {
+      "button": "注釈をダウンロード ({count})",
+      "ready": "公開可能な IIIF をダウンロードしました。",
+      "draft": "下書きをダウンロードしました。公開前にページと注釈に HTTP(S) の ID を割り当ててください。"
+    },
+    "sidebar": {
+      "label": "注釈",
+      "editing": "注釈を編集中",
+      "language": "言語",
+      "hasText": "入力済み",
+      "save": "注釈を保存",
+      "update": "注釈を更新",
+      "cancel": "編集をキャンセル",
+      "json": "保存される内容"
+    },
+    "scope": {
+      "label": "何についての注釈ですか？",
+      "region": "範囲",
+      "canvas": "この画像",
+      "short": {
+        "region": "範囲",
+        "canvas": "画像全体",
+        "manifest": "資料全体",
+        "time": "時点"
+      }
+    },
+    "region": {
+      "none": "画像上に枠を描くか、図形をクリックしてください。",
+      "drawing": "画像をクリックして開始し、もう一度クリックして終了します。",
+      "selected": "選択した範囲: {w} × {h} px",
+      "count": "注釈: {count}",
+      "draw": "枠を描く",
+      "redraw": "描き直す",
+      "delete": "図形を削除"
+    },
+    "time": {
+      "start": "開始 (秒)",
+      "end": "終了 (任意)",
+      "useCurrent": "現在の時間を使う"
+    },
+    "intents": {
+      "question": "何をしますか？",
+      "choose": "上の選択肢を選ぶと必要な欄が表示されます。",
+      "note": {
+        "label": "メモを追加",
+        "hint": {
+          "image": "画像のこの部分について、考えや思い出、背景を共有してください。",
+          "av": "この場面について、考えや思い出、背景を共有してください。"
+        }
+      },
+      "transcribe": {
+        "label": "書き起こす",
+        "hint": {
+          "image": "この範囲の文字をそのまま書き写してください。検索できるようになります。",
+          "av": "話されている内容をそのまま書き起こしてください。検索や字幕表示に使えます。"
+        }
+      },
+      "tag": {
+        "label": "タグ付け",
+        "hint": {
+          "image": "見つけやすくなるようにキーワードをいくつか追加してください。",
+          "av": "見つけやすくなるようにキーワードをいくつか追加してください。"
+        }
+      },
+      "identify": {
+        "label": "特定する",
+        "hint": {
+          "image": "Wikidata などの共通の参照先を使い、誰・何・どこなのかを正確に示してください。",
+          "av": "Wikidata などの共通の参照先を使い、誰・何・どこなのかを正確に示してください。"
+        }
+      },
+      "highlight": {
+        "label": "ハイライト",
+        "hint": {
+          "image": "画像のこの部分を注目すべき箇所として示します。文章は不要です。",
+          "av": "この場面を聞く価値のある箇所として示します。文章は不要です。"
+        }
+      },
+      "link": {
+        "label": "リンク",
+        "hint": {
+          "image": "コレクション内の別の資料と関連付けます。",
+          "av": "この場面をコレクション内の別の資料や録音と関連付けます。"
+        }
+      }
+    },
+    "fields": {
+      "optional": "任意",
+      "title": "タイトル",
+      "titlePlaceholder": "短いタイトル",
+      "note": "メモ",
+      "notePlaceholder": "これは何を示し、何を伝えていますか？",
+      "transcription": "話されている・書かれている内容",
+      "transcriptionPlaceholder": "聞こえた・見えたとおりに入力してください",
+      "tags": "キーワード",
+      "tagsPlaceholder": "カンマで区切ってください",
+      "why": "大切な理由",
+      "whyPlaceholder": "例: ストライキへの最初の言及",
+      "linkUrl": "関連する資料や録音",
+      "linkUrlPlaceholder": "リンクを貼り付け",
+      "linkFrom": "開始 (秒)",
+      "linkTo": "終了 (任意)"
+    },
+    "identify": {
+      "question": "これは誰・何・どこですか？",
+      "source": "検索先",
+      "search": "{provider} を検索",
+      "placeholder": "人物・場所・主題を検索",
+      "searching": "{provider} を検索しています…",
+      "noResults": "見つかりませんでした。",
+      "linked": "リンク済み",
+      "remove": "{label} を削除",
+      "none": "参照先が設定されていません。"
+    },
+    "ai": {
+      "label": "AI の提案",
+      "flag": "AI",
+      "loading": "画像を確認しています…",
+      "suggest": {
+        "region": "AI で提案 (この範囲)",
+        "image": "AI で提案 (画像全体)"
+      },
+      "explain": {
+        "region": "この範囲を送信して提案を受け取ります。提案はフォームに入力されるだけなので、保存前に確認してください。",
+        "image": "この画像を送信して提案を受け取ります。提案はフォームに入力されるだけなので、保存前に確認してください。"
+      },
+      "fields": {
+        "label": "タイトル",
+        "note": "説明",
+        "transcription": "書き起こし",
+        "tags": "キーワード"
+      },
+      "inForm": "入力済み",
+      "use": "使う",
+      "link": "リンク",
+      "linked": "リンク済み",
+      "suggestedBy": "{model} による提案"
+    },
+    "problems": {
+      "noIntent": "何をするか選んでください。",
+      "noText": "保存する前に何か入力してください。",
+      "noTags": "キーワードを 1 つ以上追加してください。",
+      "noEntity": "誰・何・どこなのかを選んでください。",
+      "badUrl": "http:// または https:// で始まるアドレスを入力してください。",
+      "noRegion": "先に画像上で図形を描くか選択するか、画像全体に注釈を付けてください。",
+      "time": {
+        "start": "開始時間は 0 秒以上で入力してください。",
+        "startAfterEnd": "開始時間は録音の終わりより前にしてください。",
+        "end": "終了時間は開始より後で、録音の長さ以内にしてください。"
+      }
+    },
+    "cards": {
+      "heading": "あなたの注釈 ({count})",
+      "empty": {
+        "image": "この画像と資料へのあなたの注釈がここに表示されます。",
+        "av": "この録音へのあなたの注釈がここに表示されます。"
+      },
+      "show": "表示",
+      "jump": "移動",
+      "edit": "編集",
+      "delete": "削除"
+    },
+    "table": {
+      "heading": "すべての注釈 ({count})",
+      "show": "注釈一覧を表示",
+      "hide": "注釈一覧を隠す",
+      "search": "注釈を検索",
+      "filter": "出典で絞り込み",
+      "sortBy": "並べ替え",
+      "origin": {
+        "all": "すべて",
+        "mine": "あなたの注釈",
+        "source": "資料の注釈"
+      },
+      "sort": {
+        "document": "文書順",
+        "title": "タイトル",
+        "motivation": "種類",
+        "where": "場所"
+      },
+      "columns": {
+        "title": "タイトル",
+        "text": "テキスト",
+        "motivation": "種類",
+        "where": "場所",
+        "origin": "出典"
+      },
+      "select": "{annotation} を選択",
+      "count": "{total} 件中 {shown} 件を表示",
+      "canvasN": "画像 {n}"
+    },
+    "gallery": {
+      "label": "ページ",
+      "show": "ページを表示",
+      "hide": "ページを隠す",
+      "page": "ページ {n}: {label}",
+      "annotated": "あなたの注釈があります"
+    },
+    "settings": {
+      "label": "設定",
+      "colour": "ビューアーの色"
+    },
+    "tools": {
+      "label": "描画ツール",
+      "select": "選択と移動",
+      "rectangle": "長方形",
+      "polygon": "多角形 (点をクリック、ダブルクリックで終了)",
+      "ellipse": "楕円",
+      "path": "フリーハンド",
+      "line": "線",
+      "smart": "スマートツール",
+      "closeSmart": "スマートツールを閉じる",
+      "intelligent-scissors": "スマートはさみ",
+      "magnetic-cursor": "エッジ吸着",
+      "smart-select": "自動選択",
+      "enable": "{tool} をオンにする",
+      "hints": {
+        "intelligent-scissors": "クリックして開始し、輪郭に沿ってクリックで点を置きます。",
+        "intelligent-scissorsMore": "ダブルクリックで終了。曲線や複雑な輪郭に便利です。",
+        "magnetic-cursor": "描画中にカーソルが近くの輪郭に吸着します。",
+        "magnetic-cursorMore": "はっきりしたコントラストの高い輪郭に便利です。"
+      }
+    },
+    "sam": {
+      "unsupported": "自動選択には WebGPU が必要です。デスクトップの Chrome または Edge をご利用ください。",
+      "error": "自動選択を開始できませんでした: {message}",
+      "loading": "選択モデルを読み込んでいます…",
+      "download": "モデルのダウンロード",
+      "cached": "モデルは初回ダウンロード後、ブラウザーに保存されます。",
+      "instructions": "カーソルを合わせるとプレビューします。対象をクリックし、点を追加・削除して輪郭を整えます。",
+      "mode": "自動選択モード",
+      "add": "対象を選択",
+      "remove": "範囲を除外",
+      "busy": "表示を解析しています…",
+      "shift": "Shift キーを押しながらクリックしても除外できます。",
+      "paused": "選択を一時停止中です。画像をドラッグして移動できます。",
+      "done": "完了",
+      "reset": "リセット"
+    },
+    "av": {
+      "recording": "録音",
+      "recordingN": "録音 {n}",
+      "recordingKind": "オーラルヒストリー",
+      "position": "再生位置",
+      "loadError": "録音を読み込めませんでした。配信元のサーバーが利用できない可能性があります。時間は手動で入力できます。",
+      "details": "録音の詳細",
+      "tabs": {
+        "transcript": "書き起こし",
+        "chapters": "チャプター",
+        "annotations": "注釈"
+      },
+      "findInTranscript": "書き起こしを検索",
+      "noTranscript": "書き起こしが見つかりません。",
+      "noChapters": "チャプターはありません。",
+      "noAnnotations": "資料の注釈はありません。"
+    }
   }
 }

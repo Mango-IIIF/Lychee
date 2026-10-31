@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { webcrypto } from 'node:crypto';
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import react from '@vitejs/plugin-react';
+import { smartTools } from './build/smartTools';
 
 if (
   typeof globalThis.crypto === 'undefined' ||
@@ -15,8 +17,15 @@ const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf8'))
   dependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
 };
-/* Dependencies stay external so an app that also uses the viewer loads one copy. */
-const externalPackages = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies });
+/*
+ * Dependencies stay external so an app that also uses the viewer loads one copy.
+ * The two smart-tool plugins are the exception: they are bundled so the fixes in
+ * build/smartTools.ts ship with the library.
+ */
+const BUNDLED = ['@annotorious/plugin-magnetic-outline', '@annotorious/plugin-segment-anything'];
+const externalPackages = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }).filter(
+  (name) => !BUNDLED.includes(name),
+);
 const isExternal = (id: string) =>
   externalPackages.some((name) => id === name || id.startsWith(`${name}/`));
 
@@ -30,6 +39,8 @@ const customElementConfig = (filename: string | undefined) => {
 export default defineConfig({
   root: resolve(__dirname, 'src'),
   plugins: [
+    smartTools(),
+    react({ include: /\.tsx$/ }),
     svelte({
       configFile: resolve(__dirname, 'svelte.config.js'),
       dynamicCompileOptions({ filename }) {

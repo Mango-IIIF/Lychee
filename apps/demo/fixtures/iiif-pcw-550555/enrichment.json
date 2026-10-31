@@ -1,0 +1,227 @@
+{
+  "duration": 3282.385,
+  "language": "en",
+  "languageDetection": {
+    "automaticLargeModel": "en",
+    "probability": 0.9498285055160522,
+    "confirmation": "English checked against the original project interview notes. Production transcription uses English."
+  },
+  "chapters": [
+    {
+      "start": 0,
+      "title": "Background and joining Corgi"
+    },
+    {
+      "start": 190,
+      "title": "Learning hosiery production"
+    },
+    {
+      "start": 422,
+      "title": "Wages and production targets"
+    },
+    {
+      "start": 565,
+      "title": "Unions and workplace disputes"
+    },
+    {
+      "start": 800,
+      "title": "From hosiery to knitwear"
+    },
+    {
+      "start": 990,
+      "title": "Birthdays and factory customs"
+    },
+    {
+      "start": 1141,
+      "title": "Cold, discipline and music"
+    },
+    {
+      "start": 1427,
+      "title": "Supervision, safety and uniforms"
+    },
+    {
+      "start": 1640,
+      "title": "Holidays, family and home working"
+    },
+    {
+      "start": 2030,
+      "title": "Trips and factory life"
+    },
+    {
+      "start": 2260,
+      "title": "Workforce and workplace relations"
+    },
+    {
+      "start": 2517,
+      "title": "Friendship, marriage and wages"
+    },
+    {
+      "start": 2778,
+      "title": "Retirement and changing traditions"
+    },
+    {
+      "start": 3025,
+      "title": "Royal visits and hand repairs"
+    }
+  ],
+  "annotations": [
+    {
+      "slug": "margaret-young",
+      "title": "Margaret Young",
+      "kind": "Person",
+      "start": 0,
+      "end": 3282.385,
+      "note": "Catalogue-level person tag from the interview title."
+    },
+    {
+      "slug": "corgi",
+      "title": "Corgi Hosiery",
+      "kind": "Concept",
+      "start": 0,
+      "end": 3282.385,
+      "note": "Catalogue-level employer tag; no automatic company authority match was made."
+    },
+    {
+      "slug": "ammanford",
+      "title": "Ammanford / Rhydaman",
+      "kind": "Place",
+      "start": 0,
+      "end": 3282.385,
+      "url": "https://www.wikidata.org/wiki/Q2472406",
+      "note": "Catalogue-level place tag. Wikidata identity checked; context is the factory location."
+    },
+    {
+      "slug": "hosiery",
+      "title": "Hosiery production",
+      "kind": "Concept",
+      "start": 190,
+      "end": 422,
+      "note": "Original project notes section at 03:10."
+    },
+    {
+      "slug": "wages",
+      "title": "Wages and targets",
+      "kind": "Concept",
+      "start": 422,
+      "end": 565,
+      "note": "Original project notes section at 07:02."
+    },
+    {
+      "slug": "unions",
+      "title": "Trade unions",
+      "kind": "Concept",
+      "start": 565,
+      "end": 800,
+      "note": "Original project notes section at 09:25. This annotation indexes an oral-history account, not an independently verified employment claim."
+    },
+    {
+      "slug": "knitwear",
+      "title": "Knitwear",
+      "kind": "Concept",
+      "start": 800,
+      "end": 990,
+      "url": "https://www.wikidata.org/wiki/Q20825828",
+      "note": "Original project notes section at 13:20; Wikidata identity checked."
+    },
+    {
+      "slug": "birthdays",
+      "title": "Birthday customs",
+      "kind": "Concept",
+      "start": 990,
+      "end": 1141,
+      "note": "Original project notes section at 16:30."
+    },
+    {
+      "slug": "working-conditions",
+      "title": "Working conditions",
+      "kind": "Concept",
+      "start": 1141,
+      "end": 1427,
+      "note": "Original project notes section at 19:01."
+    },
+    {
+      "slug": "safety",
+      "title": "Workplace safety",
+      "kind": "Concept",
+      "start": 1427,
+      "end": 1640,
+      "note": "Original project notes section at 23:47."
+    },
+    {
+      "slug": "home-working",
+      "title": "Home working",
+      "kind": "Concept",
+      "start": 1640,
+      "end": 2030,
+      "note": "Broad interval within the 27:20 notes section, including holidays and family. Exact spoken mention requires review."
+    },
+    {
+      "slug": "factory-trips",
+      "title": "Factory outings",
+      "kind": "Concept",
+      "start": 2030,
+      "end": 2260,
+      "note": "Original project notes section at 33:50."
+    },
+    {
+      "slug": "friendship",
+      "title": "Workplace friendship",
+      "kind": "Concept",
+      "start": 2517,
+      "end": 2778,
+      "note": "Original project notes section at 41:57."
+    },
+    {
+      "slug": "retirement",
+      "title": "Retirement customs",
+      "kind": "Concept",
+      "start": 2778,
+      "end": 3025,
+      "note": "Original project notes section at 46:18."
+    },
+    {
+      "slug": "repairs",
+      "title": "Hand repairs",
+      "kind": "Concept",
+      "start": 3025,
+      "end": 3282.385,
+      "note": "Original project notes section at 50:25 includes royal visits and repair work; exact boundaries require review."
+    },
+    {
+      "slug": "factory-photo",
+      "title": "Corgi factory photograph, 1950s",
+      "kind": "Collection item",
+      "start": 0,
+      "end": 3282.385,
+      "url": "https://www.peoplescollection.wales/items/550561",
+      "note": "User-selected cover; linked catalogue identifies copyright Margaret Young and an unknown photographer."
+    },
+    {
+      "slug": "project-notes",
+      "title": "Original timestamped interview notes",
+      "kind": "Collection item",
+      "start": 0,
+      "end": 3282.385,
+      "url": "https://www.lleisiaumenywodffatri.cymru/uploads/VSW065.2.pdf",
+      "note": "Source of chapter starts and subject indexing; detailed English notes, not a verbatim transcript."
+    },
+    {
+      "slug": "source-interview",
+      "title": "Original interview on PCW",
+      "kind": "Collection item",
+      "start": 0,
+      "end": 3282.385,
+      "url": "https://www.peoplescollection.wales/items/550555",
+      "note": "Source catalogue link."
+    }
+  ],
+  "spellingNormalisations": {
+    "Margaret Bainham": "Margaret Beynon",
+    "Ammonford": "Ammanford",
+    "Almondford": "Ammanford",
+    "Almond Valley": "Amman Valley",
+    "Pantafinon": "Pantyffynnon",
+    "Pacorine": "Parcyrhun",
+    "Coggy": "Corgi"
+  }
+}

@@ -32,6 +32,9 @@ jobs:
       - name: Check localization
         run: npm run i18n:check
 
+      - name: Check Svelte components
+        run: npm run check
+
       - name: Check TypeScript declarations
         run: npm run build:types
 

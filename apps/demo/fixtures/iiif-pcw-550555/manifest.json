@@ -1,0 +1,826 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "http://localhost:5173/iiif-pcw-550555/manifest.json",
+  "type": "Manifest",
+  "label": {
+    "en": [
+      "Interview, Margaret Young. Voices from the Factory Floor"
+    ]
+  },
+  "summary": {
+    "en": [
+      "Margaret Young recalls more than five decades of work at Corgi, hosiery and knitwear production, working conditions, factory customs and home working. Description adapted from PCW item 550555. The English transcript, chapter boundaries and annotations are new unreviewed draft additions."
+    ]
+  },
+  "metadata": [
+    {
+      "label": {
+        "en": [
+          "Processing status"
+        ]
+      },
+      "value": {
+        "en": [
+          "Complete draft"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Recording date / interviewer"
+        ]
+      },
+      "value": {
+        "en": [
+          "3 September 2014; Catrin Stevens. Source: original project interview notes."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Creator / owner"
+        ]
+      },
+      "value": {
+        "en": [
+          "Archif Menywod Cymru / Women's Archive Wales"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Project / uploader"
+        ]
+      },
+      "value": {
+        "en": [
+          "Lleisiau o Lawr y Ffatri / Voices from the Factory Floor"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Copyright statement (PCW)"
+        ]
+      },
+      "value": {
+        "en": [
+          "Women's Archive Wales 2014"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Item uploaded"
+        ]
+      },
+      "value": {
+        "en": [
+          "9 February 2017; this is not an established recording date."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Recording language"
+        ]
+      },
+      "value": {
+        "en": [
+          "English, checked against the linked project interview notes."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Transcript status"
+        ]
+      },
+      "value": {
+        "en": [
+          "Machine-generated English draft, unreviewed. Names, dates, words, omissions and timing need checking by an editor. Speakers have not been identified automatically."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Chapters and annotations"
+        ]
+      },
+      "value": {
+        "en": [
+          "Suggested English browsing labels, based on the original timestamped project notes and catalogue. Titles, exact spoken mentions and interpretation need review."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Catalogue reference"
+        ]
+      },
+      "value": {
+        "en": [
+          "VSW065"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Cover image"
+        ]
+      },
+      "value": {
+        "en": [
+          "User-specified image: PCW item 550561, Photo: Corgi Hosiery Factory, 1950s. Owner/copyright: Margaret Young; photographer unknown."
+        ]
+      }
+    }
+  ],
+  "rights": "https://www.peoplescollection.wales/help/copyright/creative-archive-licence",
+  "requiredStatement": {
+    "label": {
+      "en": [
+        "Attribution"
+      ]
+    },
+    "value": {
+      "en": [
+        "Recording © Women's Archive Wales 2014. People’s Collection Wales item 550555; Creative Archive Licence, see source for terms. Cover photograph © Margaret Young, PCW item 550561; Creative Archive Licence. Photographer unknown. Transcript and enrichment are unreviewed prototype additions."
+      ]
+    }
+  },
+  "homepage": [
+    {
+      "id": "https://www.peoplescollection.wales/items/550555",
+      "type": "Text",
+      "format": "text/html",
+      "label": {
+        "en": [
+          "Original PCW interview"
+        ]
+      }
+    }
+  ],
+  "thumbnail": [
+    {
+      "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+      "type": "Image",
+      "format": "image/jpeg",
+      "width": 1600,
+      "height": 1200
+    }
+  ],
+  "rendering": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/transcript-en.vtt",
+      "type": "Text",
+      "format": "text/vtt",
+      "language": "en",
+      "label": {
+        "en": [
+          "English transcript (machine generated, unreviewed)"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/transcript-en.txt",
+      "type": "Text",
+      "format": "text/plain",
+      "language": "en",
+      "label": {
+        "en": [
+          "Readable English transcript draft"
+        ]
+      }
+    }
+  ],
+  "seeAlso": [
+    {
+      "id": "https://www.lleisiaumenywodffatri.cymru/uploads/VSW065.2.pdf",
+      "type": "Text",
+      "format": "application/pdf",
+      "label": {
+        "en": [
+          "Original timestamped project interview notes"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/provenance.json",
+      "type": "Dataset",
+      "format": "application/json",
+      "label": {
+        "en": [
+          "Source and enrichment provenance"
+        ]
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio",
+      "type": "Canvas",
+      "label": {
+        "en": [
+          "Margaret Young oral-history interview"
+        ]
+      },
+      "duration": 3282.385,
+      "items": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/page/audio",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/annotation/audio",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://www.peoplescollection.wales/sites/default/files/audio/2017/February/VSW065.1_0.mp3",
+                "type": "Sound",
+                "format": "audio/mpeg",
+                "duration": 3282.385
+              },
+              "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio"
+            }
+          ]
+        }
+      ],
+      "accompanyingCanvas": {
+        "id": "http://localhost:5173/iiif-pcw-550555/canvas/cover",
+        "type": "Canvas",
+        "width": 1600,
+        "height": 1200,
+        "items": [
+          {
+            "id": "http://localhost:5173/iiif-pcw-550555/page/cover",
+            "type": "AnnotationPage",
+            "items": [
+              {
+                "id": "http://localhost:5173/iiif-pcw-550555/annotation/cover",
+                "type": "Annotation",
+                "motivation": "painting",
+                "body": {
+                  "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+                  "type": "Image",
+                  "format": "image/jpeg",
+                  "width": 1600,
+                  "height": 1200
+                },
+                "target": "http://localhost:5173/iiif-pcw-550555/canvas/cover"
+              }
+            ]
+          }
+        ],
+        "label": {
+          "en": [
+            "Corgi Hosiery factory photograph, 1950s"
+          ]
+        },
+        "rights": "https://www.peoplescollection.wales/help/copyright/creative-archive-licence",
+        "requiredStatement": {
+          "label": {
+            "en": [
+              "Photograph attribution"
+            ]
+          },
+          "value": {
+            "en": [
+              "© Margaret Young. Photographer unknown. Source: PCW item 550561; Creative Archive Licence."
+            ]
+          }
+        }
+      },
+      "placeholderCanvas": {
+        "id": "http://localhost:5173/iiif-pcw-550555/canvas/cover",
+        "type": "Canvas",
+        "width": 1600,
+        "height": 1200,
+        "items": [
+          {
+            "id": "http://localhost:5173/iiif-pcw-550555/page/cover",
+            "type": "AnnotationPage",
+            "items": [
+              {
+                "id": "http://localhost:5173/iiif-pcw-550555/annotation/cover",
+                "type": "Annotation",
+                "motivation": "painting",
+                "body": {
+                  "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+                  "type": "Image",
+                  "format": "image/jpeg",
+                  "width": 1600,
+                  "height": 1200
+                },
+                "target": "http://localhost:5173/iiif-pcw-550555/canvas/cover"
+              }
+            ]
+          }
+        ],
+        "label": {
+          "en": [
+            "Corgi Hosiery factory photograph, 1950s"
+          ]
+        },
+        "rights": "https://www.peoplescollection.wales/help/copyright/creative-archive-licence",
+        "requiredStatement": {
+          "label": {
+            "en": [
+              "Photograph attribution"
+            ]
+          },
+          "value": {
+            "en": [
+              "© Margaret Young. Photographer unknown. Source: PCW item 550561; Creative Archive Licence."
+            ]
+          }
+        }
+      },
+      "rendering": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/transcript-en.vtt",
+          "type": "Text",
+          "format": "text/vtt",
+          "language": "en",
+          "label": {
+            "en": [
+              "English transcript (machine generated, unreviewed)"
+            ]
+          }
+        }
+      ],
+      "annotations": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/page/captions",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/annotation/captions",
+              "type": "Annotation",
+              "motivation": "supplementing",
+              "body": {
+                "id": "http://localhost:5173/iiif-pcw-550555/transcript-en.vtt",
+                "type": "Text",
+                "format": "text/vtt",
+                "language": "en",
+                "label": {
+                  "en": [
+                    "English transcript (machine generated, unreviewed)"
+                  ]
+                }
+              },
+              "target": "http://localhost:5173/iiif-pcw-550555/canvas/audio"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/transcript-annotations.json",
+          "type": "AnnotationPage",
+          "label": {
+            "en": [
+              "English transcript (machine generated, unreviewed)"
+            ]
+          }
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/annotations.json",
+          "type": "AnnotationPage",
+          "label": {
+            "en": [
+              "Suggested annotations (unreviewed)"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "structures": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-550555/range/contents",
+      "type": "Range",
+      "label": {
+        "en": [
+          "Suggested chapters (unreviewed)"
+        ]
+      },
+      "items": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-1",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Background and joining Corgi"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=0,190",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-2",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Learning hosiery production"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=190,422",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-3",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Wages and production targets"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=422,565",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-4",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Unions and workplace disputes"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=565,800",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-5",
+          "type": "Range",
+          "label": {
+            "en": [
+              "From hosiery to knitwear"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=800,990",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-6",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Birthdays and factory customs"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=990,1141",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-7",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Cold, discipline and music"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=1141,1427",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-8",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Supervision, safety and uniforms"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=1427,1640",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-9",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Holidays, family and home working"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=1640,2030",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-10",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Trips and factory life"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=2030,2260",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-11",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Workforce and workplace relations"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=2260,2517",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-12",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Friendship, marriage and wages"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=2517,2778",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-13",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Retirement and changing traditions"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=2778,3025",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-550555/range/chapter-14",
+          "type": "Range",
+          "label": {
+            "en": [
+              "Royal visits and hand repairs"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Chapter start taken from the original timestamped project notes; title adapted for browsing. Check alignment against the recording."
+            ]
+          },
+          "thumbnail": [
+            {
+              "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+              "type": "Image",
+              "format": "image/jpeg",
+              "width": 1600,
+              "height": 1200
+            }
+          ],
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-550555/canvas/audio#t=3025,3282.385",
+              "type": "Canvas"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

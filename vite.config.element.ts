@@ -3,6 +3,8 @@ import { webcrypto } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import react from '@vitejs/plugin-react';
+import { smartTools } from './build/smartTools';
 
 if (
   typeof globalThis.crypto === 'undefined' ||
@@ -25,10 +27,19 @@ export default defineConfig({
    * would otherwise resolve its own copies of these from its own
    * node_modules: two Svelte runtimes cannot share components or stores.
    */
+  /*
+   * The standalone bundle has no consumer bundler after it, so libraries that
+   * branch on NODE_ENV (React, RAMP) must be resolved here. Lib mode leaves it.
+   */
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production'),
+  },
   resolve: {
-    dedupe: ['svelte', '@lucide/svelte', '@mango-iiif/annotation', '@mango-iiif/w3c-parser'],
+    dedupe: ['svelte', '@lucide/svelte', 'openseadragon', 'react', 'react-dom'],
   },
   plugins: [
+    smartTools(),
+    react({ include: /\.tsx$/ }),
     svelte({
       configFile: resolve(__dirname, 'svelte.config.js'),
       dynamicCompileOptions({ filename }) {

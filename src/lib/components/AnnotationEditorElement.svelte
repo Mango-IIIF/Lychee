@@ -14,13 +14,13 @@
   import type {
     ContentSize,
     MediaType,
-    ResolvedAnnotation,
     ViewBox,
     ViewerCoreInstance,
     ViewerEventMap,
     ViewerPlugin,
     ViewerStateSnapshot,
   } from '@mango-iiif/iiif-viewer/core';
+  import type { Annotation } from '../annotations/types';
   import type { AnnotateConfig } from '../core/types/config';
   import AnnotationEditor from '../host/AnnotationEditor.svelte';
 
@@ -113,28 +113,31 @@
     viewerApi()?.setCanvasById(canvasId);
   }
 
-  /** The current canvas's annotations: the manifest's and the user's own. */
-  export function getAnnotations(): ResolvedAnnotation[] {
-    return viewerApi()?.getAnnotations() ?? [];
+  /** The current canvas's annotations, as W3C: the manifest's and the user's own. */
+  export function getAnnotations(): Annotation[] {
+    return editor?.getAnnotations() ?? [];
   }
 
-  /** Every annotation the user has made or edited, across all canvases. */
-  export function getUserAnnotations(): ResolvedAnnotation[] {
-    return viewerApi()?.getUserAnnotations() ?? [];
+  /** Every annotation the user has made, across all canvases, as W3C. */
+  export function getUserAnnotations(): Annotation[] {
+    return editor?.getUserAnnotations() ?? [];
   }
 
-  export function addAnnotation(annotation: unknown): Promise<void> {
-    return viewerApi()?.addAnnotation(annotation) ?? Promise.resolve();
+  /** Adds a W3C annotation to the user's own, e.g. one loaded from the host's store. */
+  export function addAnnotation(annotation: Annotation): void {
+    editor?.addAnnotation(annotation);
   }
 
-  export function setAnnotations(annotations: unknown[]): Promise<void> {
-    return viewerApi()?.setAnnotations(annotations) ?? Promise.resolve();
+  /** Replaces the user's annotations. */
+  export function setAnnotations(annotations: Annotation[]): void {
+    editor?.setAnnotations(annotations);
   }
 
-  export function removeAnnotation(annotationId: string): Promise<void> {
-    return viewerApi()?.removeAnnotation(annotationId) ?? Promise.resolve();
+  export function removeAnnotation(annotationId: string): void {
+    editor?.removeAnnotation(annotationId);
   }
 
+  /* Viewer events (navigation, zoom). Images only: audio and video have no embedded viewer. */
   export function on<K extends keyof ViewerEventMap>(
     event: K,
     handler: (payload: ViewerEventMap[K]) => void,

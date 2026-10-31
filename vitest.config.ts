@@ -6,7 +6,7 @@ export default defineConfig({
   root: resolve(__dirname, 'src'),
   resolve: {
     conditions: ['browser'],
-    dedupe: ['svelte', '@lucide/svelte', '@mango-iiif/annotation', '@mango-iiif/w3c-parser'],
+    dedupe: ['svelte', '@lucide/svelte'],
   },
   plugins: [
     svelte({
@@ -17,5 +17,7 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['lib/**/*.test.ts'],
     setupFiles: [resolve(__dirname, 'src/vitest.setup.ts')],
+    // Annotorious imports named exports from OpenSeadragon's CommonJS build; let Vite transform it.
+    server: { deps: { inline: [/@annotorious\//, 'openseadragon'] } },
   },
 });

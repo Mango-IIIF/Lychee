@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2020", "DOM"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["svelte"],
+    "jsx": "react-jsx",
     "paths": {
       "/*": ["./src/*"]
     }
@@ -11,6 +12,7 @@
     "src/lib/**/*",
     "vite-env.d.ts",
     "vite.config.*",
+    "build/**/*",
     "svelte.config.js"
   ]
 }

@@ -1,0 +1,511 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "http://localhost:5173/iiif-pcw-574604/manifest.json",
+  "type": "Manifest",
+  "label": {
+    "en": [
+      "Danny Frisby – British Army Veteran"
+    ]
+  },
+  "summary": {
+    "en": [
+      "Danny recalls service with a frontline infantry unit, including Bosnia. Adapted from PCW item 574604. The transcript, chapter divisions and annotations are machine-generated or suggested draft additions, not official PCW editorial content."
+    ]
+  },
+  "metadata": [
+    {
+      "label": {
+        "en": [
+          "Creator / copyright holder"
+        ]
+      },
+      "value": {
+        "en": [
+          "Veteran Films"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Uploaded by"
+        ]
+      },
+      "value": {
+        "en": [
+          "Veterans Digital & Oral History Project"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Item uploaded"
+        ]
+      },
+      "value": {
+        "en": [
+          "26 April 2017 (not the recording date)"
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Transcript status"
+        ]
+      },
+      "value": {
+        "en": [
+          "Machine-generated English draft, unreviewed. Names, wording, omissions and timings need checking."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Chapters and annotations"
+        ]
+      },
+      "value": {
+        "en": [
+          "Suggested from the machine transcript and source catalogue. Unreviewed. Wikidata entity labels checked 19 October 2026."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Content advisory (from source)"
+        ]
+      },
+      "value": {
+        "en": [
+          "Traumatic military experiences, potentially graphic descriptions and images, and flickering images. PCW advises adult audiences."
+        ]
+      }
+    },
+    {
+      "label": {
+        "en": [
+          "Source tags"
+        ]
+      },
+      "value": {
+        "en": [
+          "Military personnel; Warfare; OTHER: War, Protest and Politics"
+        ]
+      }
+    }
+  ],
+  "rights": "https://www.peoplescollection.wales/help/copyright/creative-archive-licence",
+  "requiredStatement": {
+    "label": {
+      "en": [
+        "Attribution"
+      ]
+    },
+    "value": {
+      "en": [
+        "© Veteran Films. Source: People’s Collection Wales item 574604. Creative Archive Licence; see source for terms. Draft enrichment by the local RAMP prototype."
+      ]
+    }
+  },
+  "homepage": [
+    {
+      "id": "https://www.peoplescollection.wales/items/574604",
+      "type": "Text",
+      "format": "text/html",
+      "label": {
+        "en": [
+          "Original item on People’s Collection Wales"
+        ]
+      }
+    }
+  ],
+  "thumbnail": [
+    {
+      "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=54&width=640",
+      "type": "Image",
+      "format": "image/jpeg"
+    }
+  ],
+  "seeAlso": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/provenance.json",
+      "type": "Dataset",
+      "format": "application/json",
+      "label": {
+        "en": [
+          "Source and enrichment provenance"
+        ]
+      }
+    }
+  ],
+  "rendering": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/transcript-en.vtt",
+      "type": "Text",
+      "format": "text/vtt",
+      "language": "en",
+      "label": {
+        "en": [
+          "English transcript (machine generated, unreviewed)"
+        ]
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/canvas/video",
+      "type": "Canvas",
+      "label": {
+        "en": [
+          "Danny Frisby interview"
+        ]
+      },
+      "duration": 846.64,
+      "width": 1280,
+      "height": 720,
+      "items": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/page/video",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/annotation/video",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://stream.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE.m3u8",
+                "type": "Video",
+                "format": "application/vnd.apple.mpegurl",
+                "duration": 846.64,
+                "width": 1280,
+                "height": 720
+              },
+              "target": "http://localhost:5173/iiif-pcw-574604/canvas/video"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/page/captions",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/annotation/captions",
+              "type": "Annotation",
+              "motivation": "supplementing",
+              "body": {
+                "id": "http://localhost:5173/iiif-pcw-574604/transcript-en.vtt",
+                "type": "Text",
+                "format": "text/vtt",
+                "language": "en",
+                "label": {
+                  "en": [
+                    "English transcript (machine generated, unreviewed)"
+                  ]
+                }
+              },
+              "target": "http://localhost:5173/iiif-pcw-574604/canvas/video"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/transcript-en-annotations.json",
+          "type": "AnnotationPage",
+          "label": {
+            "en": [
+              "English transcript (machine generated, unreviewed)"
+            ]
+          }
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/annotations.json",
+          "type": "AnnotationPage",
+          "label": {
+            "en": [
+              "Suggested annotations (unreviewed)"
+            ]
+          }
+        }
+      ],
+      "rendering": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/transcript-en.vtt",
+          "type": "Text",
+          "format": "text/vtt",
+          "language": "en",
+          "label": {
+            "en": [
+              "English transcript (machine generated, unreviewed)"
+            ]
+          }
+        }
+      ],
+      "placeholderCanvas": {
+        "id": "http://localhost:5173/iiif-pcw-574604/canvas/poster",
+        "type": "Canvas",
+        "width": 1280,
+        "height": 720,
+        "items": [
+          {
+            "id": "http://localhost:5173/iiif-pcw-574604/page/poster",
+            "type": "AnnotationPage",
+            "items": [
+              {
+                "id": "http://localhost:5173/iiif-pcw-574604/annotation/poster",
+                "type": "Annotation",
+                "motivation": "painting",
+                "body": {
+                  "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=54&width=1280",
+                  "type": "Image",
+                  "format": "image/jpeg",
+                  "width": 1280,
+                  "height": 720,
+                  "label": {
+                    "en": [
+                      "Video poster frame"
+                    ]
+                  }
+                },
+                "target": "http://localhost:5173/iiif-pcw-574604/canvas/poster"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "structures": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/range/contents",
+      "type": "Range",
+      "label": {
+        "en": [
+          "Suggested chapters (unreviewed)"
+        ]
+      },
+      "items": [
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-1",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=0&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "Introduction and joining the Army"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=0,115.34",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-2",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=115.34&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "Training and personal loss"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=115.34,167.37",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-3",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=167.37&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "Deployment to Bosnia"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=167.37,233.37",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-4",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=233.37&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "Life on deployment: a camp anecdote"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=233.37,415.12",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-5",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=415.12&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "UN duties and a body exchange"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=415.12,545.59",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-6",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=545.59&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "Northern Ireland: intelligence and surveillance"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=545.59,651.41",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-7",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=651.41&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "Life after the Army: Coastguard and probation"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=651.41,708.77",
+              "type": "Canvas"
+            }
+          ]
+        },
+        {
+          "id": "http://localhost:5173/iiif-pcw-574604/range/chapter-8",
+          "type": "Range",
+          "thumbnail": [
+            {
+              "id": "https://image.mux.com/01o6MKH00rUHlYh883amYAXpPsL89ZSINcpixiX3Ya1NE/thumbnail.jpg?time=708.77&width=160",
+              "type": "Image",
+              "format": "image/jpeg"
+            }
+          ],
+          "label": {
+            "en": [
+              "Reflections on a military career"
+            ]
+          },
+          "summary": {
+            "en": [
+              "Suggested chapter based on an unreviewed machine transcript; boundaries and title require review."
+            ]
+          },
+          "items": [
+            {
+              "id": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=708.77,846.64",
+              "type": "Canvas"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

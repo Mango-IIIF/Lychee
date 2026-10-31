@@ -1,0 +1,342 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "http://localhost:5173/iiif-pcw-574604/annotations.json",
+  "type": "AnnotationPage",
+  "label": {
+    "en": [
+      "Suggested annotations (unreviewed)"
+    ]
+  },
+  "items": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/danny-frisby",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Danny Frisby",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Person",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=0,846.64",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "Danny Frisby"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/british-army",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "British Army",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.wikidata.org/wiki/Q222595",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "British Army"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=54.04,115.34",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "British Army"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/bosnia",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Bosnia and Herzegovina",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Place",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.wikidata.org/wiki/Q225",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Bosnia and Herzegovina"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=167.37,194.61",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "Bosnia and Herzegovina"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/peacekeeping",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Peacekeeping",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=188.03,194.61",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "Peacekeeping"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/united-nations",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "United Nations",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.wikidata.org/wiki/Q1065",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "United Nations"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=415.12,545.59",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "United Nations"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/northern-ireland",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Northern Ireland",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Place",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.wikidata.org/wiki/Q26",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Northern Ireland"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=553.29,582.77",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "Northern Ireland"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/search-rescue",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Search and rescue",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Concept",
+          "purpose": "classifying",
+          "format": "text/plain"
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=655.57,678.79",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "Search and rescue"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/wales",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Wales",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Place",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.wikidata.org/wiki/Q25",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Wales"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=668.79,678.79",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "Wales"
+        ]
+      }
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/source-item",
+      "type": "Annotation",
+      "motivation": "linking",
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Original interview on People’s Collection Wales",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "tagging"
+        },
+        {
+          "type": "TextualBody",
+          "value": "Collection item",
+          "purpose": "classifying",
+          "format": "text/plain"
+        },
+        {
+          "id": "https://www.peoplescollection.wales/items/574604",
+          "type": "Text",
+          "format": "text/html",
+          "label": {
+            "en": [
+              "Original interview on People’s Collection Wales"
+            ]
+          }
+        }
+      ],
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=0,846.64",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "label": {
+        "en": [
+          "Original interview on People’s Collection Wales"
+        ]
+      }
+    }
+  ]
+}

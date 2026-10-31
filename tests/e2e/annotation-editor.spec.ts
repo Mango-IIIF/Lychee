@@ -1,158 +1,261 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
-test("creates and saves an annotation with the package editor", async ({
-  page,
-}) => {
-  const runtimeErrors: string[] = [];
-  page.on("pageerror", (error) => runtimeErrors.push(error.message));
+/*
+ * The editor end to end, on the demo's test manifests: the NLW register
+ * (image, live IIIF image service) and the Women's Archive Wales recording
+ * (audio, fixture manifest with transcript and chapters). Wikidata is stubbed.
+ */
+
+const AUDIO = "manifests/iiif-pcw-550555/manifest.json";
+
+const trackErrors = (page: Page) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
     if (
       message.type() === "error" &&
-      !message.text().includes("ERR_BLOCKED_BY_RESPONSE") &&
-      // WebKit reports remote image-service HTTP failures as an anonymous
-      // console resource error. Page exceptions are tracked separately above;
-      // a third-party tile returning 403 is not an application runtime error.
-      !message.text().startsWith("Failed to load resource:")
+      // A third-party tile or media request failing is not an application error.
+      !message.text().startsWith("Failed to load resource:") &&
+      !message.text().includes("ERR_BLOCKED_BY_RESPONSE")
     ) {
-      runtimeErrors.push(message.text());
+      errors.push(message.text());
     }
   });
+  return errors;
+};
 
-  await page.goto("/annotation-editor-wellcome.html");
+const userAnnotations = (page: Page) =>
+  page.evaluate(() =>
+    (
+      document.querySelector("mango-annotation-editor") as HTMLElement & {
+        getUserAnnotations(): Record<string, unknown>[];
+      }
+    ).getUserAnnotations(),
+  );
 
-  await expect(page.locator(".annotation-workspace")).toBeVisible();
-  const editor = page.locator(".mango-annotation-editor");
-  await expect(editor).toBeAttached();
+/* Annotorious draws in click mode: click a corner, move, click the opposite corner. */
+const drawBox = async (page: Page) => {
+  await page.getByRole("button", { name: "Draw a box" }).click();
+  const stage = page.locator(".a9s-osd-drawinglayer");
+  await expect(stage).toHaveClass(/drawing/);
+  const area = (await stage.boundingBox())!;
+  await page.mouse.click(area.x + area.width * 0.35, area.y + area.height * 0.3);
+  await page.mouse.move(area.x + area.width * 0.6, area.y + area.height * 0.55, { steps: 6 });
+  await page.mouse.click(area.x + area.width * 0.6, area.y + area.height * 0.55);
+};
 
-  // Let the OpenSeadragon canvas dimensions settle before starting an interaction.
-  await page.waitForTimeout(1_500);
-
-  // Selecting a tool also verifies that toolbar state reaches the package editor.
-  await page.getByRole("button", { name: "Point" }).click();
-  await expect(page.locator(".left-sidebar__tool--active")).toHaveText("Point");
-  await page.waitForTimeout(200);
-
-  const drawingSurface = page.locator(".mango-annotation-editor__svg");
-  const bounds = await drawingSurface.boundingBox();
-  expect(bounds).not.toBeNull();
-  if (!bounds) return;
-
-  const savedRows = page.locator(".annotation-table tbody tr");
-  const rowsBefore = await savedRows.count();
-  const pointsBefore = await drawingSurface.locator("circle").count();
-
-  await drawingSurface.click({
-    position: { x: bounds.width * 0.5, y: bounds.height * 0.5 },
+test.describe("image", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/annotation-editor.html");
+    await expect(page.getByRole("group", { name: "What is it about?" })).toBeVisible();
+    await expect(page.locator(".a9s-osd-drawinglayer")).toBeAttached({ timeout: 30_000 });
+    // Draw only once OpenSeadragon has opened the image: before that there are no image coordinates.
+    await page.waitForFunction(
+      () =>
+        ((
+          document.querySelector("mango-annotation-editor") as HTMLElement & {
+            getContentSize(): { width: number } | null;
+          }
+        ).getContentSize()?.width ?? 0) > 0,
+      undefined,
+      { timeout: 30_000 },
+    );
   });
 
-  await expect
-    .poll(() => drawingSurface.locator("circle").count())
-    .toBeGreaterThan(pointsBefore);
-  await expect(drawingSurface.locator("circle").first()).toHaveAttribute(
-    "fill",
-    "rgba(167, 139, 250, 0.18)",
-  );
+  test("draws an area and writes a bilingual note about it", async ({ page }) => {
+    const errors = trackErrors(page);
+    await drawBox(page);
+    await expect(page.getByText(/Area selected, \d+ × \d+ px/)).toBeVisible();
 
-  await page.getByRole("button", { name: "Save Annotation" }).click();
+    await page.getByRole("button", { name: "Add a note" }).click();
+    await page.getByPlaceholder("A short title").fill("Station label");
+    await page.getByPlaceholder("What does this show or tell us?").fill("Names the station.");
+    await page.locator(".anno-languages button").nth(1).click();
+    await page.getByPlaceholder("What does this show or tell us?").fill("Yn enwi'r orsaf.");
+    // The other language now shows it has text.
+    await expect(page.locator(".anno-languages button").first().locator("svg")).toBeVisible();
+    await page.getByRole("button", { name: "Save annotation" }).click();
 
-  await expect(savedRows).toHaveCount(rowsBefore + 1);
-  await expect
-    .poll(() => drawingSurface.locator("circle").count())
-    .toBeGreaterThan(pointsBefore);
-  expect(runtimeErrors).toEqual([]);
-});
-
-test("downloads the same draft payload it reports to the host", async ({ page }) => {
-  await page.goto("/annotation-editor.html");
-  const host = page.locator("mango-annotation-editor");
-  await host.evaluate((element: HTMLElement) => {
-    element.addEventListener("exportAnnotationPage", ((event: CustomEvent) => {
-      (window as typeof window & { annotationExport?: unknown }).annotationExport =
-        event.detail;
-    }) as EventListener);
+    await expect(page.getByRole("heading", { name: "Your annotations (1)" })).toBeVisible();
+    const [saved] = await userAnnotations(page);
+    expect(saved).toMatchObject({
+      motivation: "commenting",
+      label: { en: ["Station label"] },
+      body: [
+        { type: "TextualBody", value: "Names the station.", language: "en" },
+        { type: "TextualBody", value: "Yn enwi'r orsaf.", language: "cy" },
+      ],
+      target: {
+        type: "SpecificResource",
+        source: {
+          type: "Canvas",
+          partOf: { id: "https://iiif.llyfrgell.cymru/manifests/2.0/4389767/manifest.json" },
+        },
+        selector: { type: "FragmentSelector", value: expect.stringMatching(/^xywh=pixel:\d+,\d+,\d+,\d+$/) },
+      },
+    });
+    expect(errors).toEqual([]);
   });
 
-  const [download] = await Promise.all([
-    page.waitForEvent("download"),
-    host.getByRole("button", { name: "Download annotation draft" }).click(),
-  ]);
-  expect(download.suggestedFilename()).toBe("mango-annotations-draft.json");
-  const detail = await page.evaluate(
-    () => (window as typeof window & { annotationExport?: any }).annotationExport,
-  );
-  expect(detail.page.type).toBe("AnnotationPage");
-  expect(detail.draftValid).toBe(true);
-  expect(detail.publicationValid).toBe(false);
-  await expect(host.getByRole("status")).toContainText(
-    "Assign HTTP(S) page and annotation IDs",
-  );
+  test("draws a second shape straight after the first", async ({ page }) => {
+    await page.getByRole("button", { name: "Rectangle" }).click();
+    const area = (await page.locator(".a9s-osd-drawinglayer").boundingBox())!;
+    const box = async (x: number, y: number, w: number, h: number) => {
+      await page.mouse.click(area.x + area.width * x, area.y + area.height * y);
+      await page.mouse.move(area.x + area.width * (x + w), area.y + area.height * (y + h), { steps: 6 });
+      await page.mouse.click(area.x + area.width * (x + w), area.y + area.height * (y + h));
+    };
+    await box(0.2, 0.2, 0.1, 0.1);
+    const first = await page.getByText(/Area selected, \d+ × \d+ px/).textContent();
+    // The first shape is still selected; one press on empty image must start the next.
+    await box(0.5, 0.5, 0.3, 0.3);
+    await expect(page.getByText(/Area selected, \d+ × \d+ px/)).not.toHaveText(first!);
+  });
+
+  test("tags the whole image, edits and deletes it", async ({ page }) => {
+    await page.getByRole("button", { name: "This image" }).click();
+    await page.getByRole("button", { name: "Tag" }).click();
+    await page.getByPlaceholder("Separate with commas").fill("police, register");
+    await page.getByRole("button", { name: "Save annotation" }).click();
+
+    const card = page.locator(".anno-card");
+    await expect(card).toContainText("Whole image · Tag");
+    expect((await userAnnotations(page))[0].body).toHaveLength(2);
+
+    await card.getByRole("button", { name: "Edit" }).click();
+    await expect(page.getByPlaceholder("Separate with commas")).toHaveValue("police, register");
+    await page.getByPlaceholder("Separate with commas").fill("police");
+    await page.getByRole("button", { name: "Update annotation" }).click();
+    const [updated] = await userAnnotations(page);
+    expect(updated.body).toMatchObject({ value: "police", purpose: "tagging" });
+    expect(updated.modified).toBeTruthy();
+
+    await card.getByRole("button", { name: "Delete" }).click();
+    await expect(page.getByRole("heading", { name: "Your annotations (0)" })).toBeVisible();
+  });
+
+  test("offers an area or the whole image, not the whole item", async ({ page }) => {
+    const scope = page.getByRole("group", { name: "What is it about?" });
+    await expect(scope.getByRole("button")).toHaveText(["An area", "This image"]);
+  });
+
+  test("asks for a shape before saving an area annotation", async ({ page }) => {
+    await page.getByRole("button", { name: "Highlight" }).click();
+    await page.getByRole("button", { name: "Save annotation" }).click();
+    await expect(page.getByRole("alert")).toHaveText(/Draw or select a shape/);
+  });
+
+  test("identifies with Wikidata", async ({ page }) => {
+    await page.route("https://www.wikidata.org/w/api.php**", (route) =>
+      route.fulfill({
+        json: { search: [{ id: "Q213154", label: "Aberystwyth", description: "town in Ceredigion, Wales" }] },
+      }),
+    );
+    await page.getByRole("button", { name: "This image" }).click();
+    await page.getByRole("button", { name: "Identify" }).click();
+    await page.getByRole("searchbox", { name: "Search Wikidata" }).fill("Aberystwyth");
+    await page.getByRole("button", { name: /Aberystwyth Q213154/ }).click();
+    await page.getByRole("button", { name: "Save annotation" }).click();
+
+    const [saved] = await userAnnotations(page);
+    expect(saved).toMatchObject({
+      motivation: "identifying",
+      body: { type: "SpecificResource", source: "http://www.wikidata.org/entity/Q213154", purpose: "identifying" },
+      target: { type: "Canvas" },
+    });
+  });
+
+  test("offers the smart tools", async ({ page }) => {
+    await page.getByRole("button", { name: "Smart tools" }).click();
+    await expect(page.locator(".a9s-osd-drawinglayer")).toHaveClass(/intelligent-scissors/);
+    await page.getByRole("button", { name: "Edge Snap" }).click();
+    await expect(page.locator(".a9s-osd-drawinglayer")).toHaveClass(/magnetic-cursor/);
+  });
+
+  test("turns pages from the gallery strip, which can be hidden", async ({ page }) => {
+    const strip = page.getByRole("navigation", { name: "Pages" });
+    await expect(strip.getByRole("button").first()).toBeVisible();
+    await strip.getByRole("button").nth(2).click();
+    await expect(strip.getByRole("button").nth(2)).toHaveAttribute("aria-current", "page");
+    expect(
+      await page.evaluate(() =>
+        (document.querySelector("mango-annotation-editor") as HTMLElement & { getCanvasIndex(): number }).getCanvasIndex(),
+      ),
+    ).toBe(2);
+    await page.getByRole("button", { name: "Hide pages" }).click();
+    await expect(strip).toHaveCount(0);
+  });
+
+  test("changes the viewer colour from settings, and remembers it", async ({ page }) => {
+    const themes = () =>
+      page.evaluate(() =>
+        [...document.querySelector("mango-annotation-editor")!.shadowRoot!.querySelectorAll<HTMLElement>(".viewer")].map(
+          (viewer) => viewer.dataset.theme,
+        ),
+      );
+    expect(await themes()).toEqual(["light", "light"]);
+    await page.getByRole("button", { name: "Settings" }).click();
+    await page.getByRole("radio", { name: "Sepia" }).click();
+    // Both the editor chrome and Mango's stage take it.
+    expect(await themes()).toEqual(["sepia", "sepia"]);
+    await page.reload();
+    await expect.poll(themes).toEqual(["sepia", "sepia"]);
+  });
+
+  test("downloads an AnnotationPage and tells the host", async ({ page }) => {
+    await page.getByRole("button", { name: "This image" }).click();
+    await page.getByRole("button", { name: "Highlight" }).click();
+    await page.getByRole("button", { name: "Save annotation" }).click();
+
+    const exported = page.evaluate(
+      () =>
+        new Promise((resolve) =>
+          document
+            .querySelector("mango-annotation-editor")!
+            .addEventListener("exportAnnotationPage", (event) => resolve((event as CustomEvent).detail), { once: true }),
+        ),
+    );
+    const download = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Download annotations (1)" }).click();
+    expect((await download).suggestedFilename()).toBe("annotations-draft.json");
+    expect(await exported).toMatchObject({
+      page: { type: "AnnotationPage", items: [{ motivation: "highlighting" }] },
+      publicationValid: false,
+    });
+  });
 });
 
-test("uses setup languages and preserves text while switching", async ({ page }) => {
-  await page.goto("/annotation-editor.html");
-  const host = page.locator("mango-annotation-editor");
-  await expect(host.locator(".annotation-workspace")).toBeVisible();
-  await expect
-    .poll(() => host.evaluate((element: any) => element.getCanvasId()))
-    .not.toBeNull();
+test.describe("audio", () => {
+  test.beforeEach(async ({ page }) => {
+    const params = new URLSearchParams({ manifest: new URL(AUDIO, "http://127.0.0.1:4173/").href, type: "audio" });
+    await page.goto(`/annotation-editor.html?${params}`);
+    await expect(page.getByLabel("Start (seconds)")).toBeVisible();
+  });
 
-  await host.getByRole("button", { name: "Rectangle", exact: true }).click();
-  await host
-    .getByRole("button", {
-      name: /Create Rectangle at the current view centre/,
-    })
-    .click();
+  test("lists the recording's transcript, chapters and annotations", async ({ page }) => {
+    await expect(page.locator(".av-stage__list button").first()).toContainText("Margaret Young");
+    await page.getByRole("button", { name: "Chapters" }).click();
+    await expect(page.locator(".av-stage__list button").first()).toContainText("Background and joining Corgi");
+    await page.locator(".annotation-table__toggle").click();
+    await expect(page.locator(".annotation-table tbody tr").first()).toBeVisible();
+  });
 
-  const english = host.locator('[data-testid="annotation-language-en"]');
-  const welsh = host.locator('[data-testid="annotation-language-cy"]');
-  await expect(english).toHaveAttribute("aria-selected", "true");
-  await expect(welsh).toBeVisible();
+  test("annotates a time range and validates it", async ({ page }) => {
+    await page.getByLabel("Start (seconds)").fill("30");
+    await page.getByLabel("End (optional)").fill("10");
+    await page.getByRole("button", { name: "Transcribe" }).click();
+    await page.getByPlaceholder("Type it exactly as you hear or see it").fill("My father worked on the railway.");
+    await page.getByRole("button", { name: "Save annotation" }).click();
+    await expect(page.getByRole("alert")).toHaveText(/end time must be after the start/);
 
-  await welsh.click();
-  const text = host.locator("#anno-text");
-  await text.fill("Testun Cymraeg");
-  await text.press("Backspace");
-  await expect(text).toHaveValue("Testun Cymrae");
-  await expect(host.getByText("New annotation", { exact: true })).toBeVisible();
-  await english.click();
-  await expect(text).toHaveValue("");
-  await welsh.click();
-  await expect(text).toHaveValue("Testun Cymrae");
-
-  await host.getByRole("button", { name: "Save Annotation" }).click();
-});
-
-test("creates rectangles and points without pointer geometry gestures", async ({ page }) => {
-  await page.goto("/annotation-editor.html");
-  const host = page.locator("mango-annotation-editor");
-  await expect(host.locator(".annotation-workspace")).toBeVisible();
-  await expect
-    .poll(() => host.evaluate((element: any) => element.getCanvasId()))
-    .not.toBeNull();
-
-  await host.getByRole("button", { name: "Rectangle", exact: true }).click();
-  await host
-    .getByRole("button", {
-      name: /Create Rectangle at the current view centre/,
-    })
-    .click();
-  await expect(host.getByText("New annotation", { exact: true })).toBeVisible();
-  await host.getByText("Position", { exact: true }).click();
-  const rectangleCoordinates = host.locator(
-    '[data-testid="annotation-geometry"] input',
-  );
-  await expect(rectangleCoordinates).toHaveCount(4);
-  await rectangleCoordinates.first().fill("100");
-  await rectangleCoordinates.first().blur();
-  await host.getByRole("button", { name: "Cancel" }).click();
-
-  await host.getByRole("button", { name: "Point", exact: true }).click();
-  await host
-    .getByRole("button", { name: /Create Point at the current view centre/ })
-    .click();
-  await host.getByText("Position", { exact: true }).click();
-  await expect(
-    host.locator('[data-testid="annotation-geometry"] input'),
-  ).toHaveCount(2);
-  await host.getByRole("button", { name: "Save Annotation" }).click();
+    await page.getByLabel("End (optional)").fill("45.5");
+    await page.getByRole("button", { name: "Save annotation" }).click();
+    const [saved] = await userAnnotations(page);
+    expect(saved).toMatchObject({
+      motivation: "supplementing",
+      body: { value: "My father worked on the railway.", language: "en" },
+      target: { selector: { type: "FragmentSelector", value: "t=30,45.5" } },
+    });
+    await expect(page.locator(".anno-card")).toContainText("00:00:30 – 00:00:45");
+  });
 });

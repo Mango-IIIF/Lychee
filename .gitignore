@@ -10,3 +10,5 @@ playwright-report
 **/.DS_Store
 .claude
 docs
+.env
+apps/demo/manifests
