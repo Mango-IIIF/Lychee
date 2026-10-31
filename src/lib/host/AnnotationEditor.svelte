@@ -1,694 +1,471 @@
 <script lang="ts">
-  import { onDestroy, untrack } from 'svelte';
-  import type { OSDAnnotationEditor } from '@mango-iiif/annotation';
-  import type { CanonicalStylesheet } from '@mango-iiif/w3c-parser';
+  import { untrack } from 'svelte';
   import {
-    ViewerCore,
-    applyResolvedPatch,
-    buildLayerStylesheet,
-    colorFromInlineStyle,
-    createMangoAnnotation,
+    fetchManifest,
     manifestsStore,
     normaliseViewerConfig,
     parseViewerConfig,
-    projectToResolved,
-    resolveAnnotationJson,
-    styleClassForLayer,
-    type AnnotationSaveState,
-    type AnnotationTool,
-    type ImageRendererExtension,
-    type ResolvedAnnotation,
     type ViewerCoreInstance,
     type ViewerPlugin,
   } from '@mango-iiif/iiif-viewer/core';
-  import { t, translate } from '../core/i18n';
+  import { setLocale, t, translate } from '../core/i18n';
   import type { AnnotateConfig } from '../core/types/config';
-  import AnnotationEditorLayer from '../features/annotations/AnnotationEditorLayer.svelte';
-  import AnnotationWorkspace from '../features/annotations/workspace/AnnotationWorkspace.svelte';
-  import type { LayerItem } from '../features/annotations/workspace/LeftSidebar.svelte';
+  import { providersFor } from '../authorities/endpoint';
+  import type { AuthorityEntity } from '../authorities/types';
   import {
-    createCommandStack,
-    labelForPatch,
-    type CommandStackState,
-  } from '../features/annotations/commands';
-  import { exportAnnotationPage } from '../features/annotations/export';
-  import { normaliseAuthoringLanguages } from '../features/annotations/languages';
-  import {
-    archiveLayer,
-    createLayer,
-    mergeDiscoveredLayers,
-    moveLayer,
-    recolourLayer,
-    renameLayer,
-    resolveActiveLayer,
-    setLayerVisibility,
-  } from '../features/annotations/layers';
+    MOTIVATION_OF,
+    bodiesOfDraft,
+    bodyValue,
+    draftFromAnnotation,
+    draftProblem,
+    emptyDraft,
+    intentOf,
+    labelOf,
+    type Draft,
+  } from '../annotations/intents';
+  import { canvasScale as scaleOf, canvasesOf, idOf, label, mediaKindOf, metadataOf } from '../annotations/iiif';
+  import { normaliseAuthoringLanguages } from '../annotations/languages';
+  import { loadExistingAnnotations } from '../annotations/load';
+  import { annotationText, annotationTitle, motivationsOf, newId, targetSource, timeTarget } from '../annotations/model';
+  import { exportAnnotationPage } from '../annotations/export';
+  import { storeFor } from '../annotations/store.svelte';
+  import { formatTime, timeRange, validateTime } from '../annotations/time';
+  import type { Annotation, Scope } from '../annotations/types';
+  import { recordFromW3C, toW3C, type ExportContext, type UserRecord } from '../annotations/w3c';
+  import AVStage from '../av/AVStage.svelte';
+  import type { RampPlayback } from '../av/ramp';
+  import { aiImageUrl, type AiSuggestion } from '../image/ai';
+  import AiAssist from '../image/AiAssist.svelte';
+  import ImageStage from '../image/ImageStage.svelte';
+  import type { Tool } from '../image/annotorious';
+  import Sidebar from '../sidebar/Sidebar.svelte';
+  import type { Card } from '../sidebar/types';
+  import AnnotationBrowserTable from '../table/AnnotationBrowserTable.svelte';
+  import type { TableRow } from '../table/types';
   import EditorShell from './EditorShell.svelte';
+  import { isTheme, storedTheme, storeTheme, type Theme } from './themes';
+  import SettingsMenu from './ui/SettingsMenu.svelte';
   import ViewerHeader from './ui/ViewerHeader.svelte';
 
   /**
-   * The annotation editor: a headless viewer for the stage, the editor layer
-   * drawn on top of it, and the workspace panels around both.
+   * The annotation editor: Mango's viewer as the image stage with Annotorious
+   * drawing on it, or RAMP for audio and video; the intent-first sidebar; and
+   * the browser table underneath.
    *
-   * The viewer owns the annotations — manifest ones and the user's own — so
-   * edits go through its API. This component owns only what the viewer has no
-   * notion of: the unsaved draft, the edit transaction, undo history, layers
-   * and the active drawing tool.
+   * This component owns the annotations. The viewer only shows the image.
    */
   interface Props {
     manifestId?: string;
     config?: AnnotateConfig | string | undefined;
-    /** Plugins for the embedded viewer's stage. */
+    /** Plugins for the embedded viewer's stage (images only). */
     plugins?: ViewerPlugin[];
-    /** Where viewer and editor events are dispatched as DOM events. */
+    /** Where editor events are dispatched as DOM events. */
     eventTarget?: EventTarget | null;
   }
 
-  let {
-    manifestId = $bindable(''),
-    config = undefined,
-    plugins = [],
-    eventTarget = null,
-  }: Props = $props();
+  let { manifestId = $bindable(''), config = undefined, plugins = [], eventTarget = null }: Props = $props();
 
   let normalisedConfig: AnnotateConfig = $derived(
     normaliseViewerConfig(
       parseViewerConfig(config, (error) => {
-        console.warn(translate('warnings.invalidConfig'), error);
+        console.warn(translate('annotate.warnings.invalidConfig'), error);
       }),
     ) as AnnotateConfig,
   );
-  let annotationLanguages = $derived(
-    normaliseAuthoringLanguages(
-      normalisedConfig.annotations?.languages,
-      normalisedConfig.language ?? 'en',
+  let options = $derived(normalisedConfig.annotations ?? {});
+  let languages = $derived(normaliseAuthoringLanguages(options.languages, normalisedConfig.language ?? 'en'));
+  let providers = $derived(providersFor(options));
+
+  $effect(() => {
+    if (normalisedConfig.language) setLocale(normalisedConfig.language);
+  });
+
+  let root: HTMLDivElement | null = $state(null);
+
+  /* The viewer colour: the user's last choice, else the host's config, else dark. */
+  let chosenTheme = $state<Theme | null>(storedTheme());
+  let theme: Theme = $derived(
+    chosenTheme ?? (isTheme(normalisedConfig.theme) ? normalisedConfig.theme : 'dark'),
+  );
+
+  const changeTheme = (next: Theme) => {
+    chosenTheme = next;
+    storeTheme(next);
+    emit('themeChange', { theme: next });
+  };
+
+  const emit = (event: string, detail: unknown) => {
+    (eventTarget ?? root)?.dispatchEvent(new CustomEvent(event, { detail, bubbles: true, composed: true }));
+  };
+
+  /* ------------------------------------------------------------ manifest */
+
+  $effect(() => {
+    if (manifestId) void fetchManifest(manifestId);
+  });
+
+  let manifestEntry = $derived($manifestsStore[manifestId]);
+  let manifest = $derived(manifestEntry?.json as Record<string, unknown> | undefined);
+  let kind = $derived(options.mediaType ?? (manifest ? mediaKindOf(manifest) : null));
+  let canvases = $derived(manifest ? canvasesOf(manifest) : []);
+  let store = $derived(storeFor(manifestId));
+
+  /** The manifest's own identifier, which may differ from the URL it was loaded from. */
+  let canonicalId = $derived(idOf(manifest) || manifestId);
+
+  let ctx: ExportContext = $derived({
+    manifestId: canonicalId,
+    canvasScale: Object.fromEntries(canvases.map((canvas) => [idOf(canvas), scaleOf(canvas)])),
+  });
+
+  $effect(() => {
+    const json = manifest;
+    const target = store;
+    if (!json) return;
+    const controller = new AbortController();
+    loadExistingAnnotations(json, controller.signal).then((annotations) => {
+      if (!controller.signal.aborted) target.existing = annotations;
+    });
+    return () => controller.abort();
+  });
+
+  let userAnnotations = $derived(
+    store.records.map((record) =>
+      toW3C(
+        record,
+        store.regions.find((region) => region.id === record.regionId),
+        ctx,
+      ),
     ),
   );
 
-  let root: HTMLDivElement | null = $state(null);
-  let core: ViewerCoreInstance | null = $state(null);
+  $effect(() => {
+    emit('annotationsChange', { annotations: userAnnotations });
+  });
 
-  const emit = (event: string, detail: unknown) => {
-    (eventTarget ?? root)?.dispatchEvent(
-      new CustomEvent(event, { detail, bubbles: true, composed: true }),
-    );
-  };
+  /* ------------------------------------------------------------ form state */
 
-  const DEFAULT_ANNOTATION_LAYERS: LayerItem[] = [
-    { id: 'research', name: 'Research Notes', color: '#fb7185', visible: true },
-    {
-      id: 'transcription',
-      name: 'Transcription',
-      color: '#60a5fa',
-      visible: true,
-    },
-    { id: 'highlights', name: 'Highlights', color: '#34d399', visible: true },
-    { id: 'mine', name: 'My Annotations', color: '#a78bfa', visible: true },
-  ];
+  let draft = $state<Draft>(emptyDraft());
+  let language = $state('');
+  let editId = $state<string | null>(null);
+  let error = $state('');
 
-  /* The current canvas's annotations, as the viewer holds them. */
-  let editorAnnotations = $state.raw<ResolvedAnnotation[]>([]);
-  let activeAnnotationId = $state<string | null>(null);
+  $effect(() => {
+    if (!languages.includes(language)) language = languages[0];
+  });
+
+  /* Image */
+  let imageStage: ImageStage | null = $state(null);
+  let tool = $state<Tool>('select');
   let canvasId = $state<string | null>(null);
-  let annotationEditorTool = $state<AnnotationTool>('select');
+  /** The shape selected on the image. */
+  let shapeId = $state<string | undefined>(undefined);
+  /** The shape the form is about; survives clicking away so you can pan while writing. */
+  let regionId = $state<string | undefined>(undefined);
+  let scope = $state<Scope>('region');
+  /** "Draw a box" draws one box, then returns to selecting. */
+  let drawingOnce = false;
 
-  /* The OpenSeadragon viewer the editor layer attaches to. */
-  let osdViewer: ImageRendererExtension['viewer'] | null = $state(null);
-  let canvasSize = $state({ width: 0, height: 0 });
+  /* Audio / video */
+  let avStage: AVStage | null = $state(null);
+  let canvasIndex = $state(0);
+  let playback = $state<RampPlayback>({ time: 0, duration: 0, ready: false, playing: false, error: false });
+  let start = $state('0');
+  let end = $state('');
 
-  const syncCanvasSize = () => {
-    const size = osdViewer?.world?.getItemAt(0)?.getContentSize?.();
-    if (size && size.x > 0 && size.y > 0) {
-      canvasSize = { width: size.x, height: size.y };
-      return;
-    }
-    const content = core?.getContentSize?.();
-    if (content) canvasSize = { width: content.width, height: content.height };
-  };
+  let avCanvasId = $derived(idOf(canvases[canvasIndex]));
+  let currentCanvasId = $derived(kind === 'image' ? canvasId : avCanvasId);
+  let region = $derived(store.regions.find((r) => r.id === regionId));
+  let regionBounds = $state<{ x: number; y: number; w: number; h: number } | undefined>(undefined);
 
-  let offs: Array<() => void> = [];
   $effect(() => {
-    const viewer = core;
-    if (!viewer) return;
-    viewer.setEventTarget(eventTarget ?? root ?? new EventTarget());
-    editorAnnotations = viewer.getAnnotations();
-    canvasId = viewer.getCanvasId();
-    offs = [
-      viewer.on('annotationsChange', ({ annotations }) => {
-        editorAnnotations = annotations;
-      }),
-      viewer.on('rendererReady', ({ renderer }) => {
-        osdViewer?.removeHandler('open', syncCanvasSize);
-        osdViewer = renderer.kind === 'image' ? renderer.viewer : null;
-        osdViewer?.addHandler('open', syncCanvasSize);
-        syncCanvasSize();
-      }),
-      viewer.on('mediaChange', ({ canvasId: id, mediaType }) => {
-        canvasId = id;
-        if (mediaType !== 'image') osdViewer = null;
-      }),
-      viewer.on('pageChange', ({ canvasId: id }) => {
-        canvasId = id;
-      }),
-      viewer.on('annotationSelect', ({ id }) => {
-        activeAnnotationId = id;
-      }),
-      /*
-       * The pointer-up that finishes a drawn shape reaches the stage background
-       * as an ordinary click, so an unconditional clear deselected the
-       * annotation the user had just drawn — the draft stayed on the canvas
-       * with no way to reach it. A pending draft is dismissed through Cancel,
-       * deliberately, not by clicking away.
-       */
-      viewer.on('annotationClear', () => {
-        if (!draftAnno) activeAnnotationId = null;
-      }),
-    ];
-    return () => {
-      offs.forEach((off) => off());
-      offs = [];
-    };
+    void region;
+    regionBounds = regionId ? imageStage?.getBounds(regionId) : undefined;
   });
-  onDestroy(() => osdViewer?.removeHandler('open', syncCanvasSize));
 
-  const selectAnnotation = (id: string, preventZoom = true) => {
-    core?.selectAnnotation(id, preventZoom);
-  };
-  const clearAnnotationSelection = () => {
-    core?.clearAnnotationSelection();
+  const resetForm = () => {
+    editId = null;
+    draft = emptyDraft();
+    error = '';
   };
 
-  let draftAnno = $state.raw<ResolvedAnnotation | null>(null);
-  let annotationDirty = $state(false);
-  let annotationSaveState = $state<AnnotationSaveState>({ status: 'clean' });
-  let annotationExportStatus = $state('');
-  /**
-   * Expert content-authoring mode.
-   *
-   * Off by default, and the only route to `painting`. An ordinary comment
-   * exported as `painting` tells every Presentation 3 consumer that the note is
-   * the Canvas image, so the term is behind a deliberate choice rather than
-   * sitting in a list next to `commenting`.
-   */
-  let annotationExpertMode = $state(false);
-  /**
-   * The annotation as it was when editing began, for Cancel to restore.
-   *
-   * Taken on the first change rather than on selection: selecting an annotation
-   * to read it should not arm a transaction, and taking the snapshot on the
-   * first edit is what makes Cancel restore the state the user last saw.
-   */
-  let editSnapshot = $state.raw<{ id: string; annotation: ResolvedAnnotation } | null>(null);
-  let annotationLayers = $state<LayerItem[]>([...DEFAULT_ANNOTATION_LAYERS]);
-  /** Layer new annotations are created in. */
-  let activeAnnotationLayerId = $state('mine');
-
-  /*
-   * The live canvas editor, handed out by the editor layer.
-   *
-   * Held so undo/redo and exact coordinate editing can reach the package's own
-   * geometry history and `setGeometry` rather than Mango synthesising pointer
-   * events or keeping a second copy of the geometry.
-   */
-  let annotationEditor = $state.raw<OSDAnnotationEditor | null>(null);
-  let commandState = $state<CommandStackState>({ canUndo: false, canRedo: false });
-
-  /*
-   * A new manifest starts a new editing session. Keyed on the prop rather than
-   * the viewer's `manifestChange` event, which arrives once the manifest has
-   * loaded and so could undo a tool the user picked in the meantime.
-   */
-  let lastManifestId: string | null = null;
-  $effect.pre(() => {
-    const next = manifestId ?? '';
-    if (next === lastManifestId) return;
-    lastManifestId = next;
+  /* A new canvas starts a new annotation, unless it is about the whole item. */
+  let lastCanvas: string | null = null;
+  $effect(() => {
+    const id = currentCanvasId;
     untrack(() => {
-      draftAnno = null;
-      editSnapshot = null;
-      annotationDirty = false;
-      annotationLayers = [...DEFAULT_ANNOTATION_LAYERS];
-      annotationEditorTool = 'select';
+      if (id === lastCanvas) return;
+      lastCanvas = id;
+      shapeId = undefined;
+      regionId = undefined;
+      if (scope !== 'manifest') resetForm();
+      end = '';
     });
   });
 
-  const commandStack = createCommandStack({
-    apply: (annotationId, annotation) => {
-      if (!annotation) {
-        void core?.removeAnnotation(annotationId);
-        return;
-      }
-      if (draftAnno && draftAnno.id === annotationId) {
-        draftAnno = annotation;
-        return;
-      }
-      // Replace, not patch. A snapshot restores a whole earlier state, and a
-      // field that was empty before the edit is absent from it — which a patch
-      // reads as "leave alone", so the edit would never be undone.
-      void core?.replaceAnnotation(annotationId, annotation);
-    },
-    geometry: () => annotationEditor,
-    onChange: (state) => (commandState = state),
+  const recordOf = (id: string | null | undefined) => store.records.find((r) => r.id === id);
+
+  const onShapeSelect = (id: string | undefined) => {
+    shapeId = id;
+    if (!id) return;
+    scope = 'region';
+    regionId = id;
+    // Choosing another shape starts a new annotation on it.
+    const editing = recordOf(editId);
+    if (editing && editing.regionId !== id) resetForm();
+  };
+
+  const onRegionDelete = (id: string) => {
+    for (const removed of store.removeRegion(id)) emit('annotationDelete', { id: removed });
+    if (regionId === id) regionId = undefined;
+    if (shapeId === id) shapeId = undefined;
+    if (editId && !recordOf(editId)) resetForm();
+  };
+
+  const drawBox = () => {
+    scope = 'region';
+    // Redrawing replaces a shape nobody has annotated yet.
+    if (regionId && !store.records.some((r) => r.regionId === regionId)) {
+      imageStage?.removeRegion(regionId);
+      onRegionDelete(regionId);
+    }
+    regionId = undefined;
+    shapeId = undefined;
+    drawingOnce = true;
+    tool = 'rectangle';
+  };
+
+  const onRegionCreate = () => {
+    if (!drawingOnce) return;
+    drawingOnce = false;
+    tool = 'select';
+  };
+
+  const deleteShape = () => {
+    if (!regionId) return;
+    imageStage?.removeRegion(regionId);
+    onRegionDelete(regionId);
+  };
+
+  /* ------------------------------------------------------------ saving */
+
+  const buildAnnotation = (id: string, existing?: UserRecord): Omit<Annotation, 'target'> & { target?: Annotation['target'] } => {
+    const now = new Date().toISOString();
+    const intent = draft.intent ?? 'note';
+    const label = labelOf(draft, languages);
+    const body = bodyValue(bodiesOfDraft(draft, languages));
+    return {
+      id,
+      type: 'Annotation',
+      motivation: MOTIVATION_OF[intent],
+      ...(label ? { label } : {}),
+      ...(body ? { body } : {}),
+      created: existing?.annotation.created ?? now,
+      ...(existing ? { modified: now } : {}),
+      ...(kind !== 'image' && avCanvasId ? { target: timeTarget(avCanvasId, start, end) } : {}),
+    };
+  };
+
+  let preview: Annotation | null = $derived.by(() => {
+    if (!options.showJson || !draft.intent) return null;
+    const id = editId ?? 'urn:uuid:…';
+    const record: UserRecord = {
+      id,
+      scope: kind === 'image' ? scope : 'time',
+      canvasId: currentCanvasId ?? undefined,
+      regionId,
+      annotation: buildAnnotation(id, recordOf(editId)),
+    };
+    return toW3C(record, region, ctx);
   });
 
-  /*
-   * The viewer applies an edit synchronously but tells us about it through an
-   * event, so read it back from the viewer rather than from local state when
-   * the result is needed straight away.
-   */
-  const currentAnnotations = (): ResolvedAnnotation[] => core?.getAnnotations() ?? editorAnnotations;
-
-  const annotationById = (id: string): ResolvedAnnotation | null =>
-    (draftAnno && draftAnno.id === id ? draftAnno : null) ??
-    currentAnnotations().find((annotation) => annotation.id === id) ??
-    null;
-  let visibleLayerIds = $derived(
-    new Set(annotationLayers.filter((layer) => layer.visible).map((layer) => layer.id)),
-  );
-  const normalizeLayerId = (layerId?: string): string => (layerId?.trim() || 'mine').trim();
-  const isAnnotationVisibleByLayer = (annotation: ResolvedAnnotation): boolean => {
-    const layerId = normalizeLayerId(annotation.targetStyleClass);
-    return visibleLayerIds.has(layerId);
-  };
-  /*
-   * Hiding a layer takes its annotations off the stage. It does not take them
-   * out of the browser list: the list is how an annotation is found, selected,
-   * edited, and moved to another layer, so filtering it too made a hidden
-   * annotation unmanageable — including unhideable, because the control for
-   * changing its layer is in the inspector the list opens.
-   */
-  let filteredOverlayAnnotations = $derived(
-    editorAnnotations.filter((annotation) => isAnnotationVisibleByLayer(annotation)),
-  );
-  let visibleDraftAnno = $derived(
-    draftAnno && isAnnotationVisibleByLayer(draftAnno) ? draftAnno : null,
-  );
-  let editorStageAnnotations = $derived(
-    visibleDraftAnno
-      ? [...filteredOverlayAnnotations, visibleDraftAnno]
-      : filteredOverlayAnnotations,
-  );
-  const handleToggleLayer = (detail: { id: string }) => {
-    const current = annotationLayers.find((layer) => layer.id === detail.id);
-    annotationLayers = setLayerVisibility(annotationLayers, detail.id, !current?.visible);
-  };
-
-  const handleAddLayer = () => {
-    annotationLayers = [...annotationLayers, createLayer(annotationLayers)];
-  };
-
-  const handleLayerRename = (detail: { id: string; name: string }) => {
-    annotationLayers = renameLayer(annotationLayers, detail.id, detail.name);
-  };
-
-  const handleLayerMove = (detail: { id: string; direction: -1 | 1 }) => {
-    annotationLayers = moveLayer(annotationLayers, detail.id, detail.direction);
-  };
-
-  const handleLayerArchive = (detail: { id: string; archived: boolean }) => {
-    annotationLayers = archiveLayer(annotationLayers, detail.id, detail.archived);
-    // Archiving the layer being drawn into would leave new annotations landing
-    // somewhere the user can no longer see.
-    activeAnnotationLayerId = resolveActiveLayer(annotationLayers, activeAnnotationLayerId);
-  };
-
-  const handleLayerColorChange = (detail: { id: string; color: string }) => {
-    annotationLayers = recolourLayer(annotationLayers, detail.id, detail.color);
-
-    /*
-     * Recolouring writes a new stylesheet, not an inline `target.style`. The
-     * inline form has no portable Web Annotation representation, so it was
-     * dropped the moment anything exported in a standards profile; a class plus
-     * an Annotation-level stylesheet survives the round trip.
-     *
-     * The class does not change, because the class is the layer's identity.
-     * Changing the colour must not change membership.
-     */
-    const patch: Partial<ResolvedAnnotation> = {
-      targetStyleClass: styleClassForLayer(detail.id),
-    };
-    const stylesheet = buildLayerStylesheet([{ id: detail.id, color: detail.color }]);
-    /*
-     * Only annotations that name this layer, not the manifest ones that merely
-     * fall back to it for rendering. Recolouring is a real edit, so matching on
-     * the fallback would copy every external annotation on the page into the
-     * user's own set — and into their export — over a swatch change.
-     */
-    const styleClass = styleClassForLayer(detail.id);
-    const inLayer = (annotation: ResolvedAnnotation): boolean => {
-      const current = annotation.targetStyleClass?.trim();
-      return current === detail.id || current === styleClass;
-    };
-    const affectedAnnotationIds = new Set(
-      editorAnnotations.filter(inLayer).map((annotation) => annotation.id),
-    );
-    if (draftAnno && inLayer(draftAnno)) {
-      affectedAnnotationIds.add(draftAnno.id);
+  const save = () => {
+    const problem = draftProblem(draft, languages);
+    if (problem) {
+      error = $t(`annotate.problems.${problem}`);
+      return;
     }
-    for (const annotationId of affectedAnnotationIds) {
-      handleAnnotationUpdate(annotationId, patch, { stylesheet });
+    if (kind === 'image' && scope === 'region' && !region) {
+      error = $t('annotate.problems.noRegion');
+      return;
+    }
+    if (kind !== 'image') {
+      const timeProblem = validateTime(start, end, playback.duration);
+      if (timeProblem) {
+        error = $t(`annotate.problems.time.${timeProblem}`);
+        return;
+      }
+    }
+    const existing = recordOf(editId);
+    const id = existing?.id ?? newId();
+    const record: UserRecord = {
+      id,
+      scope: kind === 'image' ? scope : 'time',
+      canvasId: scope === 'manifest' && kind === 'image' ? undefined : (currentCanvasId ?? undefined),
+      regionId: kind === 'image' && scope === 'region' ? region?.id : undefined,
+      annotation: buildAnnotation(id, existing),
+    };
+    const action = store.saveRecord(record);
+    const annotation = toW3C(record, region, ctx);
+    emit(action === 'create' ? 'annotationCreate' : 'annotationUpdate', { annotation });
+    // Keep the target, so another annotation on the same shape or moment can follow.
+    resetForm();
+    end = '';
+  };
+
+  const edit = (id: string) => {
+    const record = recordOf(id);
+    if (!record) return;
+    const annotation = userAnnotations.find((a) => a.id === id);
+    if (!annotation) return;
+    editId = id;
+    draft = draftFromAnnotation(annotation, languages);
+    error = '';
+    if (kind === 'image') {
+      scope = record.scope === 'time' ? 'region' : record.scope;
+      if (record.canvasId && record.canvasId !== canvasId) imageStage?.goToCanvas(record.canvasId);
+      if (record.regionId) {
+        regionId = record.regionId;
+        shapeId = record.regionId;
+        imageStage?.fitTo(record.regionId);
+      }
+    } else {
+      const range = timeRange(annotation.target);
+      if (range) {
+        start = String(range.start);
+        end = range.end == null ? '' : String(range.end);
+      }
     }
   };
 
-  $effect(() => {
-    const source = draftAnno ? [...editorAnnotations, draftAnno] : editorAnnotations;
-    const discovered = source
+  const remove = (id: string) => {
+    if (!store.removeRecord(id)) return;
+    emit('annotationDelete', { id });
+    if (editId === id) resetForm();
+  };
+
+  const locate = (id: string) => {
+    const annotation = [...userAnnotations, ...store.existing].find((a) => a.id === id);
+    if (!annotation) return;
+    if (kind === 'image') {
+      const source = targetSource(annotation.target);
+      if (source !== canvasId && source in ctx.canvasScale) imageStage?.goToCanvas(source);
+      const target = recordOf(id)?.regionId ?? id;
+      shapeId = recordOf(id)?.regionId ?? shapeId;
+      // After a canvas change the shapes are drawn on the next frame.
+      requestAnimationFrame(() => imageStage?.fitTo(target));
+    } else {
+      const range = timeRange(annotation.target);
+      if (range) avStage?.seek(range.start);
+    }
+  };
+
+  /* ------------------------------------------------------------ AI */
+
+  let aiTarget = $derived<'region' | 'image'>(scope === 'region' && region ? 'region' : 'image');
+
+  const buildAiRequest = () => {
+    const canvas = canvases.find((c) => idOf(c) === canvasId);
+    const bounds = aiTarget === 'region' && regionId ? imageStage?.getBounds(regionId) : undefined;
+    const { url, cropped } = aiImageUrl(canvas, bounds);
+    return {
+      imageUrl: url,
+      region:
+        cropped && bounds
+          ? `x=${Math.round(bounds.x)}, y=${Math.round(bounds.y)}, ${Math.round(bounds.w)}×${Math.round(bounds.h)}px`
+          : undefined,
+      context: {
+        title: label(manifest?.label, language),
+        canvasLabel: label(canvas?.label, language),
+        metadata: metadataOf(manifest),
+      },
+    };
+  };
+
+  const useSuggestion = (suggestion: AiSuggestion, model: string) => {
+    if (draft.intent !== suggestion.intent) draft.intent = suggestion.intent;
+    draft.texts[suggestion.field][suggestion.language] = suggestion.value;
+    draft.generators[`${suggestion.field}.${suggestion.language}`] = model;
+    language = suggestion.language;
+  };
+
+  const linkSuggested = (entity: AuthorityEntity) => {
+    draft.intent = 'identify';
+    draft.entities = [...draft.entities, entity];
+  };
+
+  /* ------------------------------------------------------------ lists */
+
+  const scopeLabel = (record: UserRecord) => $t(`annotate.scope.short.${record.scope}`);
+
+  const intentLabel = (annotation: Annotation) => {
+    const intent = intentOf(annotation);
+    return intent ? $t(`annotate.intents.${intent}.label`) : (motivationsOf(annotation)[0] ?? '');
+  };
+
+  const timeLabel = (annotation: Annotation) => {
+    const range = timeRange(annotation.target);
+    if (!range) return $t('annotate.scope.short.manifest');
+    return formatTime(range.start) + (range.end != null ? ` – ${formatTime(range.end)}` : '');
+  };
+
+  let cards: Card[] = $derived(
+    userAnnotations
+      .filter((annotation) => {
+        const record = recordOf(annotation.id);
+        return record?.scope === 'manifest' || record?.canvasId === currentCanvasId;
+      })
+      .map((annotation) => {
+        const record = recordOf(annotation.id)!;
+        return {
+          annotation,
+          title: annotationTitle(annotation),
+          text: annotationText(annotation),
+          eyebrow: `${kind === 'image' ? scopeLabel(record) : timeLabel(annotation)} · ${intentLabel(annotation)}`,
+          locate: kind === 'image' ? (record.regionId ? 'show' : undefined) : 'jump',
+        } satisfies Card;
+      }),
+  );
+
+  let regionCount = $derived(regionId ? store.records.filter((r) => r.regionId === regionId).length : 0);
+
+  const canvasName = (id: string) => {
+    const index = canvases.findIndex((c) => idOf(c) === id);
+    return label(canvases[index]?.label, language) || $t('annotate.table.canvasN', { n: index + 1 });
+  };
+
+  const whereOf = (annotation: Annotation, record?: UserRecord) => {
+    if (kind !== 'image') return timeLabel(annotation);
+    const source = targetSource(annotation.target);
+    if (record?.scope === 'manifest' || source === canonicalId) return $t('annotate.scope.short.manifest');
+    const scopeName = record ? scopeLabel(record) : $t('annotate.scope.short.region');
+    return `${scopeName} · ${canvasName(source)}`;
+  };
+
+  let rows: TableRow[] = $derived([
+    ...userAnnotations.map((annotation) => ({
+      id: annotation.id,
+      title: annotationTitle(annotation),
+      text: annotationText(annotation),
+      motivation: intentLabel(annotation),
+      where: whereOf(annotation, recordOf(annotation.id)),
+      origin: 'mine' as const,
+    })),
+    ...store.existing
+      .filter((annotation) => !annotation.body || annotationText(annotation))
       .map((annotation) => ({
-        id: annotation.targetStyleClass?.trim() ?? '',
-        color:
-          annotation.styleHints?.strokeColor ??
-          colorFromInlineStyle(annotation.targetStyle) ??
-          undefined,
-      }))
-      .filter((entry) => entry.id);
+        id: annotation.id,
+        title: annotationTitle(annotation),
+        text: annotationText(annotation),
+        motivation: intentLabel(annotation),
+        where: whereOf(annotation),
+        origin: 'source' as const,
+      })),
+  ]);
 
-    const merged = mergeDiscoveredLayers(annotationLayers, discovered);
-    if (merged.length !== annotationLayers.length) annotationLayers = merged;
-  });
+  let tableOpen = $state(false);
 
-  const handleAnnotationCreate = (payload: { annotation: unknown; tool?: AnnotationTool }) => {
-    const annotation = payload?.annotation;
-    if (!annotation || typeof annotation !== 'object') return;
-
-    const { annotation: resolved } = resolveAnnotationJson(annotation, {
-      provenance: 'draft',
-    });
-    if (!resolved) return;
-
-    /*
-     * No defaults are applied here. The editor layer builds the annotation
-     * through the profile's builders, which set `commenting` as the motivation
-     * and put the layer in `styleClass`.
-     */
-    draftAnno = resolved;
-    annotationDirty = true;
-    annotationSaveState = { status: 'clean' };
-    selectAnnotation(resolved.id);
-  };
-
-  const handleKeyboardAnnotationCreate = (detail: { tool: 'rectangle' | 'point' }) => {
-    const targetCanvasId = core?.getCanvasId() ?? canvasId;
-    if (!targetCanvasId) return;
-    const content = core?.getContentSize?.() ?? null;
-    const viewBox = core?.getViewBox() ?? {
-      x: 0,
-      y: 0,
-      w: content?.width ?? 1_000,
-      h: content?.height ?? 1_000,
-    };
-    const centre = {
-      x: viewBox.x + viewBox.w / 2,
-      y: viewBox.y + viewBox.h / 2,
-    };
-    const shape =
-      detail.tool === 'point'
-        ? ({ type: 'point', geometry: centre } as const)
-        : ({
-            type: 'rect',
-            geometry: {
-              x: centre.x - viewBox.w * 0.125,
-              y: centre.y - viewBox.h * 0.125,
-              w: Math.max(1, viewBox.w * 0.25),
-              h: Math.max(1, viewBox.h * 0.25),
-            },
-          } as const);
-    const layer = annotationLayers.find((entry) => entry.id === activeAnnotationLayerId);
-    const document = createMangoAnnotation({
-      canvasId: targetCanvasId,
-      shape,
-      styleClass: styleClassForLayer(activeAnnotationLayerId),
-      stylesheet: layer ? buildLayerStylesheet([{ id: layer.id, color: layer.color }]) : undefined,
-    });
-    const resolved = projectToResolved(document, { provenance: 'draft', canvasId: targetCanvasId });
-    if (!resolved) return;
-    draftAnno = resolved;
-    annotationDirty = true;
-    annotationSaveState = { status: 'clean' };
-    annotationEditorTool = 'select';
-    selectAnnotation(resolved.id);
-  };
-
-  /**
-   * Discards the pending edit.
-   *
-   * A draft has nothing behind it, so cancelling removes it. An edit to a saved
-   * annotation is undone by restoring the snapshot taken when editing began —
-   * geometry and metadata together, because they are one transaction from the
-   * user's point of view even though they arrive through different callbacks.
-   */
-  const handleAnnotationCancel = () => {
-    if (draftAnno) {
-      draftAnno = null;
-      annotationDirty = false;
-      annotationSaveState = { status: 'clean' };
-      annotationEditorTool = 'select';
-      clearAnnotationSelection();
-      return;
-    }
-
-    const snapshot = editSnapshot;
-    editSnapshot = null;
-    annotationDirty = false;
-    annotationSaveState = { status: 'clean' };
-    if (snapshot) void core?.updateAnnotation(snapshot.id, snapshot.annotation);
-  };
-
-  /**
-   * A draft is local state until Save. Selection and Canvas navigation used to
-   * replace that state silently, which made Cancel trustworthy but made every
-   * other route out of the inspector destructive. Keep the policy small and
-   * explicit: stay by default; discard only after confirmation.
-   */
-  const confirmAnnotationNavigation = (): boolean => {
-    if (!annotationDirty && !draftAnno) return true;
-    if (typeof window === 'undefined') return false;
-    const discard = window.confirm(
-      $t('viewer.panels.annotations.editor.discardNavigationConfirmation'),
-    );
-    if (discard) handleAnnotationCancel();
-    return discard;
-  };
-
-  /**
-   * Deletes an annotation, after confirming.
-   *
-   * A draft has nothing behind it, so removing it is not a loss and needs no
-   * confirmation. Anything else is confirmed, and is undoable afterwards —
-   * a confirmation the user can also reverse is cheaper to get wrong.
-   */
-  const handleAnnotationDelete = async (id: string) => {
-    if (draftAnno && draftAnno.id === id) {
-      draftAnno = null;
-      clearAnnotationSelection();
-      return;
-    }
-
-    const existing = annotationById(id);
-    if (existing && !confirmDeletion(existing)) return;
-    if (existing) {
-      commandStack.record({
-        annotationId: id,
-        before: existing,
-        after: null,
-        label: 'delete',
-      });
-    }
-    await core?.removeAnnotation(id);
-  };
-
-  /**
-   * Asks before destroying something the user cannot redraw.
-   *
-   * `confirm` is a blunt instrument, but it is the one that is guaranteed to be
-   * reachable by keyboard and announced by a screen reader without Mango
-   * building a dialog and getting focus management wrong.
-   */
-  const confirmDeletion = (annotation: ResolvedAnnotation): boolean => {
-    if (typeof window === 'undefined' || typeof window.confirm !== 'function') return true;
-    const name = annotation.label?.trim() || annotation.text?.trim() || annotation.id;
-    return window.confirm($t('viewer.panels.annotations.editor.confirmDelete', { name }));
-  };
-
-  const handleAnnotationUndo = () => {
-    if (commandStack.undo()) annotationDirty = true;
-  };
-
-  const handleAnnotationRedo = () => {
-    if (commandStack.redo()) annotationDirty = true;
-  };
-
-  /**
-   * Undo and redo from the keyboard.
-   *
-   * Bound on the annotation editor rather than globally: the editor is embedded
-   * in host pages, and swallowing the platform undo shortcut everywhere would
-   * break the host's own editing surfaces.
-   */
-  const handleAnnotationKeydown = (event: KeyboardEvent) => {
-    const modifier = event.metaKey || event.ctrlKey;
-    if (!modifier || event.key.toLowerCase() !== 'z') return;
-    const target = event.target as HTMLElement | null;
-    // Text fields have their own undo, and taking it would be worse than not
-    // offering ours.
-    if (target?.closest('input, textarea, [contenteditable="true"]')) return;
-    event.preventDefault();
-    if (event.shiftKey) handleAnnotationRedo();
-    else handleAnnotationUndo();
-  };
-
-  const handleAnnotationUpdate = (
-    id: string,
-    patch: Partial<ResolvedAnnotation>,
-    options: {
-      stylesheet?: CanonicalStylesheet | null;
-      language?: string;
-      bodyPurpose?: string;
-      textDirection?: string;
-      bodyPath?: string;
-      createBody?: boolean;
-    } = {},
-  ) => {
-    let effectivePatch = patch;
-    let effectiveOptions = options;
-    if (patch.targetStyleClass !== undefined && options.stylesheet === undefined) {
-      const requested = patch.targetStyleClass.trim();
-      const layer = annotationLayers.find(
-        (entry) => entry.id === requested || styleClassForLayer(entry.id) === requested,
-      );
-      if (layer) {
-        effectivePatch = {
-          ...patch,
-          targetStyleClass: styleClassForLayer(layer.id),
-        };
-        effectiveOptions = {
-          ...options,
-          stylesheet: buildLayerStylesheet([{ id: layer.id, color: layer.color }]),
-        };
-      }
-    }
-    /*
-     * Recorded after the edit lands, not before, so the entry holds both ends
-     * of it. Recording `after: null` meant redo restored "no annotation" — it
-     * deleted the very thing it was meant to bring back.
-     */
-    const previous = annotationById(id);
-
-    if (draftAnno && draftAnno.id === id) {
-      draftAnno = applyResolvedPatch(draftAnno, effectivePatch, effectiveOptions);
-      annotationDirty = true;
-      if (previous) {
-        commandStack.record({
-          annotationId: id,
-          before: previous,
-          after: draftAnno,
-          label: labelForPatch(effectivePatch),
-        });
-      }
-      return;
-    }
-    if (!editSnapshot || editSnapshot.id !== id) {
-      const current = currentAnnotations().find((annotation) => annotation.id === id);
-      if (current) editSnapshot = { id, annotation: current };
-    }
-    annotationDirty = true;
-    annotationSaveState = { status: 'clean' };
-    void core?.updateAnnotation(id, effectivePatch, effectiveOptions);
-
-    const next = annotationById(id);
-    if (previous && next && next !== previous) {
-      commandStack.record({
-        annotationId: id,
-        before: previous,
-        after: next,
-        label: labelForPatch(effectivePatch),
-      });
-    }
-  };
-
-  const handleAnnotationSave = async () => {
-    annotationSaveState = { status: 'saving' };
-    try {
-      if (draftAnno) {
-        await core?.addAnnotation(draftAnno);
-        draftAnno = null;
-      } else {
-        const activeId = activeAnnotationId;
-        if (!activeId) {
-          annotationSaveState = { status: 'clean' };
-          return;
-        }
-        /*
-         * Edits are already applied to the viewer as they are made, so this
-         * commits the transaction rather than sending a patch. Sending an empty
-         * one would copy a manifest annotation into the user's own set merely
-         * for being saved.
-         */
-        await core?.commitAnnotation(activeId);
-      }
-      editSnapshot = null;
-      annotationDirty = false;
-      annotationSaveState = { status: 'saved' };
-      annotationEditorTool = 'select';
-      clearAnnotationSelection();
-    } catch (error) {
-      annotationSaveState = {
-        status: 'failed',
-        message:
-          error instanceof Error
-            ? error.message
-            : $t('viewer.panels.annotations.editor.saveState.failed'),
-      };
-    }
-  };
-
-  const handleExportAnnotations = () => {
-    const allUserAnnos = core?.getUserAnnotations() ?? [];
-
-    const result = exportAnnotationPage(allUserAnnos, {
-      canvasId: core?.getCanvasId() ?? undefined,
-      expert: annotationExpertMode,
-    });
-    emit('exportAnnotationPage', {
-      page: result.page,
-      valid: result.publicationValidation.valid,
-      draftValid: result.draftValidation.valid,
-      publicationValid: result.publicationValidation.valid,
-      excludedPrivateFields: result.excludedPrivateFields,
-      unresolvedIdentities: result.unresolvedIdentities,
-      unresolvedPageIdentity: result.unresolvedPageIdentity,
-    });
-
-    /*
-     * The old payload still fires for one deprecation cycle. Hosts wired to it
-     * keep working; hosts that want portable JSON-LD move to the event above
-     * rather than reverse-engineering `ResolvedAnnotation`.
-     */
-    emit('exportAnnotations', { annotations: allUserAnnos });
-
-    /* The visible control performs a visible action even when the host has not
-       installed an event listener. With draft identifiers this is explicitly a
-       local draft download; publication readiness is reported separately. */
-    if (typeof document !== 'undefined' && typeof URL !== 'undefined') {
-      const blob = new Blob([JSON.stringify(result.page, null, 2)], {
-        type: 'application/ld+json',
-      });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'mango-annotations-draft.json';
-      link.click();
-      URL.revokeObjectURL(url);
-    }
-    annotationExportStatus = result.publicationValidation.valid
-      ? $t('viewer.panels.annotations.exportPublicationReady')
-      : $t('viewer.panels.annotations.exportDraftOnly');
-  };
-
-  /*
-   * The list needs a box of its own to be usable, so the element grows to
-   * provide one rather than taking the height off the image being annotated.
-   */
-  const setAnnotationListHostState = (open: boolean): void => {
+  const setListHostState = (open: boolean): void => {
     const node = root?.getRootNode();
     const host = node instanceof ShadowRoot ? node.host : null;
     if (!host) return;
@@ -696,166 +473,305 @@
     else host.removeAttribute('data-annotation-list');
   };
 
-  const isDrawingTool = (tool: AnnotationTool): boolean => tool !== 'select';
+  /* ------------------------------------------------------------ export */
 
-  /** The embedded viewer, for pan, zoom and canvas control. */
+  let exportStatus = $state('');
+
+  const handleExport = () => {
+    const result = exportAnnotationPage(userAnnotations, { pageId: options.pageId, manifestId: canonicalId });
+    emit('exportAnnotationPage', {
+      page: result.page,
+      publicationValid: result.publicationValid,
+      unresolvedIdentities: result.unresolvedIdentities,
+      unresolvedPageIdentity: result.unresolvedPageIdentity,
+    });
+    // The button does something visible even when no host is listening.
+    const blob = new Blob([JSON.stringify(result.page, null, 2)], { type: 'application/ld+json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'annotations-draft.json';
+    link.click();
+    URL.revokeObjectURL(url);
+    exportStatus = result.publicationValid ? $t('annotate.export.ready') : $t('annotate.export.draft');
+  };
+
+  /* ------------------------------------------------------------ API */
+
+  /** The embedded viewer, for pan, zoom and canvas control. Null for audio and video. */
   export function getViewer(): ViewerCoreInstance | null {
-    return core;
+    return imageStage?.getViewer() ?? null;
+  }
+
+  /** The current canvas's annotations: the manifest's and the user's own. */
+  export function getAnnotations(): Annotation[] {
+    const id = currentCanvasId;
+    return [...store.existing, ...userAnnotations].filter((a) => {
+      const source = targetSource(a.target);
+      return source === id || source === canonicalId;
+    });
+  }
+
+  /** Every annotation the user has made, across all canvases. */
+  export function getUserAnnotations(): Annotation[] {
+    return userAnnotations;
+  }
+
+  const importAnnotation = (annotation: Annotation) => {
+    const { record, region } = recordFromW3C(annotation, ctx);
+    if (region) store.upsertRegion(region);
+    store.saveRecord(record);
+  };
+
+  export function addAnnotation(annotation: Annotation): void {
+    importAnnotation(annotation);
+  }
+
+  /** Replaces the user's annotations. */
+  export function setAnnotations(annotations: Annotation[]): void {
+    store.clear();
+    resetForm();
+    annotations.forEach(importAnnotation);
+  }
+
+  export function removeAnnotation(id: string): void {
+    const record = recordOf(id);
+    remove(id);
+    // A shape imported with the annotation goes with it.
+    if (record?.regionId && !store.records.some((r) => r.regionId === record.regionId)) {
+      imageStage?.removeRegion(record.regionId);
+      store.removeRegion(record.regionId);
+    }
   }
 </script>
 
-<EditorShell theme={normalisedConfig.theme} bind:root>
+<EditorShell {theme} bind:root>
   {#snippet title()}
-    <ViewerHeader {manifestId} manifestEntry={$manifestsStore[manifestId]} />
+    <ViewerHeader {manifestId} {manifestEntry} />
   {/snippet}
 
   {#snippet actions()}
-    <button type="button" class="annotation-editor__export-btn" onclick={handleExportAnnotations}>
-      {$t('viewer.panels.annotations.export')}
+    {#if exportStatus}
+      <span class="annotation-editor__export-status" role="status">{exportStatus}</span>
+    {/if}
+    <button
+      type="button"
+      class="annotation-editor__export-btn"
+      disabled={!userAnnotations.length}
+      onclick={handleExport}
+    >
+      {$t('annotate.export.button', { count: userAnnotations.length })}
     </button>
-    {#if annotationExportStatus}
-      <span class="annotation-editor__export-status" role="status">{annotationExportStatus}</span>
+    {#if normalisedConfig.showSettings !== false}
+      <SettingsMenu {theme} onthemechange={changeTheme} />
     {/if}
   {/snippet}
 
-  <main class="annotation-editor__main" aria-label={$t('viewer.stage.label')}>
-    <AnnotationWorkspace
-      annotations={editorAnnotations}
-      {activeAnnotationId}
-      draftAnnotation={draftAnno}
-      isDirty={annotationDirty}
-      saveState={annotationSaveState}
-      expertMode={annotationExpertMode}
-      languages={annotationLanguages}
-      onannotationcancel={handleAnnotationCancel}
-      canUndo={commandState.canUndo}
-      canRedo={commandState.canRedo}
-      onundo={handleAnnotationUndo}
-      onredo={handleAnnotationRedo}
-      onkeyboardcreate={handleKeyboardAnnotationCreate}
-      onkeydown={handleAnnotationKeydown}
-      activeTool={annotationEditorTool}
-      layers={annotationLayers}
-      activeLayerId={activeAnnotationLayerId}
-      onactivelayerchange={(detail) => (activeAnnotationLayerId = detail.id)}
-      ontoolchange={(detail) => {
-        annotationEditorTool = detail.tool;
-        if (isDrawingTool(detail.tool)) return;
-        /*
-         * A pending draft keeps the selection.
-         *
-         * The editor returns to select mode on its own the moment a shape is
-         * finished, which arrives here as an ordinary tool change — so clearing
-         * unconditionally deselected the very annotation the user had just
-         * drawn, leaving the inspector empty and the draft unreachable. Picking
-         * the select tool deliberately still clears, because then there is no
-         * draft.
-         */
-        if (!draftAnno) clearAnnotationSelection();
-      }}
-      ontogglelayer={handleToggleLayer}
-      onaddlayer={handleAddLayer}
-      onlayercolorchange={handleLayerColorChange}
-      onlayerrename={handleLayerRename}
-      onlayermove={handleLayerMove}
-      onlayerarchive={handleLayerArchive}
-      onannotationselect={(detail) => {
-        const selectedDraft = draftAnno?.id === detail.id;
-        if (!selectedDraft && !confirmAnnotationNavigation()) return;
-        selectAnnotation(detail.id, false);
-        if (!selectedDraft) annotationEditorTool = 'select';
-      }}
-      onannotationdelete={(detail) => handleAnnotationDelete(detail.id)}
-      onannotationupdate={(detail) =>
-        handleAnnotationUpdate(detail.id, detail.patch, detail.options ?? {})}
-      onannotationsave={handleAnnotationSave}
-      onlistopenchange={(detail: { open: boolean }) => setAnnotationListHostState(detail.open)}
-    >
-      {#snippet stage()}
-        <div class="annotation-editor__stage">
-          <ViewerCore
-            bind:this={core}
-            bind:manifestId
-            config={normalisedConfig}
-            {plugins}
-            chrome={false}
-            toolbar={true}
-            annotationOverlay={false}
-            onbeforecanvaschange={() => confirmAnnotationNavigation()}
-          />
-          <AnnotationEditorLayer
-            enabled={true}
-            viewer={osdViewer}
-            activeTool={annotationEditorTool}
-            canvasWidth={canvasSize.width}
-            canvasHeight={canvasSize.height}
-            {canvasId}
-            annotations={editorStageAnnotations}
-            {activeAnnotationId}
-            layers={annotationLayers}
-            activeLayerId={activeAnnotationLayerId}
-            oneditorready={(instance) => (annotationEditor = instance)}
-            ongeometrycommit={(detail) => commandStack.recordGeometry(detail.id, 'geometry')}
-            onannotationcreate={handleAnnotationCreate}
-            onannotationupdate={(payload) =>
-              handleAnnotationUpdate(payload.id, payload.patch as Partial<ResolvedAnnotation>)}
-            onannotationdelete={(payload) => handleAnnotationDelete(payload.id)}
-            onannotationselect={(payload) => {
-              if (draftAnno?.id !== payload.id && !confirmAnnotationNavigation()) return;
-              selectAnnotation(payload.id);
-              annotationEditorTool = 'select';
-            }}
-            ontoolchange={(detail) => {
-              annotationEditorTool = detail.tool;
-            }}
-          />
-        </div>
-      {/snippet}
-    </AnnotationWorkspace>
-  </main>
+  <div class="annotation-editor" data-table={tableOpen ? 'open' : 'closed'}>
+    <main class="annotation-editor__stage" aria-label={$t('annotate.stage')}>
+      {#if kind === 'image'}
+        <ImageStage
+          bind:this={imageStage}
+          bind:manifestId
+          bind:tool
+          bind:canvasId
+          config={normalisedConfig}
+          {plugins}
+          {store}
+          canvasScale={ctx.canvasScale}
+          annotatedIds={store.records.flatMap((r) => (r.regionId ? [r.regionId] : []))}
+          annotatedCanvasIds={store.records.flatMap((r) => (r.canvasId ? [r.canvasId] : []))}
+          selectedRegionId={shapeId}
+          onselect={onShapeSelect}
+          onregioncreate={onRegionCreate}
+          onregiondelete={onRegionDelete}
+          eventTarget={eventTarget ?? root}
+          {theme}
+        />
+      {:else if kind && manifest}
+        <AVStage
+          bind:this={avStage}
+          bind:canvasIndex
+          bind:playback
+          {manifest}
+          {kind}
+          existing={store.existing}
+          language={normalisedConfig.language}
+        />
+      {:else if manifestEntry?.error}
+        <p class="annotation-editor__status" role="alert">{$t('annotate.loadError')}</p>
+      {:else}
+        <p class="annotation-editor__status" role="status">{$t('annotate.loading')}</p>
+      {/if}
+    </main>
+
+    {#if kind}
+      <Sidebar
+        kind={kind === 'image' ? 'image' : 'av'}
+        {languages}
+        bind:draft
+        bind:language
+        bind:scope
+        bind:start
+        bind:end
+        region={scope === 'region' ? regionBounds : undefined}
+        {regionCount}
+        drawing={tool !== 'select'}
+        currentTime={playback.time}
+        playbackReady={playback.ready}
+        editing={Boolean(editId)}
+        {error}
+        {providers}
+        {preview}
+        {cards}
+        selectedId={editId}
+        ondrawbox={drawBox}
+        ondeleteshape={deleteShape}
+        onsave={save}
+        oncancel={resetForm}
+        onedit={edit}
+        ondelete={remove}
+        onlocate={locate}
+      >
+        {#snippet assist()}
+          {#if options.ai?.endpoint}
+            <AiAssist
+              endpoint={options.ai.endpoint}
+              {languages}
+              target={aiTarget}
+              buildRequest={buildAiRequest}
+              {providers}
+              linked={draft.entities}
+              isInForm={(s) => draft.texts[s.field][s.language] === s.value}
+              onuse={useSuggestion}
+              onlink={linkSuggested}
+            />
+          {/if}
+        {/snippet}
+      </Sidebar>
+    {/if}
+
+    <div class="annotation-editor__table">
+      <AnnotationBrowserTable
+        {rows}
+        activeId={editId}
+        open={tableOpen}
+        ontoggle={() => {
+          tableOpen = !tableOpen;
+          setListHostState(tableOpen);
+        }}
+        onselect={({ id }) => (recordOf(id) ? edit(id) : locate(id))}
+      />
+    </div>
+  </div>
 </EditorShell>
 
 <style>
-  .annotation-editor__main {
+  /*
+   * The editor's own palette, one per Mango theme, so the sidebar, list and page
+   * strip change with the viewer around them. Surfaces come from the theme's
+   * `--viewer-*` tokens; each theme picks an accent dark or light enough for its
+   * label colour (`--anno-on-accent`) to read on it. Light is ui-test's green.
+   */
+  :global(.viewer--annotation-editor) {
+    --anno-accent: #2ac7ff;
+    --anno-on-accent: #06141d;
+    --anno-surface: var(--viewer-panel);
+    --anno-raised: var(--viewer-panel-strong);
+    --anno-tint: color-mix(in srgb, var(--anno-accent) 12%, var(--anno-surface));
+    --anno-input-border: color-mix(in srgb, var(--viewer-text) 28%, transparent);
+    --anno-dashed: color-mix(in srgb, var(--anno-accent) 60%, transparent);
+    --anno-code-bg: rgba(0, 0, 0, 0.35);
+    --anno-code-text: var(--viewer-text);
+  }
+
+  :global(.viewer--annotation-editor[data-theme='midnight']) {
+    --anno-accent: #a78bfa;
+    --anno-on-accent: #120b2b;
+  }
+
+  :global(.viewer--annotation-editor[data-theme='light']) {
+    --anno-accent: #1f5c4f;
+    --anno-on-accent: #ffffff;
+    --anno-surface: #ffffff;
+    --anno-raised: #ffffff;
+    --anno-tint: #eef3f0;
+    --anno-input-border: #b9c3be;
+    --anno-dashed: #8fa39a;
+    --anno-code-bg: #1b2420;
+    --anno-code-text: #dfe9e3;
+  }
+
+  :global(.viewer--annotation-editor[data-theme='sepia']) {
+    --anno-accent: #8d451f;
+    --anno-on-accent: #fffaf0;
+    --anno-surface: var(--viewer-surface);
+    --anno-raised: #fffaf0;
+    --anno-input-border: rgba(76, 58, 35, 0.32);
+    --anno-code-bg: #3d3023;
+    --anno-code-text: #f7f0e3;
+  }
+
+  :global(.viewer--annotation-editor[data-theme='ringo']) {
+    --anno-accent: #a8232b;
+    --anno-on-accent: #fff4b8;
+    --anno-surface: var(--viewer-surface);
+    --anno-raised: #fffbe0;
+    --anno-input-border: rgba(74, 48, 0, 0.36);
+    --anno-code-bg: #2e2000;
+    --anno-code-text: #fff4b8;
+  }
+
+  .annotation-editor {
     --mango-viewer-av-player-max-width: calc((100cqh - 24px) * 16 / 9);
+
     display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'stage sidebar'
+      'table table';
     height: 100%;
     min-height: 0;
     overflow: hidden;
-    align-content: stretch;
   }
 
   .annotation-editor__stage {
+    grid-area: stage;
     position: relative;
-    display: grid;
-    grid-template-rows: minmax(0, 1fr);
-    height: 100%;
     min-height: 0;
     overflow: hidden;
   }
 
+  .annotation-editor :global(.anno-sidebar) {
+    grid-area: sidebar;
+  }
+
+  .annotation-editor__table {
+    grid-area: table;
+    min-height: 0;
+  }
+
+  .annotation-editor__status {
+    margin: 0;
+    padding: 24px;
+    color: var(--viewer-muted);
+  }
+
   .annotation-editor__export-btn {
-    background: #ff6b35;
-    color: white;
-    border: none;
     padding: 8px 16px;
+    border: none;
     border-radius: 8px;
+    background: var(--anno-accent);
+    color: var(--anno-on-accent);
+    font-family: inherit;
     font-weight: 600;
     cursor: pointer;
-    transition:
-      background 0.2s,
-      transform 0.1s;
-    font-family: inherit;
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
   }
 
-  .annotation-editor__export-btn:hover {
-    background: #ff8552;
-    transform: translateY(-1px);
-  }
-
-  .annotation-editor__export-btn:active {
-    transform: translateY(0);
+  .annotation-editor__export-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
   }
 
   .annotation-editor__export-status {
@@ -863,5 +779,22 @@
     color: var(--viewer-muted, #9aa6b2);
     font-size: 11px;
     line-height: 1.3;
+  }
+
+  /* Narrow: the stage, then the form, then the list, in one scrolling column. */
+  @container mango-viewer (max-width: 860px) {
+    .annotation-editor {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(320px, 55cqh) auto auto;
+      grid-template-areas: 'stage' 'sidebar' 'table';
+      overflow: auto;
+    }
+
+    .annotation-editor :global(.anno-sidebar) {
+      height: auto;
+      overflow: visible;
+      border-left: 0;
+      border-top: 1px solid var(--viewer-panel-border);
+    }
   }
 </style>

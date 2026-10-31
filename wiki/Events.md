@@ -1,18 +1,24 @@
 # Events
 
 Every event is dispatched on `<mango-annotation-editor>` as a DOM
-`CustomEvent`, with the payload in `event.detail`. The same viewer events can be
-subscribed to with `editor.on(name, handler)`, which returns an unsubscribe
-function.
+`CustomEvent`, with the payload in `event.detail`.
 
-## Export events
+## Annotation events
 
-| Event                  | Payload                                                                                                                  | Purpose                                                            |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| `exportAnnotationPage` | `page`, `draftValid`, `publicationValid`, `valid`, `excludedPrivateFields`, `unresolvedIdentities`, `unresolvedPageIdentity` | The user asked to export. `page` is a W3C `AnnotationPage`.         |
-| `exportAnnotations`    | `{ annotations: ResolvedAnnotation[] }`                                                                                  | Deprecated: the same export as resolved annotations, not JSON-LD.  |
+| Event               | Payload           | Purpose                                                              |
+| ------------------- | ----------------- | -------------------------------------------------------------------- |
+| `annotationCreate`  | `{ annotation }`  | The user saved a new annotation (W3C JSON).                          |
+| `annotationUpdate`  | `{ annotation }`  | The user saved changes to one.                                       |
+| `annotationDelete`  | `{ id }`          | An annotation was deleted, including those removed with their shape. |
+| `annotationsChange` | `{ annotations }` | All the user's annotations, after any change.                        |
 
-Persist the export in the host application:
+## Export
+
+| Event                  | Payload                                                                      |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| `exportAnnotationPage` | `page`, `publicationValid`, `unresolvedIdentities`, `unresolvedPageIdentity` |
+
+`page` is a W3C `AnnotationPage`, `partOf` the manifest. Persist it in the host:
 
 ```js
 editor.addEventListener("exportAnnotationPage", async (event) => {
@@ -29,25 +35,19 @@ editor.addEventListener("exportAnnotationPage", async (event) => {
 });
 ```
 
-## Annotation events
+Or save each annotation as it is made, with `annotationCreate`,
+`annotationUpdate` and `annotationDelete`.
 
-These come from the embedded viewer, which holds the annotations.
+## Settings
 
-| Event               | Payload                                               | Purpose                                            |
-| ------------------- | ----------------------------------------------------- | -------------------------------------------------- |
-| `annotationsChange` | `{ annotations: ResolvedAnnotation[] }`               | The current canvas's annotations changed.          |
-| `annotationCreate`  | `{ annotation: unknown }`                             | An annotation was added, including a saved draft.  |
-| `annotationUpdate`  | `{ annotationId, patch }`                             | An annotation was edited.                          |
-| `annotationSave`    | `{ annotationId, annotation }`                        | Edits to an annotation were committed as one save. |
-| `annotationDelete`  | `{ annotationId: string }`                            | An annotation was deleted.                         |
-
-`addAnnotation` and `removeAnnotation` fire alongside `annotationCreate` and
-`annotationDelete` for compatibility; prefer the `annotation…` family.
-| `annotationSelect`  | `id`, optional `annotation`, optional `preventZoom`   | An annotation was selected.                        |
-| `annotationClear`   | `void`                                                | The selection was cleared.                         |
+| Event         | Payload     | Purpose                                                                                                |
+| ------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| `themeChange` | `{ theme }` | The user picked a viewer colour. The choice is remembered in the browser and wins over `config.theme`. |
 
 ## Navigation events
 
-`manifestChange`, `pageChange`, `mediaChange`, `zoomChange` and
-`viewBoxChange` are the viewer's own; see the
+For images, `manifestChange`, `pageChange`, `mediaChange`, `zoomChange` and
+`viewBoxChange` come from the embedded viewer, and can also be subscribed to with
+`editor.on(name, handler)`; see the
 [viewer's event reference](https://github.com/Mango-IIIF/Mango/wiki/Event-Handling).
+Audio and video have no embedded viewer.

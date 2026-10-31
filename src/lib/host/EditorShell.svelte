@@ -3,6 +3,7 @@
   import { Expand, Shrink } from '@lucide/svelte';
   import { createViewerFullscreenController, isIPadLikeDevice } from '@mango-iiif/iiif-viewer/core';
   import { t } from '../core/i18n';
+  import { isTheme } from './themes';
 
   /**
    * The editor's frame: the themed root, the title row and the fullscreen
@@ -17,8 +18,6 @@
     children?: Snippet;
   }
 
-  const THEMES = ['dark', 'light', 'sepia', 'midnight', 'ringo'];
-
   let {
     theme = 'dark',
     root = $bindable(null),
@@ -27,9 +26,7 @@
     children = undefined,
   }: Props = $props();
 
-  let resolvedTheme = $derived(
-    THEMES.includes(theme?.toLowerCase() ?? '') ? theme.toLowerCase() : 'dark',
-  );
+  let resolvedTheme = $derived(isTheme(theme?.toLowerCase()) ? theme.toLowerCase() : 'dark');
   let isFullscreen = $state(false);
   let isFullscreenFallback = $state(false);
 

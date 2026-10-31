@@ -47,13 +47,13 @@ test.describe("annotation editor layout", () => {
 
       const host = page.locator("mango-annotation-editor");
       const viewer = host.locator(".viewer--annotation-editor");
-      const workspace = host.locator(".annotation-workspace");
-      await expect(workspace).toBeVisible();
+      const editor = host.locator(".annotation-editor");
+      await expect(editor).toBeVisible();
 
-      const [hostBox, viewerBox, workspaceBox] = await Promise.all([
+      const [hostBox, viewerBox, editorBox] = await Promise.all([
         box(host),
         box(viewer),
-        box(workspace),
+        box(editor),
       ]);
       expect(viewerBox.height).toBe(hostBox.height);
       expect(viewerBox.x + viewerBox.width).toBeLessThanOrEqual(
@@ -62,8 +62,8 @@ test.describe("annotation editor layout", () => {
       expect(viewerBox.y + viewerBox.height).toBeLessThanOrEqual(
         hostBox.y + hostBox.height + 1,
       );
-      expect(workspaceBox.width).toBeGreaterThan(100);
-      expect(workspaceBox.height).toBeGreaterThan(100);
+      expect(editorBox.width).toBeGreaterThan(100);
+      expect(editorBox.height).toBeGreaterThan(100);
       expect(
         await page.evaluate(() => document.body.scrollWidth),
       ).toBeLessThanOrEqual(viewport.width);
@@ -79,9 +79,7 @@ test.describe("annotation editor layout", () => {
   /*
    * The check above asks whether the editor fits its host. It cannot see the
    * failure where the *host* is what overflows: an element taller than the room
-   * left under the hero loses its bottom with no scrollbar to reach it. That
-   * only bites below roughly 800px of viewport height, which is why these
-   * heights are checked separately.
+   * left under the page header loses its bottom with no scrollbar to reach it.
    */
   for (const viewport of [
     { name: "short desktop", width: 1440, height: 700 },
@@ -90,9 +88,7 @@ test.describe("annotation editor layout", () => {
   ]) {
     test(`stays reachable on ${viewport.name}`, async ({ page }) => {
       await openAt(page, "/annotation-editor.html", viewport);
-      await expect(
-        page.locator("mango-annotation-editor").locator(".viewer"),
-      ).toHaveCount(2);
+      await expect(page.locator("mango-annotation-editor .annotation-editor")).toBeVisible();
 
       const overhang = await page.evaluate(() => {
         const host = document.querySelector("mango-annotation-editor");
@@ -109,54 +105,66 @@ test.describe("annotation editor layout", () => {
     });
   }
 
-  test("keeps the editor multi-column on an ordinary laptop", async ({
-    page,
-  }) => {
-    // The editor collapsed to a single stacked column below 1200px, so a 1280px
-    // laptop lost the list/canvas/inspector layout entirely. Three columns need
-    // roughly 1000px, so the collapse belongs at the 1024px breakpoint.
+  test("puts the stage and the sidebar side by side on a laptop", async ({ page }) => {
     await openAt(page, "/annotation-editor.html", { width: 1280, height: 900 });
-    await page.locator("mango-annotation-editor .annotation-workspace").waitFor();
-
-    const layout = await page.evaluate(() => {
-      const workspace = document
-        .querySelector("mango-annotation-editor")!
-        .shadowRoot!.querySelector(".annotation-workspace")!;
-      const columns = getComputedStyle(workspace).gridTemplateColumns.split(" ");
-      const centre = workspace.querySelector(".annotation-workspace__center");
-      return {
-        columnCount: columns.length,
-        canvasWidth: centre
-          ? Math.round(centre.getBoundingClientRect().width)
-          : 0,
-      };
-    });
-    expect(layout.columnCount).toBe(3);
-    expect(layout.canvasWidth).toBeGreaterThan(400);
+    const host = page.locator("mango-annotation-editor");
+    const [stage, sidebar] = await Promise.all([
+      box(host.locator(".annotation-editor__stage")),
+      box(host.locator(".anno-sidebar")),
+    ]);
+    expect(stage.width).toBeGreaterThan(500);
+    expect(sidebar.x).toBeGreaterThanOrEqual(stage.x + stage.width - 1);
+    expect(sidebar.width).toBeGreaterThanOrEqual(320);
   });
 
-  test("keeps tools, canvas, table, and inspector reachable on a phone", async ({
-    page,
-  }) => {
+  test("stacks stage, form and list on a phone, all reachable", async ({ page }) => {
     await openAt(page, "/annotation-editor.html", { width: 390, height: 664 });
     const host = page.locator("mango-annotation-editor");
-    const workspace = host.locator(".annotation-workspace");
+    const editor = host.locator(".annotation-editor");
 
     for (const selector of [
-      ".annotation-workspace__left",
-      ".annotation-workspace__stage",
-      ".annotation-workspace__bottom",
-      ".annotation-workspace__right",
+      ".annotation-editor__stage",
+      ".anno-sidebar",
+      ".annotation-editor__table",
     ]) {
       const region = host.locator(selector);
       await region.scrollIntoViewIfNeeded();
       await expect(region).toBeVisible();
-      await expectContained(region, workspace, 2);
+      const [regionBox, editorBox] = await Promise.all([box(region), box(editor)]);
+      expect(regionBox.width).toBeLessThanOrEqual(editorBox.width + 2);
     }
-    const sizes = await workspace.evaluate((element) => ({
+    const sizes = await editor.evaluate((element) => ({
       clientHeight: element.clientHeight,
       scrollHeight: element.scrollHeight,
     }));
     expect(sizes.scrollHeight).toBeGreaterThan(sizes.clientHeight);
   });
+});
+
+test.describe("audio and video layout", () => {
+  for (const [kind, manifest] of [
+    ["video", "manifests/iiif-pcw-574604/manifest.json"],
+    ["audio", "manifests/iiif-pcw-550555/manifest.json"],
+  ] as const) {
+    for (const viewport of [
+      { name: "phone", width: 390, height: 700 },
+      { name: "iPad portrait", width: 820, height: 1180 },
+      { name: "desktop", width: 1440, height: 900 },
+    ]) {
+      test(`keeps the ${kind} controls inside the player on ${viewport.name}`, async ({ page }) => {
+        const params = new URLSearchParams({ manifest: new URL(manifest, "http://127.0.0.1:4173/").href, type: kind });
+        await openAt(page, `/annotation-editor.html?${params}`, viewport);
+        const host = page.locator("mango-annotation-editor");
+        const bar = host.locator(".vjs-control-bar");
+        await expect(bar).toBeVisible();
+        const player = host.locator(".av-stage__player");
+        await expectContained(bar, player);
+        await expectContained(player, host.locator(".annotation-editor__stage"));
+        if (kind === "video") {
+          const { width, height } = await box(host.locator(".video-js"));
+          expect(width / height).toBeCloseTo(16 / 9, 1);
+        }
+      });
+    }
+  }
 });

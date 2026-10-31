@@ -11,18 +11,62 @@
       <header class="hero">
         <div class="hero__title">Mango Annotation Editor</div>
         <p class="hero__subtitle">
-          Create and edit W3C Web Annotations on IIIF resources
+          Annotate images with the Annotorious toolset, and audio and video with RAMP, as W3C Web
+          Annotations.
         </p>
       </header>
 
-      <nav class="viewer-actions" aria-label="Demos">
-        <a class="viewer-actions__link" href="annotation-editor.html">
-          Open annotation editor
-        </a>
-        <a class="viewer-actions__link" href="annotation-editor-wellcome.html">
-          Open Wellcome annotation editor
-        </a>
-      </nav>
+      <main class="catalogue">
+        <form class="catalogue__form" id="manifest-form">
+          <label for="manifest-url">Open any IIIF manifest</label>
+          <div>
+            <input id="manifest-url" type="url" required placeholder="https://…/manifest.json" />
+            <button type="submit">Annotate</button>
+          </div>
+        </form>
+        <ul class="catalogue__items" id="items" aria-live="polite"></ul>
+        <nav class="viewer-actions" aria-label="Other demos">
+          <a class="viewer-actions__link" href="annotation-editor-wellcome.html">Wellcome manifest</a>
+        </nav>
+      </main>
     </div>
+    <script type="module">
+      const editorUrl = (manifest, type) => {
+        const params = new URLSearchParams({ manifest: new URL(manifest, location.href).href });
+        if (type) params.set('type', type);
+        return `annotation-editor.html?${params}`;
+      };
+
+      document.getElementById('manifest-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        location.href = editorUrl(document.getElementById('manifest-url').value);
+      });
+
+      const list = document.getElementById('items');
+      const { items } = await (await fetch('catalogue.json')).json();
+      for (const item of items) {
+        const li = document.createElement('li');
+        li.className = 'catalogue__item';
+        const link = document.createElement('a');
+        link.href = editorUrl(item.manifest, item.type);
+        if (item.thumbnail) {
+          const img = document.createElement('img');
+          img.src = item.thumbnail;
+          img.alt = '';
+          link.append(img);
+        }
+        const body = document.createElement('div');
+        const eyebrow = document.createElement('span');
+        eyebrow.textContent = [item.type, item.collection, item.date].filter(Boolean).join(' · ');
+        const title = document.createElement('strong');
+        title.textContent = item.title;
+        const description = document.createElement('p');
+        description.textContent = item.description;
+        body.append(eyebrow, title, description);
+        link.append(body);
+        li.append(link);
+        list.append(li);
+      }
+    </script>
   </body>
 </html>

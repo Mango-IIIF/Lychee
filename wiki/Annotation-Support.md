@@ -2,30 +2,32 @@
 
 ## Reading
 
-The editor shows the annotations the viewer resolves from the manifest and lets
-people edit them alongside their own. That includes:
+The editor fetches the AnnotationPages a manifest and its canvases reference (or
+embed) and shows them read-only:
 
-- Canvas targets and `SpecificResource` targets;
-- spatial `xywh` fragments;
-- points and SVG polygons;
-- text and image bodies, including parallel `TextualBody` translations; and
-- external AnnotationPages referenced from a Canvas.
+- on images, shapes Annotorious can parse — `xywh` fragments and SVG selectors —
+  are drawn in grey;
+- on recordings, supplementing annotations with a time range form the transcript,
+  and the rest are listed with Jump;
+- all of them appear in the annotation list.
 
-Editing a manifest annotation copies it into the user's own set; the manifest
-itself is never changed.
+Caption files (`text/vtt` bodies) are left to RAMP. The manifest is never changed.
 
 ## Writing
 
-Exports are W3C Web Annotation `AnnotationPage` documents:
+Each annotation has one motivation, set by what the user chose to do:
+`commenting`, `supplementing`, `tagging`, `identifying`, `highlighting` or
+`linking`. Text is written as one `TextualBody` per language, with `language`
+set; a note's title is the annotation's IIIF `label` language map. Suggestions
+from AI keep the model as the body's `generator`.
 
-- the motivation is `commenting` unless the author picks another; `painting` is
-  only offered in expert mode, because it tells IIIF clients the annotation is
-  the canvas content;
-- layer colours are written as a `styleClass` plus an annotation stylesheet,
-  which survives a round trip, rather than an inline style, which does not;
-- new annotations carry local draft identifiers until the host assigns HTTP(S)
-  ones. The export reports which identifiers are still unresolved, and
-  `publicationValid` stays false until there are none.
+Targets are canvas coordinates, scaled from the image when the painted image and
+the canvas differ in size. A host annotation added with `addAnnotation` is read
+back the same way: a time range, a shape, a canvas or the manifest.
+
+New annotations carry `urn:uuid:` identifiers until the host assigns HTTP(S)
+ones. The export reports which are still unresolved, and `publicationValid`
+stays false until there are none.
 
 ## What Mango does not do
 
@@ -33,6 +35,7 @@ Mango does not provide an annotation server. The host application must
 authenticate, authorise, convert where necessary, and persist what the editor
 exports.
 
-Do not assume arbitrary Web Annotation graphs round-trip without loss. Test
-multiple bodies, custom motivations and purposes, selectors, stylesheets, and
-extension properties before using the editor on them.
+Motivations other than the six above are read as the nearest intent when edited
+(`describing` as a note, `transcribing` as a transcription, …) and are written
+back with the intent's motivation. Test multiple bodies, custom purposes,
+selectors and extension properties before using the editor on them.

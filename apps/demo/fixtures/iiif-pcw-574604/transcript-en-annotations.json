@@ -1,0 +1,2348 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "http://localhost:5173/iiif-pcw-574604/transcript-en-annotations.json",
+  "type": "AnnotationPage",
+  "label": {
+    "en": [
+      "English transcript (machine generated, unreviewed)"
+    ]
+  },
+  "items": [
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-1",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "They all kind of military interests, if you like it, it was something I was always interested",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=1.69,52.8"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-2",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "in. I always wanted to join the army from a very young age, you know, whilst my friends",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=54.04,60.04"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-3",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "were off playing football, I was playing commandos in the park at the bottom of the street.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=60.04,63.26"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-4",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So yeah, it was something I was always keen to progress into. So I joined when I was 17",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=64.32,69.68"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-5",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and signed up to the Royal Regiment of Fusiliars, and was claimed, as it was called back then,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=71.46,77.04"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-6",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "by my brother, and a fairly well respected older brother. So it was a degree of, you know,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=77.32,84.08"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-7",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "kind of my big brother took me under his wing. I suppose an interesting time at a time because",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=84.22,88.98"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-8",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "it was, I actually joined as the first, the original Gulf War, if you like, was ongoing.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=88.98,95.2"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-9",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "My brother and his platoon didn't have the best of experiences in the first Gulf War.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=95.2,100.8"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-10",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "He was involved in a friendly fire incident that resulted in the loss, the death of several",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=101.0,110.04"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-11",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "of his colleagues, and the serious injury of several more of them.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=110.04,114.0"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-12",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "During my training, I felt I matured. I suppose my views, I don't think changed drastically.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=115.34,122.22"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-13",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "There were incidents that happened in training that made me become far more reflective, I",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=123.68,129.76"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-14",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "would say. I was involved in a car crash the last three weeks of our basic training.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=129.76,136.7"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-15",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And one of the lads I was training with, a young lad by the name of Nathan was killed in",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=137.82,142.5"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-16",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "that car crash. And that kind of had a tinged my training, if you like. And made things",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=142.5,154.27"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-17",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "become very realistic. We'd be a lot of kind of the training in the internet.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=154.27,159.37"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-18",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "You were dealing with, you were looking at dealing with death and destruction.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=159.55,162.61"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-19",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And all of a sudden that, that wasn't and brought that home very quickly.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=163.27,166.43"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-20",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "From warm, my first deployment was to Bosnia. That must have been, the winter was 93.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=167.37,173.67"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-21",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So I suppose kind of, really at the height of the conflict, it was very much an ongoing issue",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=175.29,181.43"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-22",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "at the time. And we deployed as, as I thought, as NATO troops. Sorry, no, we didn't.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=181.43,187.89"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-23",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "We deployed as United Nations, as very much as a peacekeeping force.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=188.03,193.25"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-24",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "We flew, we landed at the Brovenick and kind of got off the plane and it was, it was nice",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=194.61,200.61"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-25",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and warm and sunny. Oh, oh, I quite fancy this.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=200.61,204.31"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-26",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Well, if we let ourselves in for here and we were issued ammunition and had on more",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=204.85,208.55"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-27",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "free interests, and off we got in the back of a fort and wagon and started to drive.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=208.55,214.11"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-28",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And continued to drive and continued to drive and continued to drive.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=214.83,217.73"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-29",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And it got colder and colder and colder and colder.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=218.47,220.63"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-30",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And the initial place we went to was, was very much, it was a platoon self-sustained position.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=221.91,227.25"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-31",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "It was out in the middle of nowhere. That first week, I suppose I was slightly lax in.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=227.51,233.15"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-32",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I remember I was sat in the platoon office and the sergeant came in and said, right Frisbee,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=233.37,237.75"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-33",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "there's a load of rubbish there. There's a skip out of the bag on that.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=238.15,241.09"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-34",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "A skip is about 50 meters away from the bag of the building.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=241.17,243.51"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-35",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Take all the rubbish out because there was no refuge collection.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=244.07,246.45"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-36",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Take all the rubbish out and burn it.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=247.21,248.47"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-37",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And there was about five or six black bin bags full of really rubbish.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=249.59,253.81"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-38",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I don't know if you have any experience of ration packs from the Army.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=255.61,259.05"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-39",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "There were lots of bit in there, but it included a thing called a beef patty,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=260.77,265.73"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-40",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "which was like a little tin of self-seeding patty.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=266.21,269.31"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-41",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Personally, I didn't like it and not many other lads did so often got put in the rubbish.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=271.03,274.85"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-42",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So the first time I walked out there, I was fairly lax. I had my weapon.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=276.27,279.89"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-43",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "They had me helmet.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=281.33,282.05"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-44",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "But I kind of strolled out there with a kind of kerosene in three bin bags out to this metal skip",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=282.85,288.27"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-45",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "through the three bin bags in, put a load of kerosene in and set a light.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=288.67,292.63"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-46",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And we had a couple of minutes.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=293.71,294.95"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-47",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And then turned on to walk back to collect more bin bags to take it out.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=295.55,299.69"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-48",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And as I was walking back, I heard what I assumed to be a rifle shot.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=300.39,304.41"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-49",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And it really got my heart going because I buy myself in an area I didn't know.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=305.95,312.08"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-50",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I didn't have a radio. I stopped looking around to see what it was.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=312.18,316.36"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-51",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And what it turned out it was, it was the tins of beef patty that were in the rubbish,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=317.58,321.44"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-52",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "that were heating up with the heat and going off pop.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=321.44,324.98"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-53",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So having realised that to my kind of amusement, I calmed myself down, went back,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=326.5,331.32"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-54",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "collected four or five more bags of rubbish, took it out to the skip.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=332.32,334.5"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-55",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "A little bit more kerosene, put these bags in and whilst I'm stood there lighting the second time",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=334.96,341.28"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-56",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and heating up, two friends of mine came around the perimeter fence to do their parole, their patrol.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=341.28,346.12"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-57",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And they had been stood on the front gate for sort of two hours, minus ten, so it was quite chilly.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=346.64,352.68"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-58",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And I'm stood chatting to one whilst the other goes over to the skip to warm himself",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=354.28,358.72"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-59",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "on the now toasty blaze. That was the...",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=359.38,363.38"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-60",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Unfortunately, he's toasting himself as a tin of beef patty goes off pop.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=363.38,368.52"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-61",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And splatters his face with, as you can imagine, scolding up beef patty.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=369.7,373.56"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-62",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "On reflection it kind of descended into quite a comical scene, really.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=375.88,379.48"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-63",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "He, the lad called Andy, was effectively lying on the floor holding his face, screaming and shouting in pay.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=381.72,387.62"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-64",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I fell on my back and was giggling because I knew what had happened.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=388.96,391.8"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-65",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And the third lad had effectively cocked his rifle and was spinning around through 360 degrees,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=392.02,396.82"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-66",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "looking for the person that he assumed had shot Andy.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=397.1,400.32"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-67",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So, it was kind of, it was quite an amusing situation, but at the time, if you didn't know what was going on,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=401.16,408.78"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-68",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "the poor lad who didn't know what had happened was assuming we were under attack.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=409.22,412.96"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-69",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "On the UN side of things, we often found, or at times you found yourself in situations that,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=415.12,420.94"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-70",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "when you reflect anything, maybe was that the best situation.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=421.58,425.8"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-71",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "An example of, we went to a body exchange, which is effectively the dead on both sides,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=427.3,435.14"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-72",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and went to exchange their dead bodies for burial rights.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=435.78,438.8"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-73",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "It was at a place called Sandski Mosque, which at the time was considered to be the front line.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=440.3,444.88"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-74",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "It was on a mountain pass, so as I recall, kind of the right side of the road was just a sheer drop.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=446.68,452.36"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-75",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "The left side was a wood, and it was mined, and it was effectively no man's land between, I think,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=452.36,459.46"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-76",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "15,000 Serbs on one side and between 10 and 12,000 Muslims on the other.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=459.5,464.84"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-77",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "They rolled up, both parties brought a flatbed, and on the back of that flatbed,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=466.8,472.58"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-78",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "the bodies were bodies.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=472.7,473.64"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-79",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And they had obviously been loaded the night before and left outside because they were frozen.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=475.62,480.74"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-80",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And they were parked in the sunshine.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=482.32,483.94"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-81",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I don't remember that with a scalar, and we were guarding the trucks.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=484.26,490.16"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-82",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And off the parties went to discuss their terms, which was effectively along the lines of,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=491.34,496.82"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-83",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "well, if you're only going to give us 25 bodies, we're only going to give you 25 bodies.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=497.72,502.12"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-84",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Even though we've got 50, we're going to hold on to 25 corpses, because you're only going to give us 25,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=503.1,508.52"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-85",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "so we're only going to give you 25 in return, which, for me, I found quite hard.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=508.52,514.06"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-86",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "But as the day progressed, the sun came out and started to shine on these trucks,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=516.6,520.12"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-87",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and the heat of the sun started to defrost what had been frozen bodies the night before,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=520.4,527.7"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-88",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and the smell, I suppose, out of everything was kind of the thing that stuck out for me.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=527.92,534.36"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-89",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "But it was a, I suppose that was part of the job.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=536.19,539.49"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-90",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "That was what we were there for, to help implement the peace.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=539.79,543.69"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-91",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Yeah, I suppose after Bosnia, I returned back to the UK,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=545.59,548.37"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-92",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and then I had my final two-and-a-half years in the Army were in London,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=548.81,553.29"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-93",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "in Northern Ireland.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=553.29,554.49"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-94",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "My time in Derry, I suppose, marked kind of a change in my military career,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=555.99,560.23"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-95",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "if you like, I'd been promoted at that point, so I was a Lance Corporal,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=560.23,564.91"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-96",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "but I changed my role as well, because again, prior to going out to Northern Ireland,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=565.47,571.21"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-97",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I was with the mortars, so heavy weapons, and there wasn't really a role for heavy weapons,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=571.39,575.55"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-98",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "so I'd moved into battalion level, intelligence and surveillance.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=575.71,580.99"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-99",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So I wasn't so much in, although I was in uniform, I wasn't really out on the streets as much.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=582.77,587.95"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-100",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I spent a lot of time in a tower with a big pair of battleship binoculars watching people,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=587.95,595.73"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-101",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and reporting on them, that was kind of my area of interest, if you like.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=596.33,600.73"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-102",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I was a suspect recognition instructor.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=601.49,603.41"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-103",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I would know people in the local area, kind of know their routines,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=605.61,609.67"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-104",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "know their vehicles, and I would report on that.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=609.91,611.49"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-105",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "We tended to work kind of a six-week turnaround there.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=613.09,616.01"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-106",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "It would be two weeks in the tower, two weeks back in the office,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=616.01,620.73"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-107",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "on the other end of the radio from the tower, logging and reporting all the sightings,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=621.61,626.61"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-108",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and then two weeks training, and then you'd go through the whole process again,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=626.69,630.79"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-109",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "but instead two weeks training, it would be two weeks leave.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=630.93,632.59"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-110",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So it was quite nice then, because every 10 weeks you were off,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=632.89,635.71"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-111",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "you would work for 10 weeks and then be off for two weeks.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=636.07,637.69"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-112",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So I suppose really for the first time in my military career you had,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=638.53,641.39"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-113",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "you could plan, you know, you knew more or less every 10 weeks,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=641.39,646.05"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-114",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "so it was going to be off for two weeks, and I quite liked that aspect of it.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=646.05,649.83"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-115",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I left, returned back to the northeast.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=651.41,654.23"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-116",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I did a couple of it in between, but went on to join HM Coast Guard",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=655.57,660.83"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-117",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and spent eight years working in an article, search and rescue,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=661.55,667.03"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-118",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and really enjoyed the process.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=667.51,668.79"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-119",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And that's what brought me to Wales.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=668.79,670.79"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-120",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "The station that I was at atain teased closed,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=672.33,674.21"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-121",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "and I moved to Hollyhead on promotion.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=675.27,677.43"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-122",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So I bought the local newspaper and was looking for other forms of employment.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=678.79,683.39"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-123",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I saw a probation officer in the paper.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=685.83,690.23"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-124",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Didn't really know that much about it, if I'm honest.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=690.69,692.45"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-125",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I didn't have any burning desires to be a probation officer.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=693.03,696.09"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-126",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I kind of had an image of myself in a tan uniform with a pair of mirrored sunglasses and a bat on.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=696.09,701.11"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-127",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "I thought, yeah, I can do that.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=701.81,703.35"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-128",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "So applied.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=704.35,705.01"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-129",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Here I am, kind of 12 years down the line.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=706.17,707.97"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-130",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "When I look at pictures of my colleagues now, in uniform they look like World War II veterans.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=708.77,714.55"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-131",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "You know, a lot of the colleagues I serve with now have eight and nine medals.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=715.11,718.51"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-132",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "It is not very often these days you see.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=718.91,720.73"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-133",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "When I served, people generally had one or two medals.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=721.85,724.99"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-134",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "If you had three medals, that was you.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=725.29,728.15"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-135",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "You were rather long in the tooth than you'd been around.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=728.65,731.45"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-136",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "As you see, I see colleagues now have got like nine, ten medals.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=732.41,735.69"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-137",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "That's not something you see very often these days.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=737.15,739.59"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-138",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "But it's a career that I enjoy and it's funny how it still kind of keeps me in contact with lots of x-forces people.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=740.25,750.49"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-139",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And it's, again, I suppose it's something I reflect on because at the time when I went to join the Army,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=753.17,759.19"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-140",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "you know, my mother in particular was keen for me not to join.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=759.89,762.41"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-141",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "And I reflect on that because, kind of, nine years later when I decided I had enough when I was going to leave the Army,",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=764.35,770.93"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-142",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "there was almost a degree of role reversal there from having a mother who initially didn't want me to join the Army.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=772.17,778.95"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-143",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "To having a mum who was saying, hold on, why are you leaving the Army?",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=780.61,784.17"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-144",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "You know, it's something you're doing well at.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=784.85,786.77"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-145",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "You know, you're making a career out of this.",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=787.23,788.59"
+    },
+    {
+      "id": "http://localhost:5173/iiif-pcw-574604/annotation/transcript-146",
+      "type": "Annotation",
+      "motivation": "supplementing",
+      "creator": {
+        "type": "Software",
+        "name": "RAMP prototype: machine-generated draft, unreviewed"
+      },
+      "body": {
+        "type": "TextualBody",
+        "value": "Why are you choose to leave?",
+        "format": "text/plain",
+        "language": "en"
+      },
+      "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=789.21,790.03"
+    }
+  ]
+}

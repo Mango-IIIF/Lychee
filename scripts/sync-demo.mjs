@@ -1,6 +1,7 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { deployBase, writeManifests } from './fixtures.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const srcDist = resolve(root, 'src/dist');
@@ -62,3 +63,7 @@ if (removed > 0) {
   console.log(`[sync-demo] pruned ${removed} stale entries`);
 }
 console.log(`[sync-demo] updated demo assets: ${demoDist}`);
+
+const base = deployBase();
+writeManifests(base);
+console.log(`[sync-demo] wrote demo manifests for ${base}`);

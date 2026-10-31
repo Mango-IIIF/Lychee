@@ -1,0 +1,100 @@
+{
+  "source": "https://www.peoplescollection.wales/items/550555",
+  "retrieved": "2026-10-19",
+  "audioUrl": "https://www.peoplescollection.wales/sites/default/files/audio/2017/February/VSW065.1_0.mp3",
+  "durationSeconds": 3282.385,
+  "durationEvidence": "Decoded MP3 container metadata using PyAV.",
+  "cover": {
+    "id": "https://www.peoplescollection.wales/sites/default/files/images/2017/February/VSW065.4_1.jpg",
+    "width": 1600,
+    "height": 1200,
+    "source": "https://www.peoplescollection.wales/items/550561",
+    "rights": "Creative Archive Licence; copyright Margaret Young. Photographer unknown."
+  },
+  "transcript": {
+    "engine": "faster-whisper 1.2.1",
+    "model": "large-v3-turbo",
+    "language": "en",
+    "languageDetection": {
+      "automaticLargeModel": "en",
+      "probability": 0.9498285055160522,
+      "confirmation": "English checked against the original project interview notes. Production transcription uses English."
+    },
+    "status": "machine-generated, unreviewed",
+    "complete": true,
+    "segments": 114,
+    "speakerDiarization": false,
+    "translation": false,
+    "spellingNormalisations": {
+      "Margaret Bainham": {
+        "replacement": "Margaret Beynon",
+        "occurrences": 1
+      },
+      "Ammonford": {
+        "replacement": "Ammanford",
+        "occurrences": 1
+      },
+      "Almondford": {
+        "replacement": "Ammanford",
+        "occurrences": 2
+      },
+      "Almond Valley": {
+        "replacement": "Amman Valley",
+        "occurrences": 1
+      },
+      "Pantafinon": {
+        "replacement": "Pantyffynnon",
+        "occurrences": 1
+      },
+      "Pacorine": {
+        "replacement": "Parcyrhun",
+        "occurrences": 1
+      },
+      "Coggy": {
+        "replacement": "Corgi",
+        "occurrences": 3
+      }
+    },
+    "normalisationBasis": "Limited spellings checked against original project notes; raw ASR is retained in ignored .tools. This is not full editorial verification.",
+    "coverage": "Detected speech. No manual listening verification; no description of non-speech audio. Editorial review against the recording is required."
+  },
+  "originalNotes": {
+    "url": "https://www.lleisiaumenywodffatri.cymru/uploads/VSW065.2.pdf",
+    "type": "Timestamped detailed interview notes, not a verbatim transcript.",
+    "timings": "Chapter starts taken from the original index; titles paraphrased.",
+    "catalogueDiscrepancy": "The item catalogue gives 1958 as the start of employment; the project notes give 1959. No attempt was made to resolve this."
+  },
+  "chapters": {
+    "count": 14,
+    "status": "suggested, unreviewed",
+    "labelLanguage": "en",
+    "basis": "Original timestamped project interview notes; labels paraphrased for browsing."
+  },
+  "annotations": {
+    "count": 18,
+    "status": "suggested, unreviewed",
+    "notes": {
+      "margaret-young": "Catalogue-level person tag from the interview title.",
+      "corgi": "Catalogue-level employer tag; no automatic company authority match was made.",
+      "ammanford": "Catalogue-level place tag. Wikidata identity checked; context is the factory location.",
+      "hosiery": "Original project notes section at 03:10.",
+      "wages": "Original project notes section at 07:02.",
+      "unions": "Original project notes section at 09:25. This annotation indexes an oral-history account, not an independently verified employment claim.",
+      "knitwear": "Original project notes section at 13:20; Wikidata identity checked.",
+      "birthdays": "Original project notes section at 16:30.",
+      "working-conditions": "Original project notes section at 19:01.",
+      "safety": "Original project notes section at 23:47.",
+      "home-working": "Broad interval within the 27:20 notes section, including holidays and family. Exact spoken mention requires review.",
+      "factory-trips": "Original project notes section at 33:50.",
+      "friendship": "Original project notes section at 41:57.",
+      "retirement": "Original project notes section at 46:18.",
+      "repairs": "Original project notes section at 50:25 includes royal visits and repair work; exact boundaries require review.",
+      "factory-photo": "User-selected cover; linked catalogue identifies copyright Margaret Young and an unknown photographer.",
+      "project-notes": "Source of chapter starts and subject indexing; detailed English notes, not a verbatim transcript.",
+      "source-interview": "Source catalogue link."
+    }
+  },
+  "licence": "https://www.peoplescollection.wales/help/copyright/creative-archive-licence",
+  "copyrightStatement": "Women's Archive Wales 2014",
+  "hosting": "IDs use the local development origin. Rebuild with --base-url before hosting elsewhere."
+}

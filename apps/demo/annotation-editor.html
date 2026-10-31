@@ -2,36 +2,76 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mango Annotation Editor Demo</title>
     <link rel="stylesheet" href="demo.css" />
   </head>
   <body>
-    <div class="page">
-      <header class="hero">
-        <div class="hero__title">Mango Annotation Editor</div>
-        <p class="hero__subtitle">
-          Draw annotations directly on the canvas
-        </p>
-      </header>
+    <div class="page page--editor">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="./">Test manifests</a>
+        <span aria-hidden="true">/</span>
+        <span id="crumb">Annotate</span>
+      </nav>
+      <p class="notice" id="notice" hidden></p>
 
       <section class="viewer-shell">
-        <mango-annotation-editor
-          manifest-id="https://iiif.io/api/cookbook/recipe/0005-image-service/manifest.json"
-          config='{"annotations":{"languages":["en","cy"]}}'
-        ></mango-annotation-editor>
+        <mango-annotation-editor></mango-annotation-editor>
       </section>
     </div>
     <script type="module" src="dist/mango-annotation-editor.js"></script>
-    <script>
+    <script type="module">
+      /*
+       * ?manifest=<url>   the manifest to annotate (default: the NLW constabulary register)
+       * ?type=image|audio|video   skips media detection
+       * ?json=1           shows the W3C JSON being written
+       * ?gallery=off|closed|open   the page thumbnail strip (default: open)
+       * ?lang=cy          interface language
+       */
+      const params = new URLSearchParams(location.search);
+      const manifest = params.get('manifest') ?? new URL('manifests/constabulary.json', location.href).href;
+      const type = params.get('type');
+
+      const annotations = {
+        languages: ['en', 'cy'],
+        showJson: params.get('json') === '1',
+        gallery: params.get('gallery') ?? 'open',
+        ...(['image', 'audio', 'video'].includes(type) ? { mediaType: type } : {}),
+      };
+
+      // AI suggestions and GeoNames need the demo's API server (`npm run dev` with a .env).
+      try {
+        const health = await (await fetch('api/health')).json();
+        if (health.ai) annotations.ai = { endpoint: 'api/describe' };
+        if (health.geonames) {
+          annotations.authorities = [
+            { id: 'geonames', label: 'GeoNames', endpoint: 'api/geonames', placeholder: 'Find a place' },
+          ];
+        }
+      } catch {
+        // A static deploy: Wikidata only.
+      }
+
+      const { items } = await (await fetch('catalogue.json')).json();
+      const item = items.find((entry) => new URL(entry.manifest, location.href).href === manifest);
+      if (item) {
+        document.getElementById('crumb').textContent = item.title;
+        document.title = `Annotate: ${item.title}`;
+        if (item.notice) {
+          const notice = document.getElementById('notice');
+          notice.textContent = item.notice;
+          notice.hidden = false;
+        }
+      }
+
       const editor = document.querySelector('mango-annotation-editor');
-      if (editor) {
-        editor.addEventListener('exportAnnotationPage', (event) => {
-          console.log('Exported AnnotationPage:', event.detail.page);
-        });
+      editor.config = JSON.stringify({ theme: 'light', language: params.get('lang') ?? 'en', annotations });
+      editor.manifestId = manifest;
+      editor.addEventListener('exportAnnotationPage', (event) => {
+        console.log('Exported AnnotationPage:', event.detail.page);
+      });
+      for (const name of ['annotationCreate', 'annotationUpdate', 'annotationDelete']) {
+        editor.addEventListener(name, (event) => console.log(name, event.detail));
       }
     </script>
   </body>
