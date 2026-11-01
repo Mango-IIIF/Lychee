@@ -3,7 +3,6 @@ import { webcrypto } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import react from '@vitejs/plugin-react';
 import { smartTools } from './build/smartTools';
 
 if (
@@ -39,7 +38,6 @@ export default defineConfig({
   },
   plugins: [
     smartTools(),
-    react({ include: /\.tsx$/ }),
     svelte({
       configFile: resolve(__dirname, 'svelte.config.js'),
       dynamicCompileOptions({ filename }) {

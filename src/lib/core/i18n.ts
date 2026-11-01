@@ -5,6 +5,7 @@ import {
   getLocale,
   translate as translateViewer,
 } from '@mango-iiif/iiif-viewer/core';
+import { setLocale as setAnnotationLocale } from '@mango-iiif/annotation';
 import en from '../../locales/en.json';
 import es from '../../locales/es.json';
 import cy from '../../locales/cy.json';
@@ -59,6 +60,9 @@ const format = (template: string, params?: Params): string => {
 };
 
 export { locale, setLocale, getLocale };
+
+/* The sidebar and toolbar come from @mango-iiif/annotation, which keeps its own locale store. */
+locale.subscribe((value) => setAnnotationLocale(value));
 
 export const translate = (key: string, params?: Params, overrideLocale?: string): string => {
   const active = overrideLocale ?? get(locale);

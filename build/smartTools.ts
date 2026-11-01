@@ -19,11 +19,12 @@ const packageDir = (name: string) => path.join(root, 'node_modules', name);
 
 const SAM = '@annotorious/plugin-segment-anything';
 const MAGNETIC = '@annotorious/plugin-magnetic-outline';
-const SAM_VERSION = JSON.parse(fs.readFileSync(path.join(packageDir(SAM), 'package.json'), 'utf8'))
-  .version as string;
-
-/** Where the SAM worker loads ONNX runtime from, instead of next to itself (~27 MB). */
-const ORT_BASE = `https://cdn.jsdelivr.net/npm/${SAM}@${SAM_VERSION}/dist/assets/`;
+/**
+ * Where the SAM worker loads ONNX runtime from, instead of next to itself (~27 MB): the
+ * onnxruntime-web release it was built with. Not the plugin's own copy: with its models
+ * the plugin is over jsDelivr's package size limit, so jsDelivr serves none of its files.
+ */
+const ortBase = (version: string) => `https://cdn.jsdelivr.net/npm/onnxruntime-web@${version}/dist/`;
 
 const endsWith = (id: string, suffix: string) => id.split('?')[0].replaceAll('\\', '/').endsWith(suffix);
 
@@ -42,14 +43,20 @@ const samLifecycle = (code: string) => {
     .replace(retry, 'setTimeout(() => { if (i) E(); }, 100)');
 };
 
-/** The SAM worker resolves ONNX runtime against its own URL; point it at the CDN. */
+/**
+ * The SAM worker resolves ONNX runtime against its own URL; point it at the CDN. The
+ * worker's copies carry a Vite content hash that the release's file names don't.
+ */
 const samWorkerRuntime = (code: string) => {
-  const pattern = /new URL\(`(ort-wasm-[^`]+\.(?:mjs|wasm))`,self\.location\.href\)/g;
+  const pattern = /new URL\(`(ort-wasm-[^`]+)-[\w-]{8}\.(mjs|wasm)`,self\.location\.href\)/g;
   const matches = code.match(pattern) ?? [];
-  if (matches.length !== 2) {
+  const version = code.match(/Object\.defineProperty\(\w+\.versions,"web",\{value:(\w+)/)?.[1];
+  const release = version && code.match(new RegExp(`var ${version}=\`(\\d+\\.\\d+\\.\\d+)\``))?.[1];
+  if (matches.length !== 2 || !release) {
     throw new Error('SAM worker ONNX runtime URLs changed upstream; review the patch.');
   }
-  return code.replace(pattern, (_m, name: string) => `new URL(\`${name}\`,${JSON.stringify(ORT_BASE)})`);
+  const base = JSON.stringify(ortBase(release));
+  return code.replace(pattern, (_m, name: string, ext: string) => `new URL(\`${name}.${ext}\`,${base})`);
 };
 
 /** plugin-magnetic-outline loads its worker from `/assets/` at the site root. */

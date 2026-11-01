@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, untrack } from 'svelte';
   import type OpenSeadragon from 'openseadragon';
+  import { AnnotationToolbar } from '@mango-iiif/annotation';
   import {
     ViewerCore,
     manifestsStore,
@@ -15,7 +16,6 @@
   import { toImageAnnotation, type Region } from '../annotations/w3c';
   import { ImageAnnotatorController, type Bounds, type SamCommand, type SamState, type Tool } from './annotorious';
   import GalleryStrip from './GalleryStrip.svelte';
-  import Toolbar from './Toolbar.svelte';
 
   /**
    * Mango's viewer as a stage, with Annotorious drawing on its OpenSeadragon
@@ -211,13 +211,13 @@
     onbeforecanvaschange={() => onbeforecanvaschange?.() ?? true}
   />
   {#if osd}
-    <Toolbar
+    <AnnotationToolbar
       {tool}
       {samState}
       {samMode}
       autoSelect={config.annotations?.autoSelect !== false}
-      ontoolchange={(next) => (tool = next)}
-      onsammode={(mode) => (samMode = mode)}
+      ontoolchange={(next: Tool) => (tool = next)}
+      onsammode={(mode: 'add' | 'remove') => (samMode = mode)}
       onsamcommand={onSamCommand}
       gallery={galleryAvailable ? galleryOpen : undefined}
       ongallerytoggle={() => (galleryOpen = !galleryOpen)}
@@ -239,10 +239,42 @@
   }
 
   .image-stage__viewer {
+    /* The drawing tools stop short of Mango's controls, the row under the image. */
+    --anno-controls-height: 64px;
+    container: anno-stage / inline-size;
     position: relative;
     display: grid;
     grid-template-rows: minmax(0, 1fr);
     min-height: 0;
     overflow: hidden;
+  }
+
+  /*
+   * Mango floats its toolbar over the image and shows it on hover; here it is a
+   * row of its own under the image, always visible and never over a shape.
+   */
+  .image-stage__viewer :global(.stage__primary) {
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .image-stage__viewer :global(.stage__primary .stage__toolbar.stage__toolbar--below) {
+    position: static;
+    width: 100%;
+    margin: 0;
+    padding: 8px 12px;
+    justify-content: space-between;
+    border: 0;
+    border-top: 1px solid var(--viewer-panel-border);
+    background: var(--viewer-stage-bottom-bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  /* Spread across the row, the gaps already separate the groups. */
+  .image-stage__viewer :global(.stage__toolbar--below .stage__toolbar-separator) {
+    display: none;
   }
 </style>

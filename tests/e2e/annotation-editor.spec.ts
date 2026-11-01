@@ -233,9 +233,9 @@ test.describe("audio", () => {
   });
 
   test("lists the recording's transcript, chapters and annotations", async ({ page }) => {
-    await expect(page.locator(".av-stage__list button").first()).toContainText("Margaret Young");
-    await page.getByRole("button", { name: "Chapters" }).click();
-    await expect(page.locator(".av-stage__list button").first()).toContainText("Background and joining Corgi");
+    await expect(page.getByRole("tabpanel", { name: "Transcript" }).getByRole("listitem").first()).toContainText("Margaret Young");
+    await page.getByRole("tab", { name: "Chapters" }).click();
+    await expect(page.getByRole("tabpanel", { name: "Chapters" }).getByRole("listitem").first()).toContainText("Background and joining Corgi");
     await page.locator(".annotation-table__toggle").click();
     await expect(page.locator(".annotation-table tbody tr").first()).toBeVisible();
   });

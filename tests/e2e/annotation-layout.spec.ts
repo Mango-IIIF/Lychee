@@ -157,9 +157,12 @@ test.describe("audio and video layout", () => {
         const host = page.locator("mango-annotation-editor");
         const bar = host.locator(".vjs-control-bar");
         await expect(bar).toBeVisible();
-        const player = host.locator(".av-stage__player");
-        await expectContained(bar, player);
-        await expectContained(player, host.locator(".annotation-editor__stage"));
+        const player = host.locator(".av-stage .player");
+        // The player re-skins RAMP's controls once it is ready, so measure after that settles.
+        await expect(async () => {
+          await expectContained(bar, player);
+          await expectContained(player, host.locator(".annotation-editor__stage"));
+        }).toPass();
         if (kind === "video") {
           const { width, height } = await box(host.locator(".video-js"));
           expect(width / height).toBeCloseTo(16 / 9, 1);
