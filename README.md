@@ -10,8 +10,9 @@ A IIIF annotation editor for [Mango](https://github.com/Mango-IIIF/Mango).
   draws on it, with the toolset [IMMARKUS](https://github.com/rsimon/immarkus) is
   built from: rectangle, polygon, ellipse, freehand and line, plus Smart Scissors,
   Edge Snap and Auto Select (SAM2, in the browser).
-- **Audio and video**: [RAMP](https://github.com/samvera-labs/ramp) plays the
-  recording, with its transcript, chapters and existing annotations alongside.
+- **Audio and video**: [`@mango-iiif/av`](https://github.com/Mango-IIIF/av)
+  plays the recording through [RAMP](https://github.com/samvera-labs/ramp), with
+  its transcript, chapters and existing annotations alongside.
   Annotations target a moment or a range.
 - **One sidebar for both**: say what the annotation is about, pick what you want
   to do (note, transcribe, tag, identify, highlight, link) and fill in only the
@@ -33,8 +34,8 @@ A IIIF annotation editor for [Mango](https://github.com/Mango-IIIF/Mango).
 ></mango-annotation-editor>
 ```
 
-The standalone bundle includes the viewer and its styles. React and RAMP are
-fetched only when an audio or video manifest is opened, and the Auto Select model
+The standalone bundle includes the viewer and its styles. `@mango-iiif/av`
+(with React and RAMP) is fetched only when an audio or video manifest is opened, and the Auto Select model
 only when that tool is first used.
 
 ## Install from npm
@@ -198,11 +199,17 @@ are dispatched on the element too.
 ```
 AnnotationEditor            config, annotations, events, export
 ├─ ImageStage               Mango ViewerCore (no annotation overlay)
-│  └─ annotorious.ts        Annotorious + plugins on Mango's OpenSeadragon
-├─ AVStage                  RAMP, as a lazily loaded React island
-├─ Sidebar                  the intent-first form, shared by both
+│  ├─ annotorious.ts        Auto Select, colours and regions on AnnotoriousEditor
+│  └─ AnnotationToolbar     the drawing tools (@mango-iiif/annotation)
+├─ AVStage                  <mango-av-media> (@mango-iiif/av), lazily loaded
+├─ AnnotationSidebar        the intent-first form, shared by both (@mango-iiif/annotation)
 └─ AnnotationBrowserTable   every annotation, the user's and the item's
 ```
+
+The sidebar, toolbar and Annotorious facade come from `@mango-iiif/annotation`,
+and the player from `@mango-iiif/av`. Authority search providers are this
+package's own: Wikidata (`src/lib/authorities/wikidata.ts`) and host endpoints
+(`endpoint.ts`) are passed to the sidebar as `providers`.
 
 The editor owns the annotations; Mango only shows the image. Shapes and the
 annotations about them are stored apart (`src/lib/annotations/store.svelte.ts`),

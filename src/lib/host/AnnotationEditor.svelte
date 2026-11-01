@@ -1,5 +1,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { AnnotationSidebar, type AnnotationSidebarCard as Card } from '@mango-iiif/annotation';
+  import '@mango-iiif/annotation/style.css';
   import {
     fetchManifest,
     manifestsStore,
@@ -32,14 +34,11 @@
   import { formatTime, timeRange, validateTime } from '../annotations/time';
   import type { Annotation, Scope } from '../annotations/types';
   import { recordFromW3C, toW3C, type ExportContext, type UserRecord } from '../annotations/w3c';
-  import AVStage from '../av/AVStage.svelte';
-  import type { RampPlayback } from '../av/ramp';
+  import AVStage, { type AVPlayback } from '../av/AVStage.svelte';
   import { aiImageUrl, type AiSuggestion } from '../image/ai';
   import AiAssist from '../image/AiAssist.svelte';
   import ImageStage from '../image/ImageStage.svelte';
   import type { Tool } from '../image/annotorious';
-  import Sidebar from '../sidebar/Sidebar.svelte';
-  import type { Card } from '../sidebar/types';
   import AnnotationBrowserTable from '../table/AnnotationBrowserTable.svelte';
   import type { TableRow } from '../table/types';
   import EditorShell from './EditorShell.svelte';
@@ -49,7 +48,7 @@
 
   /**
    * The annotation editor: Mango's viewer as the image stage with Annotorious
-   * drawing on it, or RAMP for audio and video; the intent-first sidebar; and
+   * drawing on it, or @mango-iiif/av for audio and video; the intent-first sidebar; and
    * the browser table underneath.
    *
    * This component owns the annotations. The viewer only shows the image.
@@ -169,7 +168,7 @@
   /* Audio / video */
   let avStage: AVStage | null = $state(null);
   let canvasIndex = $state(0);
-  let playback = $state<RampPlayback>({ time: 0, duration: 0, ready: false, playing: false, error: false });
+  let playback = $state<AVPlayback>({ time: 0, duration: 0, ready: false, playing: false, error: false });
   let start = $state('0');
   let end = $state('');
 
@@ -594,8 +593,6 @@
           bind:canvasIndex
           bind:playback
           {manifest}
-          {kind}
-          existing={store.existing}
           language={normalisedConfig.language}
         />
       {:else if manifestEntry?.error}
@@ -606,7 +603,7 @@
     </main>
 
     {#if kind}
-      <Sidebar
+      <AnnotationSidebar
         kind={kind === 'image' ? 'image' : 'av'}
         {languages}
         bind:draft
@@ -648,7 +645,7 @@
             />
           {/if}
         {/snippet}
-      </Sidebar>
+      </AnnotationSidebar>
     {/if}
 
     <div class="annotation-editor__table">

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, untrack } from 'svelte';
   import type OpenSeadragon from 'openseadragon';
+  import { AnnotationToolbar } from '@mango-iiif/annotation';
   import {
     ViewerCore,
     manifestsStore,
@@ -15,7 +16,6 @@
   import { toImageAnnotation, type Region } from '../annotations/w3c';
   import { ImageAnnotatorController, type Bounds, type SamCommand, type SamState, type Tool } from './annotorious';
   import GalleryStrip from './GalleryStrip.svelte';
-  import Toolbar from './Toolbar.svelte';
 
   /**
    * Mango's viewer as a stage, with Annotorious drawing on its OpenSeadragon
@@ -211,13 +211,13 @@
     onbeforecanvaschange={() => onbeforecanvaschange?.() ?? true}
   />
   {#if osd}
-    <Toolbar
+    <AnnotationToolbar
       {tool}
       {samState}
       {samMode}
       autoSelect={config.annotations?.autoSelect !== false}
-      ontoolchange={(next) => (tool = next)}
-      onsammode={(mode) => (samMode = mode)}
+      ontoolchange={(next: Tool) => (tool = next)}
+      onsammode={(mode: 'add' | 'remove') => (samMode = mode)}
       onsamcommand={onSamCommand}
       gallery={galleryAvailable ? galleryOpen : undefined}
       ongallerytoggle={() => (galleryOpen = !galleryOpen)}

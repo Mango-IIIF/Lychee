@@ -6,20 +6,22 @@
  * Edge Snap from plugin-magnetic-outline, and Auto Select (SAM2, WebGPU) from
  * plugin-segment-anything, loaded only when first used.
  *
+ * @mango-iiif/annotation's AnnotoriousEditor creates the annotator and switches
+ * the drawing tools; this adds Auto Select, the colours, and the regions.
+ *
  * Svelte owns the state; this module only translates between it and the
  * annotator, so it has no framework code in it.
  */
 
 import type OpenSeadragon from 'openseadragon';
 import {
-  createOSDAnnotator,
   UserSelectAction,
   type DrawingStyle,
   type ImageAnnotation,
   type OpenSeadragonAnnotator,
 } from '@annotorious/openseadragon';
-import { mountPlugin as mountSelectorPack } from '@annotorious/plugin-tools';
 import { mountPlugin as mountMagneticOutline } from '@annotorious/plugin-magnetic-outline';
+import { AnnotoriousEditor, type SamCommand, type SamState, type Tool } from '@mango-iiif/annotation';
 import type { ImageTarget, Region } from '../annotations/w3c';
 
 import '@annotorious/openseadragon/annotorious-openseadragon.css';
@@ -27,16 +29,7 @@ import '@annotorious/plugin-tools/annotorious-plugin-tools.css';
 import '@annotorious/plugin-magnetic-outline/plugin-magnetic-outline.css';
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
 
-export type Tool =
-  | 'select'
-  | 'rectangle'
-  | 'polygon'
-  | 'ellipse'
-  | 'path'
-  | 'line'
-  | 'intelligent-scissors'
-  | 'magnetic-cursor'
-  | 'smart-select';
+export type { SamCommand, SamState, Tool };
 
 export const DRAW_TOOLS: readonly Tool[] = [
   'rectangle',
@@ -47,15 +40,6 @@ export const DRAW_TOOLS: readonly Tool[] = [
   'intelligent-scissors',
   'magnetic-cursor',
 ];
-
-export type SamState =
-  | { state: 'idle' }
-  | { state: 'loading'; progress: number }
-  | { state: 'ready'; busy: boolean; hasSelection: boolean }
-  | { state: 'unsupported' }
-  | { state: 'error'; message: string };
-
-export type SamCommand = 'done' | 'reset';
 
 export interface ImageAnnotatorCallbacks {
   onRegionChange(region: Region): void;
@@ -95,6 +79,7 @@ type StoreChanges = {
 const ORIGIN_LOCAL = 'LOCAL';
 
 export class ImageAnnotatorController {
+  readonly editor: AnnotoriousEditor;
   readonly anno: OpenSeadragonAnnotator;
   private canvasId = '';
   private tool: Tool = 'select';
@@ -121,8 +106,8 @@ export class ImageAnnotatorController {
     readonly viewer: OpenSeadragon.Viewer,
     private callbacks: ImageAnnotatorCallbacks,
   ) {
-    this.anno = createOSDAnnotator(viewer, {
-      drawingEnabled: false,
+    this.editor = new AnnotoriousEditor({
+      viewer,
       drawingMode: 'click',
       userSelectAction: ((annotation: ImageAnnotation) =>
         this.tool === 'smart-select' || this.existingIds.has(annotation.id)
@@ -130,7 +115,8 @@ export class ImageAnnotatorController {
           : UserSelectAction.EDIT) as never,
       style: this.style,
     });
-    mountSelectorPack(this.anno);
+    this.anno = this.editor.annotator;
+    // The editor would import its own copy on first use; this one carries the fixes in build/smartTools.ts.
     mountMagneticOutline(this.anno);
 
     this.anno.state.store.observe(this.onStoreChange, { origin: ORIGIN_LOCAL as never });
@@ -221,9 +207,8 @@ export class ImageAnnotatorController {
 
   setTool(tool: Tool): void {
     this.tool = tool;
-    const drawing = DRAW_TOOLS.includes(tool);
-    this.anno.setDrawingEnabled(drawing);
-    if (drawing) this.anno.setDrawingTool(tool as never);
+    // Auto Select is not an Annotorious drawing tool: SAM draws while drawing is off.
+    this.editor.setTool(tool === 'smart-select' ? 'select' : tool);
     if (tool === 'smart-select') this.startSam();
     else this.stopSam();
   }
@@ -378,6 +363,6 @@ export class ImageAnnotatorController {
     this.sam?.destroy();
     this.anno.state.store.unobserve(this.onStoreChange);
     this.anno.off('selectionChanged', this.onSelection);
-    this.anno.destroy();
+    this.editor.destroy();
   };
 }
