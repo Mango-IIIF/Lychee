@@ -13,6 +13,7 @@
   import type { AnnotationStore } from '../annotations/store.svelte';
   import { canvasesOf, idOf, label } from '../annotations/iiif';
   import { targetSource } from '../annotations/model';
+  import type { Annotation } from '../annotations/types';
   import { toImageAnnotation, type Region } from '../annotations/w3c';
   import { ImageAnnotatorController, type Bounds, type SamCommand, type SamState, type Tool } from './annotorious';
   import GalleryStrip from './GalleryStrip.svelte';
@@ -191,6 +192,15 @@
   export const getBounds = (id: string): Bounds | undefined => controller?.getBounds(id);
   export const getViewer = (): ViewerCoreInstance | null => core;
   export const goToCanvas = (id: string): void => core?.setCanvasById(id);
+  /** Makes one of the manifest's shapes editable, as `region`. */
+  export const adoptExisting = (existingId: string, region: Region): void => controller?.adopt(existingId, region);
+  /** Puts a manifest shape back after an edit that was not saved. */
+  export const releaseExisting = (annotation: Annotation, regionId: string): void => {
+    const source = targetSource(annotation.target);
+    // After a canvas change the new canvas's shapes are already drawn.
+    const shape = source === canvasId ? toImageAnnotation(annotation, source, canvasScale[source] ?? { sx: 1, sy: 1 }) : null;
+    controller?.release(regionId, shape);
+  };
 
   const onSamCommand = (command: SamCommand) => {
     samMode = 'add';
