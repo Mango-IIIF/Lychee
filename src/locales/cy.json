@@ -121,7 +121,9 @@
       "noResults": "Dim canlyniadau.",
       "linked": "Wedi'u cysylltu",
       "remove": "Tynnu {label}",
-      "none": "Nid oes ffynonellau cyfeirio wedi'u ffurfweddu."
+      "none": "Nid oes ffynonellau cyfeirio wedi'u ffurfweddu.",
+      "name": "Enw yn {language}",
+      "missing": "Nid oes gan {provider} enw yn {language}. Ychwanegwch un, neu gadewch yn wag."
     },
     "ai": {
       "label": "Awgrymiadau AI",
@@ -145,7 +147,8 @@
       "use": "Defnyddio",
       "link": "Cysylltu",
       "linked": "Wedi'i gysylltu",
-      "suggestedBy": "Awgrymwyd gan {model}"
+      "suggestedBy": "Awgrymwyd gan {model}",
+      "unplaced": "Heb ei gynnig: nid yw {language} yn un o'r ieithoedd y mae'r golygydd hwn yn eu cadw."
     },
     "problems": {
       "noIntent": "Dewiswch beth hoffech ei wneud.",
@@ -264,6 +267,14 @@
       "noTranscript": "Dim darnau trawsgrifiad.",
       "noChapters": "Dim penodau ar gael.",
       "noAnnotations": "Dim anodiadau o'r eitem."
+    },
+    "confirmSwitch": "Newid o {from} i {to}? Ni fydd yr hyn a ysgrifennoch ar gyfer {from} yn cael ei gadw.",
+    "loadNotes": {
+      "intro": "Bydd cadw hwn o'r ffurflen yn ei newid:",
+      "motivations": "bydd ei gymhellion eraill ({values}) yn cael eu tynnu.",
+      "bodies": "bydd {count} rhan na all y ffurflen eu golygu yn cael eu tynnu.",
+      "joined": "bydd sawl testun mewn un iaith yn cael eu cyfuno'n un.",
+      "language": "bydd testun yn {from} yn cael ei gadw fel {to}."
     }
   }
 }

@@ -70,6 +70,15 @@
           {/if}
         </li>
       {/each}
+      {#each result.unplaced as item (item.field)}
+        <li>
+          <span class="ai__eyebrow">
+            {$t(`annotate.ai.fields.${item.field}`)} · {languageName(item.language)}
+          </span>
+          <p lang={item.language}>{item.value}</p>
+          <span class="anno-muted">{$t('annotate.ai.unplaced', { language: languageName(item.language) })}</span>
+        </li>
+      {/each}
       {#each result.entities as entity, index (index)}
         {@const provider = providerFor(entity.authority)}
         {#if provider}

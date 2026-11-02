@@ -1,6 +1,10 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { AnnotationSidebar, type AnnotationSidebarCard as Card } from '@mango-iiif/annotation';
+  import {
+    AnnotationSidebar,
+    type AnnotationSidebarCard as Card,
+    type IdentifySnippetContext,
+  } from '@mango-iiif/annotation';
   import '@mango-iiif/annotation/style.css';
   import {
     fetchManifest,
@@ -13,17 +17,24 @@
   import { setLocale, t, translate } from '../core/i18n';
   import type { AnnotateConfig } from '../core/types/config';
   import { providersFor } from '../authorities/endpoint';
-  import type { AuthorityEntity } from '../authorities/types';
+  import type { AuthorityEntity, NamedEntity } from '../authorities/types';
+  import { wikidataLabels } from '../authorities/wikidata';
+  import EntityPicker from '../authorities/EntityPicker.svelte';
+  import { needsNames, withFetchedNames } from '../authorities/names';
   import {
     MOTIVATION_OF,
     bodiesOfDraft,
     bodyValue,
-    draftFromAnnotation,
     draftProblem,
     emptyDraft,
+    hasContent,
     intentOf,
     labelOf,
+    readAnnotation,
+    tagDrafts,
+    type BodyContext,
     type Draft,
+    type LoadNote,
   } from '../annotations/intents';
   import { canvasScale as scaleOf, canvasesOf, idOf, label, mediaKindOf, metadataOf } from '../annotations/iiif';
   import { normaliseAuthoringLanguages } from '../annotations/languages';
@@ -188,6 +199,24 @@
     error = '';
   };
 
+  /*
+   * A message is about what the form was doing: "write something", "draw a shape first", or what
+   * saving a loaded annotation would change. Choosing another intent or scope makes it stale, so
+   * clear it. edit() records the intent and scope it sets, so its own message stays.
+   */
+  let messageIntent: Draft['intent'] = null;
+  let messageScope: Scope = 'region';
+  $effect(() => {
+    const intent = draft.intent;
+    const current = scope;
+    untrack(() => {
+      if (intent === messageIntent && current === messageScope) return;
+      messageIntent = intent;
+      messageScope = current;
+      error = '';
+    });
+  });
+
   /* A new canvas starts a new annotation, unless it is about the whole item. */
   let lastCanvas: string | null = null;
   $effect(() => {
@@ -248,11 +277,20 @@
 
   /* ------------------------------------------------------------ saving */
 
-  const buildAnnotation = (id: string, existing?: UserRecord): Omit<Annotation, 'target'> & { target?: Annotation['target'] } => {
+  /** A link to one of this item's canvases is written as `{ id, type: 'Canvas', partOf }` (IIIF Cookbook recipe 0022). */
+  let bodyContext: BodyContext = $derived({
+    manifestOf: (url: string) => (url in ctx.canvasScale ? canonicalId : undefined),
+  });
+
+  const buildAnnotation = (
+    id: string,
+    existing?: UserRecord,
+    from: Draft = draft,
+  ): Omit<Annotation, 'target'> & { target?: Annotation['target'] } => {
     const now = new Date().toISOString();
-    const intent = draft.intent ?? 'note';
-    const label = labelOf(draft, languages);
-    const body = bodyValue(bodiesOfDraft(draft, languages));
+    const intent = from.intent ?? 'note';
+    const label = labelOf(from, languages);
+    const body = bodyValue(bodiesOfDraft(from, languages, bodyContext));
     return {
       id,
       type: 'Annotation',
@@ -296,17 +334,22 @@
       }
     }
     const existing = recordOf(editId);
-    const id = existing?.id ?? newId();
-    const record: UserRecord = {
-      id,
-      scope: kind === 'image' ? scope : 'time',
-      canvasId: scope === 'manifest' && kind === 'image' ? undefined : (currentCanvasId ?? undefined),
-      regionId: kind === 'image' && scope === 'region' ? region?.id : undefined,
-      annotation: buildAnnotation(id, existing),
-    };
-    const action = store.saveRecord(record);
-    const annotation = toW3C(record, region, ctx);
-    emit(action === 'create' ? 'annotationCreate' : 'annotationUpdate', { annotation });
+    // One tagging annotation per keyword (IIIF Cookbook recipe 0021); the first replaces the one being edited.
+    const drafts = draft.intent === 'tag' ? tagDrafts(draft, languages) : [draft];
+    drafts.forEach((one, index) => {
+      const previous = index === 0 ? existing : undefined;
+      const id = previous?.id ?? newId();
+      const record: UserRecord = {
+        id,
+        scope: kind === 'image' ? scope : 'time',
+        canvasId: scope === 'manifest' && kind === 'image' ? undefined : (currentCanvasId ?? undefined),
+        regionId: kind === 'image' && scope === 'region' ? region?.id : undefined,
+        annotation: buildAnnotation(id, previous, one),
+      };
+      const action = store.saveRecord(record);
+      const annotation = toW3C(record, region, ctx);
+      emit(action === 'create' ? 'annotationCreate' : 'annotationUpdate', { annotation });
+    });
     // Keep the target, so another annotation on the same shape or moment can follow.
     resetForm();
     end = '';
@@ -318,10 +361,15 @@
     const annotation = userAnnotations.find((a) => a.id === id);
     if (!annotation) return;
     editId = id;
-    draft = draftFromAnnotation(annotation, languages);
-    error = '';
+    const read = readAnnotation(annotation, languages, language);
+    draft = read.draft;
+    // Say what saving from the form would change, rather than changing it silently.
+    error = read.notes.length ? describeNotes(read.notes) : '';
+    if (kind === 'image') scope = record.scope === 'time' ? 'region' : record.scope;
+    // The note above is about this annotation: keep it when the intent and scope change to match.
+    messageIntent = draft.intent;
+    messageScope = scope;
     if (kind === 'image') {
-      scope = record.scope === 'time' ? 'region' : record.scope;
       if (record.canvasId && record.canvasId !== canvasId) imageStage?.goToCanvas(record.canvasId);
       if (record.regionId) {
         regionId = record.regionId;
@@ -381,17 +429,70 @@
     };
   };
 
+  /** Switching intent leaves the current one's text unsaved: ask first when there is any. */
+  const mayReplace = (intent: Draft['intent']) =>
+    !draft.intent ||
+    draft.intent === intent ||
+    !hasContent(draft, languages) ||
+    window.confirm(
+      $t('annotate.confirmSwitch', {
+        from: $t(`annotate.intents.${draft.intent}.label`),
+        to: $t(`annotate.intents.${intent}.label`),
+      }),
+    );
+
   const useSuggestion = (suggestion: AiSuggestion, model: string) => {
-    if (draft.intent !== suggestion.intent) draft.intent = suggestion.intent;
+    if (!mayReplace(suggestion.intent)) return;
+    if (draft.intent !== suggestion.intent) draft = { ...emptyDraft(), intent: suggestion.intent };
     draft.texts[suggestion.field][suggestion.language] = suggestion.value;
     draft.generators[`${suggestion.field}.${suggestion.language}`] = model;
     language = suggestion.language;
   };
 
   const linkSuggested = (entity: AuthorityEntity) => {
-    draft.intent = 'identify';
+    if (!mayReplace('identify')) return;
+    if (draft.intent !== 'identify') draft = { ...emptyDraft(), intent: 'identify' };
     draft.entities = [...draft.entities, entity];
   };
+
+  /*
+   * A Wikidata entity starts with its Wikidata label in each language (`label: { en, cy }`). They
+   * are suggestions: the Identify panel lets the user set or add each name, and a name typed while
+   * the labels load is kept.
+   */
+  $effect(() => {
+    const missing = (draft.entities as NamedEntity[]).filter(needsNames);
+    if (!missing.length) return;
+    const wanted = languages;
+    const controller = new AbortController();
+    for (const entity of missing) {
+      wikidataLabels(entity.id, wanted, controller.signal)
+        .catch(() => ({}) as Record<string, string>)
+        .then((labels) => {
+          if (controller.signal.aborted) return;
+          draft.entities = (draft.entities as NamedEntity[]).map((e) => (e.uri === entity.uri ? withFetchedNames(e, labels) : e));
+        });
+    }
+    return () => controller.abort();
+  });
+
+  const describeNotes = (notes: LoadNote[]): string =>
+    $t('annotate.loadNotes.intro') +
+    ' ' +
+    notes
+      .map((note) => {
+        switch (note.kind) {
+          case 'motivations':
+            return $t('annotate.loadNotes.motivations', { values: note.values.join(', ') });
+          case 'bodies':
+            return $t('annotate.loadNotes.bodies', { count: note.count });
+          case 'joined':
+            return $t('annotate.loadNotes.joined');
+          case 'language':
+            return $t('annotate.loadNotes.language', { from: note.from.join(', '), to: note.to });
+        }
+      })
+      .join(' ');
 
   /* ------------------------------------------------------------ lists */
 
@@ -630,6 +731,9 @@
         ondelete={remove}
         onlocate={locate}
       >
+        {#snippet identify({ value, onchange, providers: sources }: IdentifySnippetContext)}
+          <EntityPicker {value} {onchange} providers={sources} {languages} />
+        {/snippet}
         {#snippet assist()}
           {#if options.ai?.endpoint}
             <AiAssist
