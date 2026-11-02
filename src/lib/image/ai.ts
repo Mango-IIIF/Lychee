@@ -43,6 +43,8 @@ export interface AiResult {
   model: string;
   suggestions: AiSuggestion[];
   entities: AiEntity[];
+  /** Text in a language the editor isn't configured for: not offered, so it can't be saved as another language. */
+  unplaced: { field: TextField; language: string; value: string }[];
 }
 
 type Raw = Record<string, unknown>;
@@ -62,19 +64,24 @@ export const parseAiResponse = (raw: Raw, languages: readonly string[]): AiResul
   };
   for (const language of languages) push('note', 'label', language, inLanguage(raw, 'label', language));
   for (const language of languages) push('note', 'note', language, inLanguage(raw, 'description', language));
+  const unplaced: AiResult['unplaced'] = [];
+  const transcription = text(raw.transcription);
   const transcriptionLanguage = text(raw.transcription_language);
-  push(
-    'transcribe',
-    'transcription',
-    languages.includes(transcriptionLanguage) ? transcriptionLanguage : languages[0],
-    text(raw.transcription),
-  );
+  if (!transcriptionLanguage || languages.includes(transcriptionLanguage)) {
+    // No language given: assume the first configured one, as before.
+    push('transcribe', 'transcription', transcriptionLanguage || languages[0], transcription);
+  } else if (transcription) {
+    // e.g. Latin on an English and Welsh site: offering it as English would mislabel it.
+    unplaced.push({ field: 'transcription', language: transcriptionLanguage, value: transcription });
+  }
+  // The keyword box takes several, separated by commas; each is saved as its own tagging annotation.
   const tags = Array.isArray(raw.tags) ? raw.tags.map(text).filter(Boolean) : [];
   push('tag', 'tags', languages[0], tags.join(', '));
 
   return {
     model: text(raw.model) || 'AI',
     suggestions,
+    unplaced,
     entities: Array.isArray(raw.entities) ? (raw.entities as AiEntity[]).filter((e) => e?.search_term) : [],
   };
 };

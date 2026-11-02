@@ -26,6 +26,15 @@ describe('AI suggestions', () => {
     expect(result.entities).toHaveLength(1);
   });
 
+  it('does not offer a transcription in a language the editor is not configured for', () => {
+    const result = parseAiResponse(
+      { model: 'm', transcription: 'Gallia est omnis divisa', transcription_language: 'la' },
+      ['en', 'cy'],
+    );
+    expect(result.suggestions).toEqual([]);
+    expect(result.unplaced).toEqual([{ field: 'transcription', language: 'la', value: 'Gallia est omnis divisa' }]);
+  });
+
   it('also accepts language maps', () => {
     const result = parseAiResponse({ model: 'm', label: { fr: 'Couverture' } }, ['fr']);
     expect(result.suggestions[0]).toMatchObject({ field: 'label', language: 'fr', value: 'Couverture' });

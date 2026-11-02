@@ -121,7 +121,9 @@
       "noResults": "No matches.",
       "linked": "Linked",
       "remove": "Remove {label}",
-      "none": "No reference sources are configured."
+      "none": "No reference sources are configured.",
+      "name": "Name in {language}",
+      "missing": "{provider} has no {language} name. Add one, or leave it empty."
     },
     "ai": {
       "label": "AI suggestions",
@@ -145,7 +147,8 @@
       "use": "Use",
       "link": "Link",
       "linked": "Linked",
-      "suggestedBy": "Suggested by {model}"
+      "suggestedBy": "Suggested by {model}",
+      "unplaced": "Not offered: {language} is not one of the languages this editor saves."
     },
     "problems": {
       "noIntent": "Choose what you would like to do.",
@@ -264,6 +267,14 @@
       "noTranscript": "No transcript passages found.",
       "noChapters": "No chapters available.",
       "noAnnotations": "No annotations from the item."
+    },
+    "confirmSwitch": "Change from {from} to {to}? What you have written for {from} will not be saved.",
+    "loadNotes": {
+      "intro": "Saving this from the form will change it:",
+      "motivations": "its other motivations ({values}) will be removed.",
+      "bodies": "{count} part(s) the form cannot edit will be removed.",
+      "joined": "several texts in one language will be joined into one.",
+      "language": "text in {from} will be saved as {to}."
     }
   }
 }
