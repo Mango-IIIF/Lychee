@@ -61,7 +61,7 @@ export const COLOURS = {
   draft: '#2dd4bf',
   /** A shape with at least one of the user's annotations. */
   annotated: '#f59e0b',
-  /** The manifest's own annotations, read-only. */
+  /** The manifest's own annotations; selecting one opens it for editing. */
   existing: '#94a3b8',
 } as const;
 
@@ -110,9 +110,11 @@ export class ImageAnnotatorController {
       viewer,
       drawingMode: 'click',
       userSelectAction: ((annotation: ImageAnnotation) =>
-        this.tool === 'smart-select' || this.existingIds.has(annotation.id)
+        this.tool === 'smart-select'
           ? UserSelectAction.NONE
-          : UserSelectAction.EDIT) as never,
+          : this.existingIds.has(annotation.id)
+            ? UserSelectAction.SELECT
+            : UserSelectAction.EDIT) as never,
       style: this.style,
     });
     this.anno = this.editor.annotator;
@@ -193,10 +195,26 @@ export class ImageAnnotatorController {
   setCanvas(canvasId: string, regions: Region[], existing: ImageAnnotation[]): void {
     this.canvasId = canvasId;
     this.existingIds = new Set(existing.map((a) => a.id));
-    const own = regions
-      .filter((r) => r.canvasId === canvasId)
-      .map((r) => ({ id: r.id, bodies: [], target: { ...r.target, annotation: r.id } }) as ImageAnnotation);
+    const own = regions.filter((r) => r.canvasId === canvasId).map(this.shapeOf);
     this.anno.setAnnotations([...existing, ...own], true);
+  }
+
+  private shapeOf = (region: Region): ImageAnnotation =>
+    ({ id: region.id, bodies: [], target: { ...region.target, annotation: region.id } }) as ImageAnnotation;
+
+  /** Swaps one of the manifest's shapes for an editable region of the user's. */
+  adopt(existingId: string, region: Region): void {
+    this.existingIds.delete(existingId);
+    if (this.anno.state.store.getAnnotation(existingId)) this.anno.removeAnnotation(existingId);
+    if (!this.anno.state.store.getAnnotation(region.id)) this.anno.addAnnotation(this.shapeOf(region));
+  }
+
+  /** Puts back a manifest shape that was adopted and not saved. */
+  release(regionId: string, existing: ImageAnnotation | null): void {
+    if (this.anno.state.store.getAnnotation(regionId)) this.anno.removeAnnotation(regionId);
+    if (!existing) return;
+    this.existingIds.add(existing.id);
+    if (!this.anno.state.store.getAnnotation(existing.id)) this.anno.addAnnotation(existing);
   }
 
   /** Shapes with annotations draw in a different colour. */

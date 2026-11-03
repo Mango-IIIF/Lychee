@@ -158,6 +158,10 @@
   let draft = $state<Draft>(emptyDraft());
   let language = $state('');
   let editId = $state<string | null>(null);
+  /** The manifest annotation being edited, and the region its shape became. Saving makes it the user's. */
+  let sourceEdit = $state<{ id: string; regionId?: string } | null>(null);
+  /** A manifest annotation to open once its canvas is showing. */
+  let pendingSource: string | null = null;
   let error = $state('');
 
   $effect(() => {
@@ -193,7 +197,22 @@
     regionBounds = regionId ? imageStage?.getBounds(regionId) : undefined;
   });
 
+  const sourceOf = (id: string | null | undefined) => store.existing.find((a) => a.id === id);
+
+  /** An unsaved edit of a manifest annotation is dropped: its shape goes back to being the manifest's. */
+  const releaseSource = () => {
+    const editing = sourceEdit;
+    sourceEdit = null;
+    if (!editing?.regionId) return;
+    store.removeRegion(editing.regionId);
+    const annotation = sourceOf(editing.id);
+    if (annotation) imageStage?.releaseExisting(annotation, editing.regionId);
+    if (regionId === editing.regionId) regionId = undefined;
+    if (shapeId === editing.regionId) shapeId = undefined;
+  };
+
   const resetForm = () => {
+    releaseSource();
     editId = null;
     draft = emptyDraft();
     error = '';
@@ -228,6 +247,10 @@
       regionId = undefined;
       if (scope !== 'manifest') resetForm();
       end = '';
+      // A manifest annotation chosen on another canvas opens once that canvas's shapes are drawn.
+      const next = pendingSource;
+      pendingSource = null;
+      if (next) requestAnimationFrame(() => editSource(next));
     });
   });
 
@@ -236,18 +259,23 @@
   const onShapeSelect = (id: string | undefined) => {
     shapeId = id;
     if (!id) return;
+    // One of the manifest's shapes: open it for editing, outside Annotorious's selection handler.
+    if (sourceOf(id)) {
+      queueMicrotask(() => editSource(id));
+      return;
+    }
     scope = 'region';
     regionId = id;
     // Choosing another shape starts a new annotation on it.
     const editing = recordOf(editId);
-    if (editing && editing.regionId !== id) resetForm();
+    if ((editing && editing.regionId !== id) || (sourceEdit && sourceEdit.regionId !== id)) resetForm();
   };
 
   const onRegionDelete = (id: string) => {
     for (const removed of store.removeRegion(id)) emit('annotationDelete', { id: removed });
     if (regionId === id) regionId = undefined;
     if (shapeId === id) shapeId = undefined;
-    if (editId && !recordOf(editId)) resetForm();
+    if (editId && !recordOf(editId) && !sourceEdit) resetForm();
   };
 
   const drawBox = () => {
@@ -282,23 +310,27 @@
     manifestOf: (url: string) => (url in ctx.canvasScale ? canonicalId : undefined),
   });
 
+  /** The draft as an annotation. Fields of `previous` the form does not edit are kept. */
   const buildAnnotation = (
     id: string,
-    existing?: UserRecord,
+    previous?: Partial<Annotation>,
     from: Draft = draft,
   ): Omit<Annotation, 'target'> & { target?: Annotation['target'] } => {
     const now = new Date().toISOString();
     const intent = from.intent ?? 'note';
     const label = labelOf(from, languages);
     const body = bodyValue(bodiesOfDraft(from, languages, bodyContext));
+    const { target: _t, label: _l, body: _b, motivation: _m, modified: _mo, ...kept } = previous ?? {};
+    const created = previous ? previous.created : now;
     return {
+      ...kept,
       id,
       type: 'Annotation',
       motivation: MOTIVATION_OF[intent],
       ...(label ? { label } : {}),
       ...(body ? { body } : {}),
-      created: existing?.annotation.created ?? now,
-      ...(existing ? { modified: now } : {}),
+      ...(created ? { created } : {}),
+      ...(previous ? { modified: now } : {}),
       ...(kind !== 'image' && avCanvasId ? { target: timeTarget(avCanvasId, start, end) } : {}),
     };
   };
@@ -311,7 +343,7 @@
       scope: kind === 'image' ? scope : 'time',
       canvasId: currentCanvasId ?? undefined,
       regionId,
-      annotation: buildAnnotation(id, recordOf(editId)),
+      annotation: buildAnnotation(id, recordOf(editId)?.annotation ?? sourceOf(sourceEdit?.id)),
     };
     return toW3C(record, region, ctx);
   });
@@ -334,22 +366,28 @@
       }
     }
     const existing = recordOf(editId);
+    const source = sourceOf(sourceEdit?.id);
     // One tagging annotation per keyword (IIIF Cookbook recipe 0021); the first replaces the one being edited.
     const drafts = draft.intent === 'tag' ? tagDrafts(draft, languages) : [draft];
     drafts.forEach((one, index) => {
-      const previous = index === 0 ? existing : undefined;
-      const id = previous?.id ?? newId();
+      const first = index === 0;
+      const id = (first && (existing?.id ?? source?.id)) || newId();
       const record: UserRecord = {
         id,
         scope: kind === 'image' ? scope : 'time',
         canvasId: scope === 'manifest' && kind === 'image' ? undefined : (currentCanvasId ?? undefined),
         regionId: kind === 'image' && scope === 'region' ? region?.id : undefined,
-        annotation: buildAnnotation(id, previous, one),
+        annotation: buildAnnotation(id, first ? (existing?.annotation ?? source) : undefined, one),
       };
       const action = store.saveRecord(record);
       const annotation = toW3C(record, region, ctx);
-      emit(action === 'create' ? 'annotationCreate' : 'annotationUpdate', { annotation });
+      emit(action === 'create' && !(first && source) ? 'annotationCreate' : 'annotationUpdate', { annotation });
     });
+    if (source) {
+      // Updated, the manifest's annotation becomes one of the user's, keeping its id and its new shape.
+      sourceEdit = null;
+      store.existing = store.existing.filter((a) => a.id !== source.id);
+    }
     // Keep the target, so another annotation on the same shape or moment can follow.
     resetForm();
     end = '';
@@ -360,6 +398,7 @@
     if (!record) return;
     const annotation = userAnnotations.find((a) => a.id === id);
     if (!annotation) return;
+    if (sourceEdit) resetForm();
     editId = id;
     const read = readAnnotation(annotation, languages, language);
     draft = read.draft;
@@ -375,6 +414,53 @@
         regionId = record.regionId;
         shapeId = record.regionId;
         imageStage?.fitTo(record.regionId);
+      }
+    } else {
+      const range = timeRange(annotation.target);
+      if (range) {
+        start = String(range.start);
+        end = range.end == null ? '' : String(range.end);
+      }
+    }
+  };
+
+  /** Opens one of the manifest's annotations in the form; its shape or time range can then be changed too. */
+  const editSource = (id: string) => {
+    const annotation = sourceOf(id);
+    if (!annotation) return;
+    const { record, region: shape } = recordFromW3C(annotation, ctx);
+    const source = record.canvasId;
+    if (kind === 'image' && source && source !== canvasId) {
+      pendingSource = id;
+      imageStage?.goToCanvas(source);
+      return;
+    }
+    if (kind !== 'image' && source && source !== avCanvasId) {
+      const index = canvases.findIndex((c) => idOf(c) === source);
+      if (index >= 0) {
+        pendingSource = id;
+        canvasIndex = index;
+        return;
+      }
+    }
+    resetForm();
+    editId = id;
+    sourceEdit = { id, regionId: shape?.id };
+    const read = readAnnotation(annotation, languages, language);
+    draft = read.draft;
+    // Say what saving from the form would change, rather than changing it silently.
+    error = read.notes.length ? describeNotes(read.notes) : '';
+    if (kind === 'image') scope = record.scope === 'time' ? 'region' : record.scope;
+    // The note above is about this annotation: keep it when the intent and scope change to match.
+    messageIntent = draft.intent;
+    messageScope = scope;
+    if (kind === 'image') {
+      if (shape) {
+        store.upsertRegion(shape);
+        imageStage?.adoptExisting(id, shape);
+        regionId = shape.id;
+        shapeId = shape.id;
+        imageStage?.fitTo(shape.id);
       }
     } else {
       const range = timeRange(annotation.target);
@@ -761,7 +847,7 @@
           tableOpen = !tableOpen;
           setListHostState(tableOpen);
         }}
-        onselect={({ id }) => (recordOf(id) ? edit(id) : locate(id))}
+        onselect={({ id }) => (recordOf(id) ? edit(id) : sourceOf(id) ? editSource(id) : locate(id))}
       />
     </div>
   </div>
