@@ -121,7 +121,9 @@
       "noResults": "見つかりませんでした。",
       "linked": "リンク済み",
       "remove": "{label} を削除",
-      "none": "参照先が設定されていません。"
+      "none": "参照先が設定されていません。",
+      "name": "{language}での名前",
+      "missing": "{provider}には{language}の名前がありません。追加するか、空のままにしてください。"
     },
     "ai": {
       "label": "AI の提案",
@@ -145,7 +147,8 @@
       "use": "使う",
       "link": "リンク",
       "linked": "リンク済み",
-      "suggestedBy": "{model} による提案"
+      "suggestedBy": "{model} による提案",
+      "unplaced": "提案されません：{language}はこのエディターが保存する言語ではありません。"
     },
     "problems": {
       "noIntent": "何をするか選んでください。",
@@ -264,6 +267,14 @@
       "noTranscript": "書き起こしが見つかりません。",
       "noChapters": "チャプターはありません。",
       "noAnnotations": "資料の注釈はありません。"
+    },
+    "confirmSwitch": "{from}から{to}に切り替えますか？{from}に入力した内容は保存されません。",
+    "loadNotes": {
+      "intro": "フォームから保存すると次の変更があります：",
+      "motivations": "他のモチベーション（{values}）は削除されます。",
+      "bodies": "フォームで編集できない{count}個の部分は削除されます。",
+      "joined": "同じ言語の複数のテキストは一つにまとめられます。",
+      "language": "{from}のテキストは{to}として保存されます。"
     }
   }
 }

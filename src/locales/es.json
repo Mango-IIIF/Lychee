@@ -121,7 +121,9 @@
       "noResults": "Sin resultados.",
       "linked": "Enlazados",
       "remove": "Quitar {label}",
-      "none": "No hay fuentes de referencia configuradas."
+      "none": "No hay fuentes de referencia configuradas.",
+      "name": "Nombre en {language}",
+      "missing": "{provider} no tiene nombre en {language}. Añada uno o déjelo vacío."
     },
     "ai": {
       "label": "Sugerencias de IA",
@@ -145,7 +147,8 @@
       "use": "Usar",
       "link": "Enlazar",
       "linked": "Enlazado",
-      "suggestedBy": "Sugerido por {model}"
+      "suggestedBy": "Sugerido por {model}",
+      "unplaced": "No se ofrece: {language} no es uno de los idiomas que guarda este editor."
     },
     "problems": {
       "noIntent": "Elija qué le gustaría hacer.",
@@ -264,6 +267,14 @@
       "noTranscript": "No hay pasajes de transcripción.",
       "noChapters": "No hay capítulos.",
       "noAnnotations": "No hay anotaciones del elemento."
+    },
+    "confirmSwitch": "¿Cambiar de {from} a {to}? Lo que ha escrito para {from} no se guardará.",
+    "loadNotes": {
+      "intro": "Guardarlo desde el formulario lo cambiará:",
+      "motivations": "se quitarán sus otras motivaciones ({values}).",
+      "bodies": "se quitarán {count} partes que el formulario no puede editar.",
+      "joined": "varios textos en un mismo idioma se unirán en uno.",
+      "language": "el texto en {from} se guardará como {to}."
     }
   }
 }

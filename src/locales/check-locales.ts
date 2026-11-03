@@ -30,7 +30,7 @@ const translatableAttributes = new Set([
 ]);
 
 // Brand names and API parameters that are the same in every language.
-const localeNeutralText = new Set(["i", "T", "Wikidata", "wbsearchentities"]);
+const localeNeutralText = new Set(["i", "T", "Wikidata", "wbsearchentities", "wbgetentities"]);
 
 const normaliseText = (value: string): string =>
   value.replace(/\s+/g, " ").trim();

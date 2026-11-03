@@ -121,7 +121,9 @@
       "noResults": "Aucun résultat.",
       "linked": "Liés",
       "remove": "Retirer {label}",
-      "none": "Aucune source de référence n'est configurée."
+      "none": "Aucune source de référence n'est configurée.",
+      "name": "Nom en {language}",
+      "missing": "{provider} n'a pas de nom en {language}. Ajoutez-en un ou laissez vide."
     },
     "ai": {
       "label": "Suggestions de l'IA",
@@ -145,7 +147,8 @@
       "use": "Utiliser",
       "link": "Lier",
       "linked": "Lié",
-      "suggestedBy": "Suggéré par {model}"
+      "suggestedBy": "Suggéré par {model}",
+      "unplaced": "Non proposé : {language} ne fait pas partie des langues enregistrées par cet éditeur."
     },
     "problems": {
       "noIntent": "Choisissez ce que vous souhaitez faire.",
@@ -264,6 +267,14 @@
       "noTranscript": "Aucun passage de transcription.",
       "noChapters": "Aucun chapitre disponible.",
       "noAnnotations": "Aucune annotation de l'élément."
+    },
+    "confirmSwitch": "Passer de {from} à {to} ? Ce que vous avez écrit pour {from} ne sera pas enregistré.",
+    "loadNotes": {
+      "intro": "L'enregistrer depuis le formulaire le modifiera :",
+      "motivations": "ses autres motivations ({values}) seront supprimées.",
+      "bodies": "{count} partie(s) que le formulaire ne peut pas modifier seront supprimées.",
+      "joined": "plusieurs textes dans une même langue seront réunis en un seul.",
+      "language": "le texte en {from} sera enregistré comme {to}."
     }
   }
 }
