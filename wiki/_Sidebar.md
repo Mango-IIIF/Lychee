@@ -1,4 +1,4 @@
-## Mango Annotate
+## Lychee
 
 - [Home](Home)
 - [Getting started](Getting-Started)

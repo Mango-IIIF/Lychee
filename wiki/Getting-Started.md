@@ -5,7 +5,7 @@
 ```html
 <script
   type="module"
-  src="https://unpkg.com/@mango-iiif/annotate/src/dist/mango-annotation-editor.js"
+  src="https://unpkg.com/@mango-iiif/lychee/src/dist/mango-annotation-editor.js"
 ></script>
 
 <mango-annotation-editor
@@ -35,20 +35,20 @@ box of its own rather than taking height off the canvas.
 ## In an application
 
 ```bash
-npm install @mango-iiif/annotate @mango-iiif/iiif-viewer svelte
+npm install @mango-iiif/lychee @mango-iiif/iiif-viewer svelte
 ```
 
 ```js
-import "@mango-iiif/annotate/element";
+import "@mango-iiif/lychee/element";
 ```
 
 or, in Svelte:
 
 ```svelte
 <script>
-  import { AnnotationEditor } from "@mango-iiif/annotate";
+  import { AnnotationEditor } from "@mango-iiif/lychee";
   import "@mango-iiif/iiif-viewer/style.css";
-  import "@mango-iiif/annotate/style.css";
+  import "@mango-iiif/lychee/style.css";
 </script>
 
 <AnnotationEditor manifestId="https://example.org/iiif/manifest.json" />

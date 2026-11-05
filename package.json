@@ -1,15 +1,15 @@
 {
-  "name": "@mango-iiif/annotate",
+  "name": "@mango-iiif/lychee",
   "version": "0.2.0",
   "description": "A IIIF annotation editor for Mango: Annotorious drawing and smart tools for images, RAMP for audio and video, W3C Web Annotation output.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mango-IIIF/annotate.git"
+    "url": "git+https://github.com/Mango-IIIF/Lychee.git"
   },
-  "homepage": "https://github.com/Mango-IIIF/annotate#readme",
+  "homepage": "https://github.com/Mango-IIIF/Lychee#readme",
   "bugs": {
-    "url": "https://github.com/Mango-IIIF/annotate/issues"
+    "url": "https://github.com/Mango-IIIF/Lychee/issues"
   },
   "keywords": [
     "iiif",

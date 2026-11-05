@@ -1,6 +1,6 @@
-# Mango Annotate documentation
+# Lychee documentation
 
-Mango Annotate is a IIIF annotation editor built on the
+Lychee is a IIIF annotation editor built on the
 [Mango IIIF viewer](https://github.com/Mango-IIIF/Mango). It opens a IIIF
 Presentation manifest, lets people draw and describe annotations on images (with
 [Annotorious](https://annotorious.dev/)) or on moments in audio and video (with

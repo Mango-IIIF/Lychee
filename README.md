@@ -1,7 +1,7 @@
-# Mango Annotate
+# Lychee
 
-[![npm](https://img.shields.io/npm/v/@mango-iiif/annotate)](https://www.npmjs.com/package/@mango-iiif/annotate)
-[![CI](https://github.com/Mango-IIIF/annotate/actions/workflows/ci.yml/badge.svg)](https://github.com/Mango-IIIF/annotate/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@mango-iiif/lychee)](https://www.npmjs.com/package/@mango-iiif/lychee)
+[![CI](https://github.com/Mango-IIIF/Lychee/actions/workflows/ci.yml/badge.svg)](https://github.com/Mango-IIIF/Lychee/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A IIIF annotation editor for [Mango](https://github.com/Mango-IIIF/Mango).
@@ -25,7 +25,7 @@ A IIIF annotation editor for [Mango](https://github.com/Mango-IIIF/Mango).
 ```html
 <script
   type="module"
-  src="https://unpkg.com/@mango-iiif/annotate/src/dist/mango-annotation-editor.js"
+  src="https://unpkg.com/@mango-iiif/lychee/src/dist/mango-annotation-editor.js"
 ></script>
 
 <mango-annotation-editor
@@ -41,22 +41,22 @@ only when that tool is first used.
 ## Install from npm
 
 ```bash
-npm install @mango-iiif/annotate @mango-iiif/iiif-viewer svelte
+npm install @mango-iiif/lychee @mango-iiif/iiif-viewer svelte
 ```
 
 Custom element:
 
 ```js
-import "@mango-iiif/annotate/element";
+import "@mango-iiif/lychee/element";
 ```
 
 Svelte component:
 
 ```svelte
 <script>
-  import { AnnotationEditor } from "@mango-iiif/annotate";
+  import { AnnotationEditor } from "@mango-iiif/lychee";
   import "@mango-iiif/iiif-viewer/style.css";
-  import "@mango-iiif/annotate/style.css";
+  import "@mango-iiif/lychee/style.css";
 </script>
 
 <AnnotationEditor manifestId="https://example.org/iiif/manifest.json" />
@@ -67,11 +67,11 @@ loads them relative to the bundle, so a bundler copies them like any other asset
 
 ### Package entry points
 
-| Entry                            | Contents                                                                               |
-| -------------------------------- | -------------------------------------------------------------------------------------- |
-| `@mango-iiif/annotate`           | `AnnotationEditor`, `AnnotationBrowserTable`, export and repository helpers, W3C types |
-| `@mango-iiif/annotate/element`   | `<mango-annotation-editor>`                                                            |
-| `@mango-iiif/annotate/style.css` | Editor styles (the viewer's live in `@mango-iiif/iiif-viewer/style.css`)               |
+| Entry                          | Contents                                                                               |
+| ------------------------------ | -------------------------------------------------------------------------------------- |
+| `@mango-iiif/lychee`           | `AnnotationEditor`, `AnnotationBrowserTable`, export and repository helpers, W3C types |
+| `@mango-iiif/lychee/element`   | `<mango-annotation-editor>`                                                            |
+| `@mango-iiif/lychee/style.css` | Editor styles (the viewer's live in `@mango-iiif/iiif-viewer/style.css`)               |
 
 ## Config
 
@@ -184,7 +184,7 @@ Image navigation is on the element as on `<mango-viewer>`: `getViewBox`,
 | `annotationsChange`    | `{ annotations }` — all the user's annotations                             |
 | `exportAnnotationPage` | `{ page, publicationValid, unresolvedIdentities, unresolvedPageIdentity }` |
 | `exportStructures`     | `{ structures, publicationValid, unresolvedIdentities }`                   |
-| `structuresChange`     | `{ structures }` — the table of contents being written                    |
+| `structuresChange`     | `{ structures }` — the table of contents being written                     |
 | `structuresSave`       | `{ structures, manifestId }` — the whole table of contents, saved          |
 | `themeChange`          | `{ theme }` — the user picked a viewer colour under Settings               |
 
@@ -299,4 +299,4 @@ The editor was rebuilt on Annotorious and RAMP:
 
 ## License
 
-Mango Annotate is available under the [MIT License](LICENSE).
+Lychee is available under the [MIT License](LICENSE).
