@@ -44,8 +44,8 @@
       "from": "De",
       "to": "À",
       "thisPage": "Cette page",
-      "start": "Début (secondes)",
-      "end": "Fin (secondes)",
+      "start": "Début",
+      "end": "Fin",
       "toEnd": "Jusqu'à la fin",
       "jump": "Aller à",
       "up": "Monter",
@@ -70,7 +70,8 @@
         "delete": "Supprimer le chapitre",
         "group": "Ce chapitre regroupe ceux qu’il contient.",
         "path": "Dans",
-        "attention": "Chapitres à corriger avant d’enregistrer :"
+        "attention": "Chapitres à corriger avant d’enregistrer :",
+        "timeFormat": "Saisissez une durée comme 1:02:05, 2:05 ou 125."
       },
       "problems": {
         "label": "Donnez-lui un titre.",

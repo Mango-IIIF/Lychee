@@ -15,7 +15,7 @@
     type Section,
     type SectionProblem,
   } from '../annotations/structures';
-  import { formatTime } from '../annotations/time';
+  import { formatTime, parseTime } from '../annotations/time';
 
   /**
    * A recording's chapters: an outline to pick one from, and the one picked to
@@ -75,7 +75,8 @@
     if (selectedId && !selected) selectedId = null;
   });
 
-  const now = () => Math.round(currentTime * 100) / 100;
+  /* A chapter is a place to jump to, so the playhead is taken to the second. */
+  const now = () => Math.round(currentTime);
 
   const commit = (next: Section[]) => onchange(sortByTime(next, canvasIds));
   const change = (id: string, fn: (section: Section) => Section) => commit(updateSection(sections, id, fn));
@@ -92,10 +93,27 @@
   const setTitle = (section: Section, value: string) =>
     change(section.id, (s) => ({ ...s, label: { ...s.label, [language]: value } }));
 
-  const setTime = (section: Section, field: 'start' | 'end', value: number | null) =>
+  const setTime = (section: Section, field: 'start' | 'end', value: number | null) => {
+    unreadable = { ...unreadable, [field]: false };
     change(section.id, (s) => (s.time ? { ...s, time: { ...s.time, [field]: field === 'start' ? (value ?? 0) : value } } : s));
+  };
 
-  const parseTime = (value: string): number | null => (value.trim() === '' ? null : Number(value));
+  /* Fields holding text that isn't a time; the chapter keeps its last good one. */
+  let unreadable: { start?: boolean; end?: boolean } = $state({});
+  $effect(() => {
+    void selectedId;
+    unreadable = {};
+  });
+
+  const typeTime = (section: Section, field: 'start' | 'end', input: HTMLInputElement) => {
+    const text = input.value.trim();
+    const value = text === '' ? (field === 'start' ? 0 : null) : parseTime(text);
+    unreadable = { ...unreadable, [field]: value === null && text !== '' };
+    if (value === null && text !== '') return;
+    setTime(section, field, value);
+    /* Shown back the usual way, so `3725` reads `1:02:05`. */
+    input.value = value === null ? '' : formatTime(value, { fraction: true });
+  };
 
   const addAtPlayhead = () => {
     if (!currentCanvasId) return;
@@ -183,11 +201,12 @@
             <label>
               {$t('annotate.contents.start')}
               <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={time.start}
-                onchange={(event) => setTime(chapter, 'start', parseTime(event.currentTarget.value))}
+                type="text"
+                inputmode="decimal"
+                placeholder="0:00"
+                value={formatTime(time.start, { fraction: true })}
+                aria-invalid={unreadable.start ? 'true' : undefined}
+                onchange={(event) => typeTime(chapter, 'start', event.currentTarget)}
               />
             </label>
             <button
@@ -199,12 +218,12 @@
             <label>
               {$t('annotate.contents.end')}
               <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={time.end ?? ''}
+                type="text"
+                inputmode="decimal"
+                value={time.end == null ? '' : formatTime(time.end, { fraction: true })}
                 placeholder={$t('annotate.contents.toEnd')}
-                onchange={(event) => setTime(chapter, 'end', parseTime(event.currentTarget.value))}
+                aria-invalid={unreadable.end ? 'true' : undefined}
+                onchange={(event) => typeTime(chapter, 'end', event.currentTarget)}
               />
             </label>
             <button
@@ -214,6 +233,9 @@
               onclick={() => setTime(chapter, 'end', now())}>{$t('annotate.contents.chapter.endHere')}</button
             >
           </div>
+          {#if unreadable.start || unreadable.end}
+            <p class="chapters__problem">{$t('annotate.contents.chapter.timeFormat')}</p>
+          {/if}
         {/if}
       {/if}
 

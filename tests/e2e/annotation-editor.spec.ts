@@ -272,6 +272,6 @@ test.describe("audio", () => {
       body: { value: "My father worked on the railway.", language: "en" },
       target: { selector: { type: "FragmentSelector", value: "t=30,45.5" } },
     });
-    await expect(page.locator(".anno-card")).toContainText("00:00:30 – 00:00:45");
+    await expect(page.locator(".anno-card")).toContainText("0:30 – 0:45");
   });
 });

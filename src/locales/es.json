@@ -44,8 +44,8 @@
       "from": "Desde",
       "to": "Hasta",
       "thisPage": "Esta página",
-      "start": "Inicio (segundos)",
-      "end": "Fin (segundos)",
+      "start": "Inicio",
+      "end": "Fin",
       "toEnd": "Hasta el final",
       "jump": "Ir a",
       "up": "Subir",
@@ -70,7 +70,8 @@
         "delete": "Eliminar capítulo",
         "group": "Este capítulo agrupa los que contiene.",
         "path": "Dentro de",
-        "attention": "Capítulos que corregir antes de guardar:"
+        "attention": "Capítulos que corregir antes de guardar:",
+        "timeFormat": "Escribe una hora como 1:02:05, 2:05 o 125."
       },
       "problems": {
         "label": "Ponle un título.",

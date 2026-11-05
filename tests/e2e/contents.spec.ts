@@ -205,9 +205,16 @@ test.describe("contents of a recording", () => {
   test("writes chapters as time fragments, and flags a gap between them", async ({ page }) => {
     const panel = contents(page);
     await outline(page).getByRole("button", { name: /Background and joining Corgi/ }).click();
-    const end = panel.getByLabel("End (seconds)");
+    const end = panel.getByLabel("End", { exact: true });
+    await expect(end).toHaveValue("3:10");
+    // Times read as clock times; plain seconds are taken too, and shown back as a clock time.
+    await end.fill("2:30x");
+    await end.blur();
+    await expect(panel.getByText("Enter a time such as 1:02:05, 2:05 or 125.")).toBeVisible();
     await end.fill("150");
     await end.blur();
+    await expect(end).toHaveValue("2:30");
+    await expect(panel.getByText("Enter a time such as 1:02:05, 2:05 or 125.")).toHaveCount(0);
     await expect(panel.getByRole("button", { name: /Learning hosiery production/ })).toBeVisible();
     // The next chapter still starts at 190: a gap, shown on that chapter.
     await outline(page).getByRole("button", { name: /Learning hosiery production/ }).click();

@@ -44,8 +44,8 @@
       "from": "From",
       "to": "To",
       "thisPage": "This page",
-      "start": "Start (seconds)",
-      "end": "End (seconds)",
+      "start": "Start",
+      "end": "End",
       "toEnd": "To the end",
       "jump": "Go to",
       "up": "Move up",
@@ -70,7 +70,8 @@
         "delete": "Delete chapter",
         "group": "This chapter groups the ones inside it.",
         "path": "Inside",
-        "attention": "Chapters to fix before saving:"
+        "attention": "Chapters to fix before saving:",
+        "timeFormat": "Enter a time such as 1:02:05, 2:05 or 125."
       },
       "problems": {
         "label": "Give it a title.",

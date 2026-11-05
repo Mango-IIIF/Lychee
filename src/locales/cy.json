@@ -44,8 +44,8 @@
       "from": "O",
       "to": "I",
       "thisPage": "Y dudalen hon",
-      "start": "Dechrau (eiliadau)",
-      "end": "Diwedd (eiliadau)",
+      "start": "Dechrau",
+      "end": "Diwedd",
       "toEnd": "Hyd y diwedd",
       "jump": "Mynd i",
       "up": "Symud i fyny",
@@ -70,7 +70,8 @@
         "delete": "Dileu pennod",
         "group": "Mae'r bennod hon yn grwpio'r rhai sydd y tu mewn iddi.",
         "path": "Y tu mewn i",
-        "attention": "Penodau i’w cywiro cyn cadw:"
+        "attention": "Penodau i’w cywiro cyn cadw:",
+        "timeFormat": "Rhowch amser fel 1:02:05, 2:05 neu 125."
       },
       "problems": {
         "label": "Rhowch deitl iddi.",
