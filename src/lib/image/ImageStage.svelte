@@ -272,7 +272,6 @@
     width: 100%;
     margin: 0;
     padding: 8px 12px;
-    justify-content: space-between;
     border: 0;
     border-top: 1px solid var(--viewer-panel-border);
     background: var(--viewer-stage-bottom-bg);
@@ -281,10 +280,5 @@
     opacity: 1;
     pointer-events: auto;
     transform: none;
-  }
-
-  /* Spread across the row, the gaps already separate the groups. */
-  .image-stage__viewer :global(.stage__toolbar--below .stage__toolbar-separator) {
-    display: none;
   }
 </style>

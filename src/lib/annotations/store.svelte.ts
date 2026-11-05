@@ -1,4 +1,5 @@
 import type { Region, UserRecord } from './w3c';
+import type { Section } from './structures';
 import type { Annotation } from './types';
 
 /*
@@ -14,6 +15,19 @@ export class AnnotationStore {
   regions = $state.raw<Region[]>([]);
   records = $state.raw<UserRecord[]>([]);
   existing = $state.raw<Annotation[]>([]);
+  /** The table of contents the user is writing. */
+  sections = $state.raw<Section[]>([]);
+  /** The table of contents as it was opened or last saved. */
+  savedSections = $state.raw<Section[]>([]);
+  /** The manifest's own `structures` have been opened (or the host set them). */
+  sectionsLoaded = false;
+
+  /** Opens a table of contents, as the one saved. */
+  setSections(sections: Section[]): void {
+    this.sections = sections;
+    this.savedSections = sections;
+    this.sectionsLoaded = true;
+  }
 
   upsertRegion(region: Region): void {
     this.regions = this.regions.some((r) => r.id === region.id)

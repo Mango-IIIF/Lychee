@@ -100,6 +100,8 @@ editor.config = {
     autoSelect: true, // offer Auto Select (WebGPU, ~40 MB model on first use)
     showJson: false, // show the W3C JSON being written
     pageId: undefined, // HTTP(S) id for exported AnnotationPages
+    export: ["annotations", "structures"], // what the download and exportToHost() may hand over
+    contents: true, // the Contents tab, for the item's table of contents; off where the host can't save one
   },
 };
 ```
@@ -163,6 +165,10 @@ Annotations, as W3C JSON: `getAnnotations()` (the current canvas, the
 manifest's and the user's), `getUserAnnotations()`, `addAnnotation(a)`,
 `setAnnotations(list)` (replaces the user's) and `removeAnnotation(id)`.
 
+The table of contents, as IIIF Ranges: `getStructures()` (what is being
+written) and `setStructures(ranges)` (opens one as saved). It opens from the
+manifest's `structures`; see [Tables of contents](wiki/Tables-of-Contents.md).
+
 Image navigation is on the element as on `<mango-viewer>`: `getViewBox`,
 `setViewBox`, `getZoom`, `setZoom`, `zoomIn`, `zoomOut`, `goHome`, `panTo`,
 `getCanvasIndex`, `setCanvasByIndex`, `getCanvasId`, `getManifestId`,
@@ -177,7 +183,14 @@ Image navigation is on the element as on `<mango-viewer>`: `getViewBox`,
 | `annotationDelete`     | `{ id }`                                                                   |
 | `annotationsChange`    | `{ annotations }` — all the user's annotations                             |
 | `exportAnnotationPage` | `{ page, publicationValid, unresolvedIdentities, unresolvedPageIdentity }` |
+| `exportStructures`     | `{ structures, publicationValid, unresolvedIdentities }`                   |
+| `structuresChange`     | `{ structures }` — the table of contents being written                    |
+| `structuresSave`       | `{ structures, manifestId }` — the whole table of contents, saved          |
 | `themeChange`          | `{ theme }` — the user picked a viewer colour under Settings               |
+
+The download offers annotations, the table of contents, or both, and fires one
+event per kind. `editor.exportToHost(["structures"])` does the same without a
+file; with no argument it sends every kind `config.annotations.export` allows.
 
 ```js
 editor.addEventListener("exportAnnotationPage", async (event) => {

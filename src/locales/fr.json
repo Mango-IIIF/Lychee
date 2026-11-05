@@ -12,7 +12,13 @@
     "export": {
       "button": "Télécharger les annotations ({count})",
       "ready": "IIIF prêt à publier téléchargé.",
-      "draft": "Brouillon téléchargé. Attribuez des identifiants HTTP(S) à la page et aux annotations avant publication."
+      "draft": "Brouillon téléchargé. Attribuez des identifiants HTTP(S) à la page et aux annotations avant publication.",
+      "menu": "Télécharger",
+      "annotations": "Annotations ({count})",
+      "structures": "Télécharger le sommaire",
+      "structuresItem": "Sommaire",
+      "both": "Annotations et sommaire",
+      "unsaved": "Le sommaire a des modifications non enregistrées : enregistrez-le pour les inclure."
     },
     "sidebar": {
       "label": "Annoter",
@@ -23,6 +29,61 @@
       "update": "Mettre à jour l'annotation",
       "cancel": "Annuler la modification",
       "json": "Ce qui est enregistré"
+    },
+    "contents": {
+      "label": "Sommaire",
+      "panels": "Panneau latéral",
+      "hint": "Regroupez les pages en sections, comme la table des matières d'un livre. Les visionneuses l'affichent comme Sommaire.",
+      "empty": "Aucune section pour l'instant.",
+      "add": "Ajouter une section",
+      "addInside": "Ajouter une section à l'intérieur",
+      "save": "Enregistrer le sommaire",
+      "saved": "Sommaire enregistré.",
+      "fixFirst": "Corrigez les sections marquées en rouge avant d'enregistrer.",
+      "title": "Titre de la section",
+      "from": "De",
+      "to": "À",
+      "thisPage": "Cette page",
+      "start": "Début (secondes)",
+      "end": "Fin (secondes)",
+      "toEnd": "Jusqu'à la fin",
+      "jump": "Aller à",
+      "up": "Monter",
+      "down": "Descendre",
+      "indent": "Placer dans la section précédente",
+      "outdent": "Sortir de sa section",
+      "delete": "Supprimer la section",
+      "locked": "Ceci accompagnait l'élément sous une forme que l'éditeur ne peut pas modifier ; il est conservé tel quel.",
+      "chapter": {
+        "hint": "Choisissez un chapitre pour le modifier, ou ajoutez-en un à la tête de lecture.",
+        "outline": "Chapitres",
+        "empty": "Aucun chapitre pour le moment.",
+        "untitled": "Chapitre sans titre",
+        "title": "Titre du chapitre",
+        "addAt": "Ajouter un chapitre à {time}",
+        "startHere": "Commencer à la tête de lecture",
+        "endHere": "Finir à la tête de lecture",
+        "play": "Lire à partir d'ici",
+        "addInside": "Ajouter un chapitre à l’intérieur",
+        "indent": "Placer dans le chapitre précédent",
+        "outdent": "Sortir de son chapitre",
+        "delete": "Supprimer le chapitre",
+        "group": "Ce chapitre regroupe ceux qu’il contient.",
+        "path": "Dans",
+        "attention": "Chapitres à corriger avant d’enregistrer :"
+      },
+      "problems": {
+        "label": "Donnez-lui un titre.",
+        "empty": "Choisissez ce qu'elle couvre, ou ajoutez-y des sections.",
+        "page": "Elle pointe vers une page ou un enregistrement absent de cet objet.",
+        "time": {
+          "start": "Saisissez un début de zéro seconde ou plus.",
+          "startAfterEnd": "Le début doit précéder la fin de l'enregistrement.",
+          "end": "La fin doit suivre le début et rester dans l'enregistrement."
+        },
+        "gap": "Il y a un vide avant cette section : il sera lu comme un silence.",
+        "overlap": "Cette section commence avant la fin de la précédente."
+      }
     },
     "scope": {
       "label": "De quoi s'agit-il ?",

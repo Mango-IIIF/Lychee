@@ -12,7 +12,13 @@
     "export": {
       "button": "Descargar anotaciones ({count})",
       "ready": "IIIF listo para publicar descargado.",
-      "draft": "Borrador descargado. Asigne identificadores HTTP(S) a la página y a las anotaciones antes de publicar."
+      "draft": "Borrador descargado. Asigne identificadores HTTP(S) a la página y a las anotaciones antes de publicar.",
+      "menu": "Descargar",
+      "annotations": "Anotaciones ({count})",
+      "structures": "Descargar contenido",
+      "structuresItem": "Contenido",
+      "both": "Anotaciones y contenido",
+      "unsaved": "El contenido tiene cambios sin guardar: guárdalo para incluirlos."
     },
     "sidebar": {
       "label": "Anotar",
@@ -23,6 +29,61 @@
       "update": "Actualizar anotación",
       "cancel": "Cancelar edición",
       "json": "Lo que se guarda"
+    },
+    "contents": {
+      "label": "Contenido",
+      "panels": "Barra lateral",
+      "hint": "Agrupa las páginas en secciones, como el índice de un libro. Los visores lo muestran como Contenido.",
+      "empty": "Todavía no hay secciones.",
+      "add": "Añadir sección",
+      "addInside": "Añadir una sección dentro",
+      "save": "Guardar contenido",
+      "saved": "Contenido guardado.",
+      "fixFirst": "Corrige las secciones marcadas en rojo antes de guardar.",
+      "title": "Título de la sección",
+      "from": "Desde",
+      "to": "Hasta",
+      "thisPage": "Esta página",
+      "start": "Inicio (segundos)",
+      "end": "Fin (segundos)",
+      "toEnd": "Hasta el final",
+      "jump": "Ir a",
+      "up": "Subir",
+      "down": "Bajar",
+      "indent": "Mover dentro de la sección anterior",
+      "outdent": "Sacar de su sección",
+      "delete": "Eliminar sección",
+      "locked": "Esto venía con el elemento en una forma que el editor no puede cambiar, así que se conserva tal cual.",
+      "chapter": {
+        "hint": "Elige un capítulo para editarlo o añade uno en el cabezal de reproducción.",
+        "outline": "Capítulos",
+        "empty": "Aún no hay capítulos.",
+        "untitled": "Capítulo sin título",
+        "title": "Título del capítulo",
+        "addAt": "Añadir capítulo en {time}",
+        "startHere": "Empezar en el cabezal",
+        "endHere": "Terminar en el cabezal",
+        "play": "Reproducir desde aquí",
+        "addInside": "Añadir un capítulo dentro",
+        "indent": "Mover dentro del capítulo anterior",
+        "outdent": "Sacar de su capítulo",
+        "delete": "Eliminar capítulo",
+        "group": "Este capítulo agrupa los que contiene.",
+        "path": "Dentro de",
+        "attention": "Capítulos que corregir antes de guardar:"
+      },
+      "problems": {
+        "label": "Ponle un título.",
+        "empty": "Elige qué abarca o añade secciones dentro.",
+        "page": "Apunta a una página o grabación que no está en este objeto.",
+        "time": {
+          "start": "Introduce un tiempo de inicio de cero o más segundos.",
+          "startAfterEnd": "El inicio debe ser anterior al final de la grabación.",
+          "end": "El fin debe ser posterior al inicio y estar dentro de la grabación."
+        },
+        "gap": "Hay un hueco antes de esta sección: se reproduce como silencio.",
+        "overlap": "Esta sección empieza antes de que termine la anterior."
+      }
     },
     "scope": {
       "label": "¿Sobre qué es?",

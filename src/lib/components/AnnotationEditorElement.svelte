@@ -20,6 +20,8 @@
     ViewerPlugin,
     ViewerStateSnapshot,
   } from '@mango-iiif/iiif-viewer/core';
+  import type { ExportData, ExportKind } from '../annotations/export';
+  import type { Range } from '../annotations/structures';
   import type { Annotation } from '../annotations/types';
   import type { AnnotateConfig } from '../core/types/config';
   import AnnotationEditor from '../host/AnnotationEditor.svelte';
@@ -121,6 +123,21 @@
   /** Every annotation the user has made, across all canvases, as W3C. */
   export function getUserAnnotations(): Annotation[] {
     return editor?.getUserAnnotations() ?? [];
+  }
+
+  /** The table of contents being written, as IIIF Ranges for the manifest's `structures`. */
+  export function getStructures(): Range[] {
+    return editor?.getStructures() ?? [];
+  }
+
+  /** Opens a table of contents (IIIF Ranges) as the saved one, e.g. what the host stored. */
+  export function setStructures(structures: unknown[]): void {
+    editor?.setStructures(structures);
+  }
+
+  /** Sends the host `exportAnnotationPage` and/or `exportStructures`, as the download does, without the file. */
+  export function exportToHost(include?: ExportKind[]): ExportData {
+    return editor?.exportToHost(include) ?? {};
   }
 
   /** Adds a W3C annotation to the user's own, e.g. one loaded from the host's store. */

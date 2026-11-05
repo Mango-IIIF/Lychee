@@ -18,13 +18,16 @@
 
   /**
    * Audio and video: @mango-iiif/av's player (RAMP) plays one canvas at a time,
-   * and the recording's own transcript, chapters and annotations sit underneath it.
+   * and the recording's own transcript sits underneath it. Annotations are in the
+   * editor's list and chapters in its Contents tab, so the player leaves those tabs out.
    */
   interface Props {
     manifest: Record<string, unknown>;
     canvasIndex?: number;
     playback?: AVPlayback;
     language?: string;
+    /** The player's own Chapters tab. Off where the editor's Contents tab has the chapters. */
+    chapters?: boolean;
   }
 
   let {
@@ -32,6 +35,7 @@
     canvasIndex = $bindable(0),
     playback = $bindable({ time: 0, duration: 0, ready: false, playing: false, error: false }),
     language = 'en',
+    chapters = true,
   }: Props = $props();
 
   let canvases = $derived(canvasesOf(manifest));
@@ -47,8 +51,9 @@
       .catch((error: unknown) => (loadError = String(error instanceof Error ? error.message : error)));
   });
 
+  /* The editor's list under the player has the annotations, so the player's own tab is left out. */
   let config: AVPlayerConfig = $derived({
-    panels: { transcript: true, chapters: true, annotations: true, metadata: false, supplementalFiles: false },
+    panels: { transcript: true, chapters, annotations: false, metadata: false, supplementalFiles: false },
     controls: { playbackRate: true, pictureInPicture: true, download: false },
     activePanel: 'transcript',
     preferredLanguages: [language, 'none'],

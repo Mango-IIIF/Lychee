@@ -40,8 +40,22 @@
   import { normaliseAuthoringLanguages } from '../annotations/languages';
   import { loadExistingAnnotations } from '../annotations/load';
   import { annotationText, annotationTitle, motivationsOf, newId, targetSource, timeTarget } from '../annotations/model';
-  import { exportAnnotationPage } from '../annotations/export';
+  import {
+    exportAnnotationPage,
+    exportStructures,
+    normaliseExportKinds,
+    type ExportData,
+    type ExportKind,
+  } from '../annotations/export';
   import { storeFor } from '../annotations/store.svelte';
+  import {
+    flattenSections,
+    readStructures,
+    sectionProblems,
+    toStructures,
+    type Range,
+    type Section,
+  } from '../annotations/structures';
   import { formatTime, timeRange, validateTime } from '../annotations/time';
   import type { Annotation, Scope } from '../annotations/types';
   import { recordFromW3C, toW3C, type ExportContext, type UserRecord } from '../annotations/w3c';
@@ -50,10 +64,13 @@
   import AiAssist from '../image/AiAssist.svelte';
   import ImageStage from '../image/ImageStage.svelte';
   import type { Tool } from '../image/annotorious';
+  import ChapterPanel from '../structures/ChapterPanel.svelte';
+  import ContentsPanel from '../structures/ContentsPanel.svelte';
   import AnnotationBrowserTable from '../table/AnnotationBrowserTable.svelte';
   import type { TableRow } from '../table/types';
   import EditorShell from './EditorShell.svelte';
   import { isTheme, storedTheme, storeTheme, type Theme } from './themes';
+  import ExportMenu from './ui/ExportMenu.svelte';
   import SettingsMenu from './ui/SettingsMenu.svelte';
   import ViewerHeader from './ui/ViewerHeader.svelte';
 
@@ -477,6 +494,14 @@
     if (editId === id) resetForm();
   };
 
+  /** Opens an annotation in the form: one of the user's, else one of the manifest's; else just goes to it. */
+  const openAnnotation = (id: string) => {
+    sidePanel = 'annotate';
+    if (recordOf(id)) edit(id);
+    else if (sourceOf(id)) editSource(id);
+    else locate(id);
+  };
+
   const locate = (id: string) => {
     const annotation = [...userAnnotations, ...store.existing].find((a) => a.id === id);
     if (!annotation) return;
@@ -659,27 +684,152 @@
     else host.removeAttribute('data-annotation-list');
   };
 
+  /* ------------------------------------------------------------ contents */
+
+  /*
+   * The table of contents opens from the manifest's own `structures` and goes
+   * back to the host whole, as Ranges, with `structuresSave`: the host stores it
+   * and publishes it as the manifest's `structures`. It is not an annotation.
+   */
+  let contentsEnabled = $derived(options.contents !== false);
+  let sidePanel = $state<'annotate' | 'contents'>('annotate');
+  let contentsStatus = $state('');
+  /** The recording's chapter open in the sidebar. */
+  let selectedChapter = $state<string | null>(null);
+
+  $effect(() => {
+    if (!contentsEnabled && sidePanel === 'contents') sidePanel = 'annotate';
+  });
+
+  $effect(() => {
+    const json = manifest;
+    const target = store;
+    if (!json || target.sectionsLoaded) return;
+    untrack(() => target.setSections(readStructures(json.structures)));
+  });
+
+  let structures: Range[] = $derived(toStructures(store.sections, languages));
+  let savedStructures: Range[] = $derived(toStructures(store.savedSections, languages));
+  let contentsCanvases = $derived(
+    canvases.map((canvas, index) => ({
+      id: idOf(canvas),
+      label:
+        label(canvas.label, language) ||
+        (kind === 'image' ? $t('annotate.table.canvasN', { n: index + 1 }) : $t('annotate.av.recordingN', { n: index + 1 })),
+    })),
+  );
+  let contentsProblems = $derived(
+    sectionProblems(store.sections, {
+      canvasIds: canvases.map(idOf),
+      durations: Object.fromEntries(
+        canvases.map((canvas) => [
+          idOf(canvas),
+          idOf(canvas) === avCanvasId && playback.duration ? playback.duration : Number(canvas.duration) || 0,
+        ]),
+      ),
+    }),
+  );
+  let contentsDirty = $derived(JSON.stringify(structures) !== JSON.stringify(savedStructures));
+
+  $effect(() => {
+    emit('structuresChange', { structures });
+  });
+
+  $effect(() => {
+    if (contentsDirty) contentsStatus = '';
+  });
+
+  /** Hands the host the whole table of contents; an empty one removes it. */
+  const saveContents = () => {
+    store.savedSections = store.sections;
+    emit('structuresSave', { structures, manifestId: canonicalId });
+    contentsStatus = $t('annotate.contents.saved');
+  };
+
+  /** A recording chosen from the contents is seeked once its player is ready. */
+  let pendingSeek = $state<number | null>(null);
+  $effect(() => {
+    if (pendingSeek == null || !playback.ready) return;
+    avStage?.seek(pendingSeek);
+    pendingSeek = null;
+  });
+
+  const jumpTo = (section: Section) => {
+    const first = flattenSections([section])
+      .map((entry) => entry.section)
+      .find((s) => s.pages.length || s.time);
+    if (!first) return;
+    if (kind === 'image') {
+      if (first.pages[0]) imageStage?.goToCanvas(first.pages[0]);
+      return;
+    }
+    if (!first.time) return;
+    const index = canvases.findIndex((canvas) => idOf(canvas) === first.time!.canvasId);
+    if (index >= 0 && index !== canvasIndex) {
+      pendingSeek = first.time.start;
+      canvasIndex = index;
+    } else {
+      avStage?.seek(first.time.start);
+    }
+  };
+
   /* ------------------------------------------------------------ export */
 
   let exportStatus = $state('');
+  let exportKinds = $derived(normaliseExportKinds(options.export));
 
-  const handleExport = () => {
-    const result = exportAnnotationPage(userAnnotations, { pageId: options.pageId, manifestId: canonicalId });
-    emit('exportAnnotationPage', {
-      page: result.page,
-      publicationValid: result.publicationValid,
-      unresolvedIdentities: result.unresolvedIdentities,
-      unresolvedPageIdentity: result.unresolvedPageIdentity,
-    });
-    // The button does something visible even when no host is listening.
-    const blob = new Blob([JSON.stringify(result.page, null, 2)], { type: 'application/ld+json' });
+  /**
+   * Hands the host what `include` names, one event per kind, so each can go to
+   * its own endpoint: `exportAnnotationPage` for the annotations, then
+   * `exportStructures` for the saved table of contents.
+   */
+  const exportData = (include: ExportKind[]): ExportData => {
+    const result: ExportData = {};
+    if (include.includes('annotations')) {
+      const annotations = exportAnnotationPage(userAnnotations, { pageId: options.pageId, manifestId: canonicalId });
+      result.annotations = annotations;
+      emit('exportAnnotationPage', {
+        page: annotations.page,
+        publicationValid: annotations.publicationValid,
+        unresolvedIdentities: annotations.unresolvedIdentities,
+        unresolvedPageIdentity: annotations.unresolvedPageIdentity,
+      });
+    }
+    if (include.includes('structures')) {
+      result.structures = exportStructures(savedStructures);
+      emit('exportStructures', result.structures);
+    }
+    return result;
+  };
+
+  const download = (page: unknown, name: string) => {
+    const blob = new Blob([JSON.stringify(page, null, 2)], { type: 'application/ld+json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'annotations-draft.json';
+    link.download = name;
     link.click();
     URL.revokeObjectURL(url);
-    exportStatus = result.publicationValid ? $t('annotate.export.ready') : $t('annotate.export.draft');
+  };
+
+  /*
+   * One file: the AnnotationPage (it opens again with `setAnnotations`), the
+   * table of contents as `{ structures }` (with `setStructures`), or both as
+   * `{ annotations, structures }`.
+   */
+  const handleExport = (include: ExportKind[]) => {
+    const result = exportData(include);
+    const structuresOut = { structures: result.structures?.structures ?? [] };
+    // The button does something visible even when no host is listening.
+    if (result.annotations && result.structures) {
+      download({ annotations: result.annotations.page, ...structuresOut }, 'annotations-and-contents-draft.json');
+    } else if (result.annotations) {
+      download(result.annotations.page, 'annotations-draft.json');
+    } else {
+      download(structuresOut, 'contents-draft.json');
+    }
+    const valid = [result.annotations, result.structures].every((part) => !part || part.publicationValid);
+    exportStatus = valid ? $t('annotate.export.ready') : $t('annotate.export.draft');
   };
 
   /* ------------------------------------------------------------ API */
@@ -701,6 +851,29 @@
   /** Every annotation the user has made, across all canvases. */
   export function getUserAnnotations(): Annotation[] {
     return userAnnotations;
+  }
+
+  /** The table of contents being written, as IIIF Ranges for the manifest's `structures`. */
+  export function getStructures(): Range[] {
+    return structures;
+  }
+
+  /**
+   * Opens a table of contents as the saved one, replacing what is being written:
+   * what the host stored, or its canonical form after `structuresSave`.
+   */
+  export function setStructures(ranges: unknown[]): void {
+    store.setSections(readStructures(ranges));
+    selectedChapter = null;
+    contentsStatus = '';
+  }
+
+  /**
+   * Sends the host what `include` names, as the download does but without the
+   * file: `exportAnnotationPage` and/or `exportStructures`. Defaults to the kinds the config allows.
+   */
+  export function exportToHost(include: ExportKind[] = exportKinds): ExportData {
+    return exportData(normaliseExportKinds(include).filter((kind) => exportKinds.includes(kind)));
   }
 
   const importAnnotation = (annotation: Annotation) => {
@@ -740,14 +913,13 @@
     {#if exportStatus}
       <span class="annotation-editor__export-status" role="status">{exportStatus}</span>
     {/if}
-    <button
-      type="button"
-      class="annotation-editor__export-btn"
-      disabled={!userAnnotations.length}
-      onclick={handleExport}
-    >
-      {$t('annotate.export.button', { count: userAnnotations.length })}
-    </button>
+    <ExportMenu
+      kinds={exportKinds}
+      annotationCount={userAnnotations.length}
+      hasStructures={savedStructures.length > 0}
+      structuresUnsaved={contentsDirty}
+      onexport={handleExport}
+    />
     {#if normalisedConfig.showSettings !== false}
       <SettingsMenu {theme} onthemechange={changeTheme} />
     {/if}
@@ -781,6 +953,7 @@
           bind:playback
           {manifest}
           language={normalisedConfig.language}
+          chapters={!contentsEnabled}
         />
       {:else if manifestEntry?.error}
         <p class="annotation-editor__status" role="alert">{$t('annotate.loadError')}</p>
@@ -790,6 +963,61 @@
     </main>
 
     {#if kind}
+      <div class="annotation-editor__side">
+      {#if contentsEnabled}
+        <div class="annotation-editor__tabs" role="tablist" aria-label={$t('annotate.contents.panels')}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={sidePanel === 'annotate'}
+            class:active={sidePanel === 'annotate'}
+            onclick={() => (sidePanel = 'annotate')}>{$t('annotate.sidebar.label')}</button
+          >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={sidePanel === 'contents'}
+            class:active={sidePanel === 'contents'}
+            onclick={() => (sidePanel = 'contents')}>{$t('annotate.contents.label')}</button
+          >
+        </div>
+      {/if}
+      {#if sidePanel === 'contents'}
+        <div class="annotation-editor__contents">
+          {#if kind === 'image'}
+            <ContentsPanel
+              {languages}
+              bind:language
+              sections={store.sections}
+              canvases={contentsCanvases}
+              {currentCanvasId}
+              problems={contentsProblems}
+              dirty={contentsDirty}
+              status={contentsStatus}
+              onchange={(next) => (store.sections = next)}
+              onjump={jumpTo}
+              onsave={saveContents}
+            />
+          {:else}
+            <ChapterPanel
+              {languages}
+              bind:language
+              bind:selectedId={selectedChapter}
+              sections={store.sections}
+              canvases={contentsCanvases}
+              {currentCanvasId}
+              currentTime={playback.time}
+              playbackReady={playback.ready}
+              problems={contentsProblems}
+              dirty={contentsDirty}
+              status={contentsStatus}
+              onchange={(next) => (store.sections = next)}
+              onplay={jumpTo}
+              onsave={saveContents}
+            />
+          {/if}
+        </div>
+      {:else}
       <AnnotationSidebar
         kind={kind === 'image' ? 'image' : 'av'}
         {languages}
@@ -836,6 +1064,8 @@
           {/if}
         {/snippet}
       </AnnotationSidebar>
+      {/if}
+      </div>
     {/if}
 
     <div class="annotation-editor__table">
@@ -847,7 +1077,7 @@
           tableOpen = !tableOpen;
           setListHostState(tableOpen);
         }}
-        onselect={({ id }) => (recordOf(id) ? edit(id) : sourceOf(id) ? editSource(id) : locate(id))}
+        onselect={({ id }) => openAnnotation(id)}
       />
     </div>
   </div>
@@ -930,8 +1160,48 @@
     overflow: hidden;
   }
 
-  .annotation-editor :global(.anno-sidebar) {
+  /* Annotate and Contents share the sidebar, one at a time. */
+  .annotation-editor__side {
     grid-area: sidebar;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .annotation-editor__tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 20px 0;
+    border-left: 1px solid var(--viewer-panel-border);
+    border-bottom: 1px solid var(--viewer-panel-border);
+    background: var(--anno-surface);
+  }
+
+  .annotation-editor__tabs button {
+    margin-bottom: -1px;
+    padding: 8px 12px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--viewer-muted);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .annotation-editor__tabs button.active {
+    border-bottom-color: var(--anno-accent);
+    color: var(--viewer-text);
+  }
+
+  .annotation-editor__contents {
+    box-sizing: border-box;
+    min-height: 0;
+    padding: 20px;
+    overflow: auto;
+    border-left: 1px solid var(--viewer-panel-border);
+    background: var(--anno-surface);
   }
 
   .annotation-editor__table {
@@ -943,22 +1213,6 @@
     margin: 0;
     padding: 24px;
     color: var(--viewer-muted);
-  }
-
-  .annotation-editor__export-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    background: var(--anno-accent);
-    color: var(--anno-on-accent);
-    font-family: inherit;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .annotation-editor__export-btn:disabled {
-    opacity: 0.5;
-    cursor: default;
   }
 
   .annotation-editor__export-status {
@@ -977,9 +1231,14 @@
       overflow: auto;
     }
 
-    .annotation-editor :global(.anno-sidebar) {
+    .annotation-editor :global(.anno-sidebar),
+    .annotation-editor__contents {
       height: auto;
       overflow: visible;
+      border-left: 0;
+    }
+
+    .annotation-editor__tabs {
       border-left: 0;
       border-top: 1px solid var(--viewer-panel-border);
     }
