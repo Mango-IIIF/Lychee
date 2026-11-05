@@ -11,12 +11,47 @@ Every event is dispatched on `<mango-annotation-editor>` as a DOM
 | `annotationUpdate`  | `{ annotation }`  | The user saved changes to one.                                       |
 | `annotationDelete`  | `{ id }`          | An annotation was deleted, including those removed with their shape. |
 | `annotationsChange` | `{ annotations }` | All the user's annotations, after any change.                        |
+## Table of contents events
+
+| Event              | Payload                      | Purpose                                                                 |
+| ------------------ | ---------------------------- | ----------------------------------------------------------------------- |
+| `structuresChange` | `{ structures }`             | The table of contents being written, as IIIF Ranges, after any edit.   |
+| `structuresSave`   | `{ structures, manifestId }` | The user saved it: the whole table of contents, for the manifest's `structures`. |
+
+A table of contents is not an annotation and never goes through the annotation
+events. Hand the stored form back with `setStructures(ranges)`; see
+[Tables of contents](Tables-of-Contents).
 
 ## Export
 
 | Event                  | Payload                                                                      |
 | ---------------------- | ---------------------------------------------------------------------------- |
 | `exportAnnotationPage` | `page`, `publicationValid`, `unresolvedIdentities`, `unresolvedPageIdentity` |
+| `exportStructures`     | `structures`, `publicationValid`, `unresolvedIdentities`                     |
+
+The download button offers **Annotations**, **Contents** or **Annotations and
+contents** once there is a saved table of contents, whether it came with the
+manifest or was saved here. Until then it downloads the annotations, as before.
+Each choice fires one event per kind it includes, annotations first, so each
+can go to its own endpoint:
+
+- `exportAnnotationPage`: the user's annotations.
+- `exportStructures`: the saved table of contents, as `structures` (Ranges for
+  the manifest). Unsaved changes are not included.
+
+The downloaded file depends on the choice:
+
+| Choice                   | File                                               | Opens again with           |
+| ------------------------ | -------------------------------------------------- | -------------------------- |
+| Annotations              | the AnnotationPage                                 | `setAnnotations(page.items)` |
+| Contents                 | `{ "structures": [...] }`                          | `setStructures(file.structures)` |
+| Annotations and contents | `{ "annotations": AnnotationPage, "structures": [...] }` | both                 |
+
+To send without a file, call `editor.exportToHost(kinds)`, e.g.
+`exportToHost(["annotations"])`. It fires the same events and returns
+`{ annotations?, structures? }`. With no argument it sends every kind
+`config.annotations.export` allows (default: both); that option also limits
+what the download offers.
 
 `page` is a W3C `AnnotationPage`, `partOf` the manifest. Persist it in the host:
 

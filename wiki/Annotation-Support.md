@@ -11,15 +11,20 @@ embed) and shows them read-only:
   and the rest are listed with Jump;
 - all of them appear in the annotation list.
 
-Caption files (`text/vtt` bodies) are left to RAMP. The manifest is never changed.
+Caption files (`text/vtt` bodies) are left to RAMP. The manifest is never changed:
+a table of contents is handed to the host to add to it ([Tables of contents](Tables-of-Contents)).
 
 ## Writing
 
 Each annotation has one motivation, set by what the user chose to do:
 `commenting`, `supplementing`, `tagging`, `identifying`, `highlighting` or
-`linking`. Text is written as one `TextualBody` per language, with `language`
-set; a note's title is the annotation's IIIF `label` language map. Suggestions
-from AI keep the model as the body's `generator`.
+`linking`. Text is a `TextualBody` with `language` set; the same text in
+several languages is a `Choice` of them (IIIF Cookbook recipe 0346). A note's
+title is the annotation's IIIF `label` language map. Each keyword is its own
+tagging annotation (recipe 0021). Only identifying bodies carry a `purpose`.
+Suggestions from AI keep the model as the body's `generator`.
+[Storing annotations in a host](Host-Storage-Lessons) maps each intent to its
+cookbook recipes.
 
 Targets are canvas coordinates, scaled from the image when the painted image and
 the canvas differ in size. A host annotation added with `addAnnotation` is read

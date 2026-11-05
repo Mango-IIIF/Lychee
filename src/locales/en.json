@@ -12,7 +12,13 @@
     "export": {
       "button": "Download annotations ({count})",
       "ready": "Publication-ready IIIF downloaded.",
-      "draft": "Draft downloaded. Assign HTTP(S) page and annotation IDs before publication."
+      "draft": "Draft downloaded. Assign HTTP(S) page and annotation IDs before publication.",
+      "menu": "Download",
+      "annotations": "Annotations ({count})",
+      "structures": "Download contents",
+      "structuresItem": "Contents",
+      "both": "Annotations and contents",
+      "unsaved": "Contents has unsaved changes: save it to include them."
     },
     "sidebar": {
       "label": "Annotate",
@@ -23,6 +29,62 @@
       "update": "Update annotation",
       "cancel": "Cancel edit",
       "json": "What gets saved"
+    },
+    "contents": {
+      "label": "Contents",
+      "panels": "Sidebar",
+      "hint": "Group the pages into sections, like a book's table of contents. Viewers show it as Contents.",
+      "empty": "No sections yet.",
+      "add": "Add section",
+      "addInside": "Add a section inside",
+      "save": "Save contents",
+      "saved": "Contents saved.",
+      "fixFirst": "Fix the sections marked in red before saving.",
+      "title": "Section title",
+      "from": "From",
+      "to": "To",
+      "thisPage": "This page",
+      "start": "Start",
+      "end": "End",
+      "toEnd": "To the end",
+      "jump": "Go to",
+      "up": "Move up",
+      "down": "Move down",
+      "indent": "Move into the section above",
+      "outdent": "Move out of its section",
+      "delete": "Delete section",
+      "locked": "This came with the item in a form the editor can't change, so it is kept as it is.",
+      "chapter": {
+        "hint": "Pick a chapter to edit it, or add one at the playhead.",
+        "outline": "Chapters",
+        "empty": "No chapters yet.",
+        "untitled": "Untitled chapter",
+        "title": "Chapter title",
+        "addAt": "Add chapter at {time}",
+        "startHere": "Start at the playhead",
+        "endHere": "End at the playhead",
+        "play": "Play from here",
+        "addInside": "Add a chapter inside",
+        "indent": "Move into the chapter above",
+        "outdent": "Move out of its chapter",
+        "delete": "Delete chapter",
+        "group": "This chapter groups the ones inside it.",
+        "path": "Inside",
+        "attention": "Chapters to fix before saving:",
+        "timeFormat": "Enter a time such as 1:02:05, 2:05 or 125."
+      },
+      "problems": {
+        "label": "Give it a title.",
+        "empty": "Choose what it covers, or add sections inside it.",
+        "page": "It points to a page or recording that is not in this item.",
+        "time": {
+          "start": "Enter a start time of zero or more seconds.",
+          "startAfterEnd": "The start time must be before the recording ends.",
+          "end": "The end time must be after the start and within the recording."
+        },
+        "gap": "There is a gap before this section: it plays as silence.",
+        "overlap": "This section starts before the one above it ends."
+      }
     },
     "scope": {
       "label": "What is it about?",

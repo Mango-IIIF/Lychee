@@ -232,12 +232,28 @@ test.describe("audio", () => {
     await expect(page.getByLabel("Start (seconds)")).toBeVisible();
   });
 
-  test("lists the recording's transcript, chapters and annotations", async ({ page }) => {
-    await expect(page.getByRole("tabpanel", { name: "Transcript" }).getByRole("listitem").first()).toContainText("Margaret Young");
-    await page.getByRole("tab", { name: "Chapters" }).click();
-    await expect(page.getByRole("tabpanel", { name: "Chapters" }).getByRole("listitem").first()).toContainText("Background and joining Corgi");
+  test("lists the recording's transcript, its annotations in the list, and chapters in Contents", async ({ page }) => {
+    const firstLine = "Right, okay, can I have your name to start with?";
+    await expect(page.getByRole("tabpanel", { name: "Transcript" }).getByRole("listitem").first()).toContainText(firstLine);
+
+    // The editor's list has the annotations and Contents the chapters, so the player has neither tab.
+    await expect(page.getByRole("tab", { name: "Annotations", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("tab", { name: "Chapters" })).toHaveCount(0);
+
+    // The item's annotations, and no transcript lines among them.
     await page.locator(".annotation-table__toggle").click();
-    await expect(page.locator(".annotation-table tbody tr").first()).toBeVisible();
+    const rows = page.locator(".annotation-table tbody tr");
+    await expect(rows.first()).toBeVisible();
+    await expect(rows.filter({ hasText: firstLine })).toHaveCount(0);
+
+    // Choosing one of the item's annotations opens it in the form.
+    await rows.first().getByRole("button").first().click();
+    await expect(page.getByRole("button", { name: "Update annotation" })).toBeVisible();
+
+    await page.getByRole("tab", { name: "Contents" }).click();
+    await expect(page.getByRole("navigation", { name: "Chapters" }).getByRole("button").first()).toContainText(
+      "Suggested chapters (unreviewed)",
+    );
   });
 
   test("annotates a time range and validates it", async ({ page }) => {
@@ -256,6 +272,6 @@ test.describe("audio", () => {
       body: { value: "My father worked on the railway.", language: "en" },
       target: { selector: { type: "FragmentSelector", value: "t=30,45.5" } },
     });
-    await expect(page.locator(".anno-card")).toContainText("00:00:30 – 00:00:45");
+    await expect(page.locator(".anno-card")).toContainText("0:30 – 0:45");
   });
 });

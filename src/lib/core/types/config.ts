@@ -34,5 +34,15 @@ export type AnnotateConfig = ViewerConfig & {
     showJson?: boolean;
     /** HTTP(S) id for exported AnnotationPages; drafts get none. */
     pageId?: string;
+    /**
+     * What the download and `exportToHost()` may hand over: the user's
+     * annotations, the table of contents, or both (the default).
+     */
+    export?: ('annotations' | 'structures')[];
+    /**
+     * Offer the Contents tab, for writing the item's table of contents. Default
+     * true; turn it off where the host cannot save one, such as for a manifest it does not build.
+     */
+    contents?: boolean;
   };
 };

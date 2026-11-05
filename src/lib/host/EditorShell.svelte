@@ -46,6 +46,29 @@
   });
 
   onMount(() => fullscreen.attach());
+
+  const TEXT_FIELD = 'input:not([type=button], [type=checkbox], [type=radio], [type=range]), textarea, select, [contenteditable]';
+
+  /*
+   * Keys typed into the editor's fields stay in the editor. RAMP listens for
+   * hotkeys (f, k, m, space, arrows) on the document and skips them only when
+   * `document.activeElement` is a field, but inside a shadow root that is the
+   * host element, so it would swallow those letters. Stopped at the host, after
+   * the editor's own handlers (Svelte's run on the shadow root). Escape and Tab still go out.
+   */
+  $effect(() => {
+    void root;
+    const host = getShadowHost();
+    if (!host) return;
+    const keepInField = (event: Event) => {
+      const key = (event as KeyboardEvent).key;
+      const target = event.composedPath()[0];
+      if (key === 'Escape' || key === 'Tab') return;
+      if (target instanceof Element && target.matches(TEXT_FIELD)) event.stopPropagation();
+    };
+    host.addEventListener('keydown', keepInField);
+    return () => host.removeEventListener('keydown', keepInField);
+  });
 </script>
 
 <div

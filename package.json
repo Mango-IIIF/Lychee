@@ -77,8 +77,8 @@
     "@annotorious/plugin-segment-anything": "0.5.0",
     "@annotorious/plugin-tools": "1.6.0",
     "@lucide/svelte": "^1.25.0",
-    "@mango-iiif/annotation": "2.0.0",
-    "@mango-iiif/av": "1.0.0",
+    "@mango-iiif/annotation": "2.0.1",
+    "@mango-iiif/av": "1.0.1",
     "@mango-iiif/iiif-viewer": "0.6.1",
     "openseadragon": "6.1.1"
   },
