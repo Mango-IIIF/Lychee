@@ -96,7 +96,7 @@ editor.config = {
       },
     ],
     ai: { endpoint: "/api/describe" }, // "Suggest with AI" for images, shown only when set
-    gallery: "off", // page thumbnails under the image: off, closed (toolbar toggle) or open
+    gallery: "open", // page thumbnails under the image: open, closed (toolbar toggle) or off
     autoSelect: true, // offer Auto Select (WebGPU, ~40 MB model on first use)
     showJson: false, // show the W3C JSON being written
     pageId: undefined, // HTTP(S) id for exported AnnotationPages

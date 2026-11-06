@@ -75,8 +75,8 @@
   let samState = $state<SamState>({ state: 'idle' });
   let samMode = $state<'add' | 'remove'>('add');
 
-  /* The page thumbnails: off unless configured, and pointless for a single image. */
-  let galleryMode = $derived(config.annotations?.gallery ?? 'off');
+  /* The page thumbnails: open unless configured otherwise, and pointless for a single image. */
+  let galleryMode = $derived(config.annotations?.gallery ?? 'open');
   let galleryOpen = $state(false);
   $effect(() => {
     galleryOpen = galleryMode === 'open';

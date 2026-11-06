@@ -25,7 +25,7 @@ export type AnnotateConfig = ViewerConfig & {
     ai?: { endpoint: string };
     /**
      * A strip of page thumbnails under the image, for multi-page items: `open`
-     * shows it, `closed` offers it on the toolbar, `off` (the default) hides it.
+     * shows it (the default), `closed` offers it on the toolbar, `off` hides it.
      */
     gallery?: 'off' | 'closed' | 'open';
     /** Offer Auto Select (SAM2, WebGPU, ~40 MB model on first use). Default true. */

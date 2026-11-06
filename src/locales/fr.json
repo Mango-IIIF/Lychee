@@ -1,6 +1,11 @@
 {
   "about": {
-    "description": "Mango est un visualiseur à zoom profond open source, conforme à IIIF et à W3C Annotation, doublé d'une suite de création d'histoires interactives, conçu pour explorer manuscrits, œuvres d'art et médias spatiaux en haute résolution."
+    "description": "Lychee est un éditeur d'annotations IIIF open source pour Mango : dessinez et décrivez des zones d'images, et des moments d'audio et de vidéo, sous forme de W3C Web Annotations.",
+    "title": "Lychee",
+    "visit": "Voir Lychee sur GitHub",
+    "buttonTitle": "À propos de Lychee",
+    "buttonLabel": "À propos de Lychee",
+    "brand": "Lychee"
   },
   "annotate": {
     "stage": "Zone d'annotation",

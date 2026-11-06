@@ -114,7 +114,7 @@
       <div class="mango-about-modal__footer">
         <a
           class="mango-about-modal__link"
-          href="https://mangoviewer.dev/"
+          href={pkg.homepage}
           target="_blank"
           rel="noopener noreferrer"
         >

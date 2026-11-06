@@ -1,6 +1,11 @@
 {
   "about": {
-    "description": "Mae Mango yn wyliwr chwyddo dwfn cod agored sy'n cydymffurfio â W3C Annotation a IIIF, ynghyd â chyfres creu storïau rhyngweithiol, wedi'i gynllunio i archwilio llawysgrifau, gwaith celf a chyfryngau gofodol cydraniad uchel."
+    "description": "Mae Lychee yn olygydd anodiadau IIIF cod agored ar gyfer Mango: lluniwch a disgrifiwch rannau o ddelweddau, ac eiliadau mewn sain a fideo, fel W3C Web Annotations.",
+    "title": "Lychee",
+    "visit": "Gweld Lychee ar GitHub",
+    "buttonTitle": "Ynghylch Lychee",
+    "buttonLabel": "Ynghylch Lychee",
+    "brand": "Lychee"
   },
   "annotate": {
     "stage": "Llwyfan anodi",

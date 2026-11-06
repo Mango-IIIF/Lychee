@@ -35,7 +35,7 @@
       const annotations = {
         languages: ['en', 'cy'],
         showJson: params.get('json') === '1',
-        gallery: params.get('gallery') ?? 'open',
+        ...(params.get('gallery') ? { gallery: params.get('gallery') } : {}),
         ...(['image', 'audio', 'video'].includes(type) ? { mediaType: type } : {}),
       };
 
