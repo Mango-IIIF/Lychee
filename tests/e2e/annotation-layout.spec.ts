@@ -125,7 +125,7 @@ test.describe("annotation editor layout", () => {
     for (const selector of [
       ".annotation-editor__stage",
       ".anno-sidebar",
-      ".annotation-editor__table",
+      ".annotation-list",
     ]) {
       const region = host.locator(selector);
       await region.scrollIntoViewIfNeeded();

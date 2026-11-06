@@ -22,7 +22,7 @@ The 14 chapter start times come from the original notes. Their concise labels ar
 - transcript-annotations.json — timed supplementing TextualBody annotations.
 - transcript-en.vtt — machine-generated timed transcript.
 - transcript-en.txt — readable transcript with timecodes.
-- annotations.json — suggested subject tags and links.
+- annotations.json — suggested subject tags and links, credited to fictional demo users (`Person` creators at peoplescollection.wales, user 4567 being the demo's signed-in Jane Jones); the software that drafted them is their `generator`.
 - enrichment.json — editable chapter titles/start times, annotation mappings and spelling normalisations.
 - provenance.json — sources, duration, language, model and review status.
 

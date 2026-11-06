@@ -241,6 +241,22 @@
       "edit": "Golygu",
       "delete": "Dileu"
     },
+    "list": {
+      "label": "Rhestrau anodiadau",
+      "heading": "Anodiadau ({count})",
+      "mine": "Eich anodiadau ({count})",
+      "all": "Pob anodiad ({count})",
+      "empty": {
+        "mine": {
+          "image": "Bydd eich anodiadau ar y ddelwedd a'r eitem hon yn ymddangos yma.",
+          "av": "Bydd eich anodiadau ar y recordiad hwn yn ymddangos yma."
+        },
+        "all": {
+          "image": "Bydd anodiadau ar y ddelwedd a'r eitem hon yn ymddangos yma.",
+          "av": "Bydd anodiadau ar y recordiad hwn yn ymddangos yma."
+        }
+      }
+    },
     "table": {
       "heading": "Pob anodiad ({count})",
       "show": "Dangos rhestr anodiadau",

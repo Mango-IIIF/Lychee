@@ -158,7 +158,7 @@ test.describe("contents of a recording", () => {
   test.beforeEach(async ({ page }) => {
     const params = new URLSearchParams({ manifest: new URL(AUDIO, "http://127.0.0.1:4173/").href, type: "audio" });
     await page.goto(`/annotation-editor.html?${params}`);
-    await expect(page.getByLabel("Start (seconds)")).toBeVisible();
+    await expect(page.getByLabel("Start", { exact: true })).toBeVisible();
     await recordEvents(page);
     await page.getByRole("tab", { name: "Contents" }).click();
   });

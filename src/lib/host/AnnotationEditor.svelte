@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { untrack } from 'svelte';
+  import { tick, untrack } from 'svelte';
   import {
     AnnotationSidebar,
-    type AnnotationSidebarCard as Card,
     type IdentifySnippetContext,
   } from '@mango-iiif/annotation';
   import '@mango-iiif/annotation/style.css';
@@ -39,7 +38,16 @@
   import { canvasScale as scaleOf, canvasesOf, idOf, label, mediaKindOf, metadataOf } from '../annotations/iiif';
   import { normaliseAuthoringLanguages } from '../annotations/languages';
   import { loadExistingAnnotations } from '../annotations/load';
-  import { annotationText, annotationTitle, motivationsOf, newId, targetSource, timeTarget } from '../annotations/model';
+  import {
+    annotationText,
+    annotationTitle,
+    creatorIds,
+    creatorName,
+    motivationsOf,
+    newId,
+    targetSource,
+    timeTarget,
+  } from '../annotations/model';
   import {
     exportAnnotationPage,
     exportStructures,
@@ -66,8 +74,7 @@
   import type { Tool } from '../image/annotorious';
   import ChapterPanel from '../structures/ChapterPanel.svelte';
   import ContentsPanel from '../structures/ContentsPanel.svelte';
-  import AnnotationBrowserTable from '../table/AnnotationBrowserTable.svelte';
-  import type { TableRow } from '../table/types';
+  import AnnotationList, { type AnnotationListItem } from './AnnotationList.svelte';
   import EditorShell from './EditorShell.svelte';
   import { isTheme, storedTheme, storeTheme, type Theme } from './themes';
   import ExportMenu from './ui/ExportMenu.svelte';
@@ -77,7 +84,7 @@
   /**
    * The annotation editor: Mango's viewer as the image stage with Annotorious
    * drawing on it, or @mango-iiif/av for audio and video; the intent-first sidebar; and
-   * the browser table underneath.
+   * the annotations, listed under the form.
    *
    * This component owns the annotations. The viewer only shows the image.
    */
@@ -339,10 +346,13 @@
     const body = bodyValue(bodiesOfDraft(from, languages, bodyContext));
     const { target: _t, label: _l, body: _b, motivation: _m, modified: _mo, ...kept } = previous ?? {};
     const created = previous ? previous.created : now;
+    // The user is the creator of what they write; an annotation that already has one keeps it.
+    const creator = options.userId && !kept.creator ? { id: options.userId, type: 'Person' } : undefined;
     return {
       ...kept,
       id,
       type: 'Annotation',
+      ...(creator ? { creator } : {}),
       motivation: MOTIVATION_OF[intent],
       ...(label ? { label } : {}),
       ...(body ? { body } : {}),
@@ -444,7 +454,8 @@
   /** Opens one of the manifest's annotations in the form; its shape or time range can then be changed too. */
   const editSource = (id: string) => {
     const annotation = sourceOf(id);
-    if (!annotation) return;
+    // Someone else's annotation is theirs to change: it can be read and found, not edited.
+    if (!annotation || !canEdit(annotation)) return;
     const { record, region: shape } = recordFromW3C(annotation, ctx);
     const source = record.canvasId;
     if (kind === 'image' && source && source !== canvasId) {
@@ -494,12 +505,32 @@
     if (editId === id) resetForm();
   };
 
-  /** Opens an annotation in the form: one of the user's, else one of the manifest's; else just goes to it. */
+  /** The sidebar's scrolling pane, with the form at its top. */
+  let annotatePane: HTMLDivElement | null = $state(null);
+
+  /**
+   * Brings the form back into view, so what an Edit opened can be seen. After the form has
+   * filled in: WebKit drops a smooth scroll when the layout changes under it.
+   */
+  const showForm = async () => {
+    await tick();
+    const pane = annotatePane;
+    if (!pane) return;
+    const smooth = !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const behavior: ScrollBehavior = smooth ? 'smooth' : 'auto';
+    // Side by side the pane scrolls itself; stacked on a phone it is the editor that scrolls.
+    if (pane.scrollHeight > pane.clientHeight) pane.scrollTo({ top: 0, behavior });
+    else pane.scrollIntoView({ block: 'nearest', behavior });
+  };
+
+  /** Opens an annotation in the form: one of the user's, else one of the manifest's they may edit; else just goes to it. */
   const openAnnotation = (id: string) => {
     sidePanel = 'annotate';
+    const source = sourceOf(id);
     if (recordOf(id)) edit(id);
-    else if (sourceOf(id)) editSource(id);
-    else locate(id);
+    else if (source && canEdit(source)) editSource(id);
+    else return locate(id);
+    void showForm();
   };
 
   const locate = (id: string) => {
@@ -620,69 +651,62 @@
     return formatTime(range.start) + (range.end != null ? ` – ${formatTime(range.end)}` : '');
   };
 
-  let cards: Card[] = $derived(
-    userAnnotations
-      .filter((annotation) => {
-        const record = recordOf(annotation.id);
-        return record?.scope === 'manifest' || record?.canvasId === currentCanvasId;
-      })
-      .map((annotation) => {
-        const record = recordOf(annotation.id)!;
-        return {
-          annotation,
-          title: annotationTitle(annotation),
-          text: annotationText(annotation),
-          eyebrow: `${kind === 'image' ? scopeLabel(record) : timeLabel(annotation)} · ${intentLabel(annotation)}`,
-          locate: kind === 'image' ? (record.regionId ? 'show' : undefined) : 'jump',
-        } satisfies Card;
-      }),
-  );
+  /*
+   * The sidebar lists every annotation on what is showing (the page, or the
+   * recording, and the whole item), the user's and the item's: recordings in time order.
+   * With a user id it is split into Your annotations and All annotations.
+   */
+  const isMine = (annotation: Annotation) =>
+    Boolean(recordOf(annotation.id)) ||
+    Boolean(options.userId && creatorIds(annotation).includes(options.userId));
 
-  let regionCount = $derived(regionId ? store.records.filter((r) => r.regionId === regionId).length : 0);
+  /**
+   * The user's own can be edited, and so can the item's that nobody is named
+   * as making. One with someone else as its creator cannot.
+   */
+  const canEdit = (annotation: Annotation) => isMine(annotation) || annotation.creator == null;
 
-  const canvasName = (id: string) => {
-    const index = canvases.findIndex((c) => idOf(c) === id);
-    return label(canvases[index]?.label, language) || $t('annotate.table.canvasN', { n: index + 1 });
+  const hasSelector = (annotation: Annotation) =>
+    typeof annotation.target === 'object' && 'selector' in annotation.target && Boolean(annotation.target.selector);
+
+  /** Where on the image: an area, the whole image, or the whole item. */
+  const imageScopeLabel = (annotation: Annotation) => {
+    const record = recordOf(annotation.id);
+    if (record) return scopeLabel(record);
+    if (targetSource(annotation.target) === canonicalId) return $t('annotate.scope.short.manifest');
+    return $t(`annotate.scope.short.${hasSelector(annotation) ? 'region' : 'canvas'}`);
   };
 
-  const whereOf = (annotation: Annotation, record?: UserRecord) => {
-    if (kind !== 'image') return timeLabel(annotation);
-    const source = targetSource(annotation.target);
-    if (record?.scope === 'manifest' || source === canonicalId) return $t('annotate.scope.short.manifest');
-    const scopeName = record ? scopeLabel(record) : $t('annotate.scope.short.region');
-    return `${scopeName} · ${canvasName(source)}`;
-  };
-
-  let rows: TableRow[] = $derived([
-    ...userAnnotations.map((annotation) => ({
-      id: annotation.id,
-      title: annotationTitle(annotation),
-      text: annotationText(annotation),
-      motivation: intentLabel(annotation),
-      where: whereOf(annotation, recordOf(annotation.id)),
-      origin: 'mine' as const,
-    })),
-    ...store.existing
-      .filter((annotation) => !annotation.body || annotationText(annotation))
-      .map((annotation) => ({
+  let listItems: AnnotationListItem[] = $derived.by(() => {
+    const showing = [
+      ...userAnnotations,
+      ...store.existing.filter((annotation) => !annotation.body || annotationText(annotation)),
+    ].filter((annotation) => {
+      const source = targetSource(annotation.target);
+      return source === currentCanvasId || source === canonicalId;
+    });
+    if (kind !== 'image') {
+      const startOf = (annotation: Annotation) => timeRange(annotation.target)?.start ?? -1;
+      showing.sort((a, b) => startOf(a) - startOf(b));
+    }
+    return showing.map((annotation) => {
+      const record = recordOf(annotation.id);
+      return {
         id: annotation.id,
+        eyebrow: `${kind === 'image' ? imageScopeLabel(annotation) : timeLabel(annotation)} · ${intentLabel(annotation)}`,
         title: annotationTitle(annotation),
         text: annotationText(annotation),
-        motivation: intentLabel(annotation),
-        where: whereOf(annotation),
-        origin: 'source' as const,
-      })),
-  ]);
+        by: creatorName(annotation),
+        mine: isMine(annotation),
+        editable: canEdit(annotation),
+        deletable: Boolean(record),
+        locate:
+          kind !== 'image' ? 'jump' : (record ? record.regionId : hasSelector(annotation)) ? 'show' : undefined,
+      } satisfies AnnotationListItem;
+    });
+  });
 
-  let tableOpen = $state(false);
-
-  const setListHostState = (open: boolean): void => {
-    const node = root?.getRootNode();
-    const host = node instanceof ShadowRoot ? node.host : null;
-    if (!host) return;
-    if (open) host.setAttribute('data-annotation-list', 'open');
-    else host.removeAttribute('data-annotation-list');
-  };
+  let regionCount = $derived(regionId ? store.records.filter((r) => r.regionId === regionId).length : 0);
 
   /* ------------------------------------------------------------ contents */
 
@@ -925,7 +949,7 @@
     {/if}
   {/snippet}
 
-  <div class="annotation-editor" data-table={tableOpen ? 'open' : 'closed'}>
+  <div class="annotation-editor">
     <main class="annotation-editor__stage" aria-label={$t('annotate.stage')}>
       {#if kind === 'image'}
         <ImageStage
@@ -963,7 +987,7 @@
     </main>
 
     {#if kind}
-      <div class="annotation-editor__side">
+      <div class="annotation-editor__side" class:annotation-editor__side--tabs={contentsEnabled}>
       {#if contentsEnabled}
         <div class="annotation-editor__tabs" role="tablist" aria-label={$t('annotate.contents.panels')}>
           <button
@@ -1018,8 +1042,10 @@
           {/if}
         </div>
       {:else}
+      <div class="annotation-editor__annotate" bind:this={annotatePane}>
       <AnnotationSidebar
         kind={kind === 'image' ? 'image' : 'av'}
+        visibility={{ annotations: false }}
         {languages}
         bind:draft
         bind:language
@@ -1035,7 +1061,7 @@
         {error}
         {providers}
         {preview}
-        {cards}
+        cards={[]}
         selectedId={editId}
         ondrawbox={drawBox}
         ondeleteshape={deleteShape}
@@ -1064,22 +1090,19 @@
           {/if}
         {/snippet}
       </AnnotationSidebar>
+      <AnnotationList
+        items={listItems}
+        kind={kind === 'image' ? 'image' : 'av'}
+        split={Boolean(options.userId)}
+        selectedId={editId}
+        onlocate={locate}
+        onedit={openAnnotation}
+        ondelete={remove}
+      />
+      </div>
       {/if}
       </div>
     {/if}
-
-    <div class="annotation-editor__table">
-      <AnnotationBrowserTable
-        {rows}
-        activeId={editId}
-        open={tableOpen}
-        ontoggle={() => {
-          tableOpen = !tableOpen;
-          setListHostState(tableOpen);
-        }}
-        onselect={({ id }) => openAnnotation(id)}
-      />
-    </div>
   </div>
 </EditorShell>
 
@@ -1144,10 +1167,8 @@
 
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
-    grid-template-rows: minmax(0, 1fr) auto;
-    grid-template-areas:
-      'stage sidebar'
-      'table table';
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: 'stage sidebar';
     height: 100%;
     min-height: 0;
     overflow: hidden;
@@ -1164,8 +1185,26 @@
   .annotation-editor__side {
     grid-area: sidebar;
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     min-height: 0;
+  }
+
+  .annotation-editor__side--tabs {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  /* The form and the list under it scroll together. */
+  .annotation-editor__annotate {
+    min-height: 0;
+    overflow: auto;
+    border-left: 1px solid var(--viewer-panel-border);
+    background: var(--anno-surface);
+  }
+
+  .annotation-editor__annotate :global(.anno-sidebar) {
+    height: auto;
+    overflow: visible;
+    border-left: 0;
   }
 
   .annotation-editor__tabs {
@@ -1204,11 +1243,6 @@
     background: var(--anno-surface);
   }
 
-  .annotation-editor__table {
-    grid-area: table;
-    min-height: 0;
-  }
-
   .annotation-editor__status {
     margin: 0;
     padding: 24px;
@@ -1226,9 +1260,14 @@
   @container mango-viewer (max-width: 860px) {
     .annotation-editor {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: minmax(320px, 55cqh) auto auto;
-      grid-template-areas: 'stage' 'sidebar' 'table';
+      grid-template-rows: minmax(320px, 55cqh) auto;
+      grid-template-areas: 'stage' 'sidebar';
       overflow: auto;
+    }
+
+    .annotation-editor__annotate {
+      overflow: visible;
+      border-left: 0;
     }
 
     .annotation-editor :global(.anno-sidebar),

@@ -30,3 +30,5 @@ This rebuild uses the ignored .tools/pcw/asr-draft.json when available, or the i
 To regenerate the ASR draft, create a Python virtual environment, install scripts/requirements-transcription.txt and run scripts/transcribe-pcw.py. Model weights and the temporary audio download stay under ignored .tools/. The ASR runs locally; no audio is sent to a transcription service. Model downloads require network access. This environment needs the existing HTTP proxy also set as HTTPS_PROXY; localhost must be in NO_PROXY.
 
 The local app supports this dataset with ?item=pcw-574604 and retains the fictional coalfield demonstration at /. A deployment on another host must rebase manifest IDs. Signed/private Mux playback would need a separate server-side token flow.
+
+The suggested annotations in annotations.json are credited to fictional demo users (`Person` creators at peoplescollection.wales, user 4567 being the demo's signed-in Jane Jones); the software that drafted them is their `generator`.

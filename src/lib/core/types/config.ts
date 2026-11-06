@@ -30,6 +30,12 @@ export type AnnotateConfig = ViewerConfig & {
     gallery?: 'off' | 'closed' | 'open';
     /** Offer Auto Select (SAM2, WebGPU, ~40 MB model on first use). Default true. */
     autoSelect?: boolean;
+    /**
+     * The signed-in user's id, ideally a URI. New annotations get it as their
+     * `creator`, and the audio and video list splits into Your annotations
+     * (theirs, made here or with this creator) and All annotations.
+     */
+    userId?: string;
     /** Show the W3C JSON of the annotation being written. Default false. */
     showJson?: boolean;
     /** HTTP(S) id for exported AnnotationPages; drafts get none. */
