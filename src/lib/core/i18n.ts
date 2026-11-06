@@ -1,16 +1,16 @@
-import { derived, get } from 'svelte/store';
+import { derived, get } from "svelte/store";
 import {
   locale,
   setLocale,
   getLocale,
   translate as translateViewer,
-} from '@mango-iiif/iiif-viewer/core';
-import { setLocale as setAnnotationLocale } from '@mango-iiif/annotation';
-import en from '../../locales/en.json';
-import es from '../../locales/es.json';
-import cy from '../../locales/cy.json';
-import fr from '../../locales/fr.json';
-import ja from '../../locales/ja.json';
+} from "@mango-iiif/iiif-viewer/core";
+import { setLocale as setAnnotationLocale } from "@mango-iiif/annotation";
+import en from "../../locales/en.json";
+import es from "../../locales/es.json";
+import cy from "../../locales/cy.json";
+import fr from "../../locales/fr.json";
+import ja from "../../locales/ja.json";
 
 /*
  * Annotation editor strings only. Shared interface text (close buttons, stage
@@ -34,19 +34,19 @@ const catalogue: Record<string, MessageTree> = {
   ja,
 };
 
-const fallbackLocale = 'en';
+const fallbackLocale = "en";
 
 const resolveLocale = (value: string): string => {
-  const normalised = value.trim().replace('_', '-').toLowerCase();
+  const normalised = value.trim().replace("_", "-").toLowerCase();
   if (catalogue[normalised]) return normalised;
-  const base = normalised.split('-')[0];
+  const base = normalised.split("-")[0];
   if (base && catalogue[base]) return base;
   return fallbackLocale;
 };
 
 const lookup = (messages: MessageTree, key: string): MessageValue => {
-  return key.split('.').reduce<MessageValue>((acc, part) => {
-    if (!acc || typeof acc !== 'object') return undefined;
+  return key.split(".").reduce<MessageValue>((acc, part) => {
+    if (!acc || typeof acc !== "object") return undefined;
     return (acc as Record<string, MessageTree>)[part];
   }, messages as MessageTree);
 };
@@ -64,16 +64,26 @@ export { locale, setLocale, getLocale };
 /* The sidebar and toolbar come from @mango-iiif/annotation, which keeps its own locale store. */
 locale.subscribe((value) => setAnnotationLocale(value));
 
-export const translate = (key: string, params?: Params, overrideLocale?: string): string => {
+export const translate = (
+  key: string,
+  params?: Params,
+  overrideLocale?: string,
+): string => {
   const active = overrideLocale ?? get(locale);
   const resolved = resolveLocale(active);
   const value =
     lookup(catalogue[resolved] ?? catalogue[fallbackLocale], key) ??
     lookup(catalogue[fallbackLocale], key);
-  if (typeof value === 'string') return format(value, params);
+  if (typeof value === "string") return format(value, params);
+  if (value && typeof value === "object" && typeof params?.count === "number") {
+    const category = new Intl.PluralRules(resolved).select(params.count);
+    const template = value[category] ?? value.other;
+    if (typeof template === "string") return format(template, params);
+  }
   return translateViewer(key, params, active);
 };
 
 export const t = derived(locale, ($locale) => {
-  return (key: string, params?: Params): string => translate(key, params, $locale);
+  return (key: string, params?: Params): string =>
+    translate(key, params, $locale);
 });

@@ -85,7 +85,7 @@
       "problems": {
         "label": "Rhowch deitl iddi.",
         "empty": "Dewiswch i ble mae'n mynd, neu ychwanegwch benodau y tu mewn iddi.",
-        "page": "Mae'n pwyntio at dudalen neu recordiad nad yw yn yr eitem hon.",
+        "page": "Mae'n pwyntio at dudalen neu recordiad nad yw'n yr eitem hon.",
         "time": {
           "start": "Rhowch amser dechrau o sero eiliad neu fwy.",
           "startAfterEnd": "Rhaid i'r amser dechrau fod cyn i'r recordiad ddod i ben.",
@@ -107,7 +107,7 @@
       }
     },
     "region": {
-      "none": "Tynnwch flwch ar y ddelwedd, neu cliciwch siâp.",
+      "none": "Tynnwch flwch ar y ddelwedd, neu cliciwch ar siâp.",
       "drawing": "Cliciwch ar y ddelwedd i ddechrau, ac eto i orffen.",
       "selected": "Ardal wedi'i dewis, {w} × {h} px",
       "count": "anodiadau: {count}",
@@ -190,7 +190,7 @@
       "placeholder": "Dod o hyd i berson, lle neu bwnc",
       "searching": "Wrthi'n chwilio {provider}…",
       "noResults": "Dim canlyniadau.",
-      "linked": "Wedi'u cysylltu",
+      "linked": "Wedi'i gysylltu",
       "remove": "Tynnu {label}",
       "none": "Nid oes ffynonellau cyfeirio wedi'u ffurfweddu.",
       "name": "Enw yn {language}",
@@ -328,7 +328,7 @@
       "loading": "Wrthi'n llwytho'r model dewis…",
       "download": "Lawrlwytho'r model",
       "cached": "Caiff y model ei gadw yn eich porwr ar ôl y lawrlwythiad cyntaf.",
-      "instructions": "Hofrwch i gael rhagolwg. Cliciwch wrthrych, yna ychwanegwch neu dynnwch bwyntiau i fireinio'r amlinelliad.",
+      "instructions": "Hofrwch i gael rhagolwg. Cliciwch ar wrthrych, yna ychwanegwch neu dynnwch bwyntiau i fireinio'r amlinelliad.",
       "mode": "Modd Dewis Awtomatig",
       "add": "Dewis gwrthrych",
       "remove": "Tynnu ardal",
@@ -359,7 +359,10 @@
     "loadNotes": {
       "intro": "Bydd cadw hwn o'r ffurflen yn ei newid:",
       "motivations": "bydd ei gymhellion eraill ({values}) yn cael eu tynnu.",
-      "bodies": "bydd {count} rhan na all y ffurflen eu golygu yn cael eu tynnu.",
+      "bodies": {
+        "one": "bydd {count} rhan na all y ffurflen ei golygu yn cael ei thynnu.",
+        "other": "bydd {count} o rannau na all y ffurflen eu golygu yn cael eu tynnu."
+      },
       "joined": "bydd sawl testun mewn un iaith yn cael eu cyfuno'n un.",
       "language": "bydd testun yn {from} yn cael ei gadw fel {to}."
     }

@@ -71,7 +71,7 @@
       "toEnd": "Jusqu'à la fin",
       "startHere": "Commencer à la tête de lecture",
       "endHere": "Finir à la tête de lecture",
-      "timeFormat": "Saisissez une durée comme 1:02:05, 2:05 ou 125.",
+      "timeFormat": "Saisissez un repère temporel comme 1:02:05, 2:05 ou 125.",
       "go": {
         "image": "Aller à {title}",
         "av": "Lire {title}"
@@ -190,7 +190,7 @@
       "placeholder": "Trouver une personne, un lieu ou un sujet",
       "searching": "Recherche dans {provider}…",
       "noResults": "Aucun résultat.",
-      "linked": "Liés",
+      "linked": "Lié",
       "remove": "Retirer {label}",
       "none": "Aucune source de référence n'est configurée.",
       "name": "Nom en {language}",
@@ -305,7 +305,7 @@
       "label": "Outils de dessin",
       "select": "Sélectionner et déplacer",
       "rectangle": "Rectangle",
-      "polygon": "Polygone (cliquez des points, double-cliquez pour terminer)",
+      "polygon": "Polygone (cliquez pour placer des points, double-cliquez pour terminer)",
       "ellipse": "Ellipse",
       "path": "Main levée",
       "line": "Ligne",
@@ -359,7 +359,10 @@
     "loadNotes": {
       "intro": "L'enregistrer depuis le formulaire le modifiera :",
       "motivations": "ses autres motivations ({values}) seront supprimées.",
-      "bodies": "{count} partie(s) que le formulaire ne peut pas modifier seront supprimées.",
+      "bodies": {
+        "one": "{count} partie que le formulaire ne peut pas modifier sera supprimée.",
+        "other": "{count} parties que le formulaire ne peut pas modifier seront supprimées."
+      },
       "joined": "plusieurs textes dans une même langue seront réunis en un seul.",
       "language": "le texte en {from} sera enregistré comme {to}."
     }

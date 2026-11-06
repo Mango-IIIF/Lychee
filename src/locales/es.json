@@ -20,10 +20,10 @@
       "draft": "Borrador descargado. Asigne identificadores HTTP(S) a la página y a las anotaciones antes de publicar.",
       "menu": "Descargar",
       "annotations": "Anotaciones ({count})",
-      "structures": "Descargar contenido",
-      "structuresItem": "Contenido",
-      "both": "Anotaciones y contenido",
-      "unsaved": "El contenido tiene cambios sin guardar: guárdalo para incluirlos."
+      "structures": "Descargar índice",
+      "structuresItem": "Índice",
+      "both": "Anotaciones e índice",
+      "unsaved": "El índice tiene cambios sin guardar: guárdelo para incluirlos."
     },
     "sidebar": {
       "label": "Anotar",
@@ -36,11 +36,11 @@
       "json": "Lo que se guarda"
     },
     "contents": {
-      "label": "Contenido",
+      "label": "Índice",
       "panels": "Barra lateral",
       "hint": {
-        "image": "Agrupa las páginas en capítulos, como el índice de un libro. Los visores lo muestran como Contenido.",
-        "av": "Añade capítulos en el cabezal de reproducción y edítalos aquí. Los visores los muestran como Contenido."
+        "image": "Agrupe las páginas en capítulos, como el índice de un libro. Los visores lo muestran como Índice.",
+        "av": "Añada capítulos en el cabezal de reproducción y edítelos aquí. Los visores los muestran como Índice."
       },
       "outline": "Capítulos",
       "empty": "Aún no hay capítulos.",
@@ -52,9 +52,9 @@
       "addInside": "Añadir un capítulo dentro",
       "edit": "Editar {title}",
       "done": "Hecho",
-      "save": "Guardar contenido",
-      "saved": "Contenido guardado.",
-      "fixFirst": "Corrige los capítulos marcados en rojo antes de guardar.",
+      "save": "Guardar índice",
+      "saved": "Índice guardado.",
+      "fixFirst": "Corrija los capítulos marcados en rojo antes de guardar.",
       "needsFix": "hay que corregirlo",
       "titleIn": "Título ({language})",
       "noLanguage": "sin idioma",
@@ -71,7 +71,7 @@
       "toEnd": "Hasta el final",
       "startHere": "Empezar en el cabezal",
       "endHere": "Terminar en el cabezal",
-      "timeFormat": "Escribe una hora como 1:02:05, 2:05 o 125.",
+      "timeFormat": "Introduzca una marca de tiempo como 1:02:05, 2:05 o 125.",
       "go": {
         "image": "Ir a {title}",
         "av": "Reproducir {title}"
@@ -83,8 +83,8 @@
       "delete": "Eliminar capítulo",
       "locked": "Esto venía con el elemento en una forma que el editor no puede cambiar, así que se conserva tal cual.",
       "problems": {
-        "label": "Ponle un título.",
-        "empty": "Elige adónde lleva o añade capítulos dentro.",
+        "label": "Póngale un título.",
+        "empty": "Elija dónde va o añada capítulos dentro.",
         "page": "Apunta a una página o grabación que no está en este objeto.",
         "time": {
           "start": "Introduce un tiempo de inicio de cero o más segundos.",
@@ -96,7 +96,7 @@
       }
     },
     "scope": {
-      "label": "¿Sobre qué es?",
+      "label": "¿A qué se refiere?",
       "region": "Una zona",
       "canvas": "Esta imagen",
       "short": {
@@ -147,8 +147,8 @@
       "identify": {
         "label": "Identificar",
         "hint": {
-          "image": "Indique exactamente quién, qué o dónde es, con una referencia compartida como Wikidata.",
-          "av": "Indique exactamente quién, qué o dónde es, con una referencia compartida como Wikidata."
+          "image": "Indique exactamente quién o qué es, o dónde está, con una referencia compartida como Wikidata.",
+          "av": "Indique exactamente quién o qué es, o dónde está, con una referencia compartida como Wikidata."
         }
       },
       "highlight": {
@@ -184,13 +184,13 @@
       "linkTo": "Hasta (opcional)"
     },
     "identify": {
-      "question": "¿Quién, qué o dónde es esto?",
+      "question": "¿Quién o qué es esto, o dónde está?",
       "source": "Buscar en",
       "search": "Buscar en {provider}",
       "placeholder": "Buscar una persona, lugar o tema",
       "searching": "Buscando en {provider}…",
       "noResults": "Sin resultados.",
-      "linked": "Enlazados",
+      "linked": "Enlazado",
       "remove": "Quitar {label}",
       "none": "No hay fuentes de referencia configuradas.",
       "name": "Nombre en {language}",
@@ -225,7 +225,7 @@
       "noIntent": "Elija qué le gustaría hacer.",
       "noText": "Escriba algo antes de guardar.",
       "noTags": "Añada al menos una palabra clave.",
-      "noEntity": "Elija quién, qué o dónde es.",
+      "noEntity": "Elija quién o qué es, o dónde está.",
       "badUrl": "Introduzca una dirección web que empiece por http:// o https://.",
       "noRegion": "Primero dibuje o seleccione una forma en la imagen, o anote la imagen completa.",
       "time": {
@@ -359,7 +359,10 @@
     "loadNotes": {
       "intro": "Guardarlo desde el formulario lo cambiará:",
       "motivations": "se quitarán sus otras motivaciones ({values}).",
-      "bodies": "se quitarán {count} partes que el formulario no puede editar.",
+      "bodies": {
+        "one": "se quitará {count} parte que el formulario no puede editar.",
+        "other": "se quitarán {count} partes que el formulario no puede editar."
+      },
       "joined": "varios textos en un mismo idioma se unirán en uno.",
       "language": "el texto en {from} se guardará como {to}."
     }

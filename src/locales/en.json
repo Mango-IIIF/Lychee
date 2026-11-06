@@ -359,7 +359,10 @@
     "loadNotes": {
       "intro": "Saving this from the form will change it:",
       "motivations": "its other motivations ({values}) will be removed.",
-      "bodies": "{count} part(s) the form cannot edit will be removed.",
+      "bodies": {
+        "one": "{count} part the form cannot edit will be removed.",
+        "other": "{count} parts the form cannot edit will be removed."
+      },
       "joined": "several texts in one language will be joined into one.",
       "language": "text in {from} will be saved as {to}."
     }
