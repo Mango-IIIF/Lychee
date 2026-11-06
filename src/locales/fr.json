@@ -241,6 +241,22 @@
       "edit": "Modifier",
       "delete": "Supprimer"
     },
+    "list": {
+      "label": "Listes d'annotations",
+      "heading": "Annotations ({count})",
+      "mine": "Vos annotations ({count})",
+      "all": "Toutes les annotations ({count})",
+      "empty": {
+        "mine": {
+          "image": "Vos annotations sur cette image et cet élément apparaîtront ici.",
+          "av": "Vos annotations sur cet enregistrement apparaîtront ici."
+        },
+        "all": {
+          "image": "Les annotations sur cette image et cet élément apparaîtront ici.",
+          "av": "Les annotations sur cet enregistrement apparaîtront ici."
+        }
+      }
+    },
     "table": {
       "heading": "Toutes les annotations ({count})",
       "show": "Afficher la liste des annotations",

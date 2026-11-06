@@ -29,6 +29,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=0,846.64",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/4567",
+        "type": "Person",
+        "name": "Jane Jones",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/4567",
+          "https://www.casgliadywerin.cymru/user/4567"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -69,6 +78,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=54.04,115.34",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/1203",
+        "type": "Person",
+        "name": "Rhys Evans",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/1203",
+          "https://www.casgliadywerin.cymru/user/1203"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -109,6 +127,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=167.37,194.61",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/2981",
+        "type": "Person",
+        "name": "Siân Morgan",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/2981",
+          "https://www.casgliadywerin.cymru/user/2981"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -139,6 +166,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=188.03,194.61",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/3342",
+        "type": "Person",
+        "name": "Tom Davies",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/3342",
+          "https://www.casgliadywerin.cymru/user/3342"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -179,6 +215,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=415.12,545.59",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/4567",
+        "type": "Person",
+        "name": "Jane Jones",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/4567",
+          "https://www.casgliadywerin.cymru/user/4567"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -219,6 +264,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=553.29,582.77",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/1203",
+        "type": "Person",
+        "name": "Rhys Evans",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/1203",
+          "https://www.casgliadywerin.cymru/user/1203"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -249,6 +303,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=655.57,678.79",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/2981",
+        "type": "Person",
+        "name": "Siân Morgan",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/2981",
+          "https://www.casgliadywerin.cymru/user/2981"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -289,6 +352,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=668.79,678.79",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/3342",
+        "type": "Person",
+        "name": "Tom Davies",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/3342",
+          "https://www.casgliadywerin.cymru/user/3342"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },
@@ -329,6 +401,15 @@
       ],
       "target": "http://localhost:5173/iiif-pcw-574604/canvas/video#t=0,846.64",
       "creator": {
+        "id": "https://www.peoplescollection.wales/user/4567",
+        "type": "Person",
+        "name": "Jane Jones",
+        "homepage": [
+          "https://www.peoplescollection.wales/user/4567",
+          "https://www.casgliadywerin.cymru/user/4567"
+        ]
+      },
+      "generator": {
         "type": "Software",
         "name": "RAMP prototype: machine-generated draft, unreviewed"
       },

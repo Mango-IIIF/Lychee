@@ -69,7 +69,7 @@ loads them relative to the bundle, so a bundler copies them like any other asset
 
 | Entry                          | Contents                                                                               |
 | ------------------------------ | -------------------------------------------------------------------------------------- |
-| `@mango-iiif/lychee`           | `AnnotationEditor`, `AnnotationBrowserTable`, export and repository helpers, W3C types |
+| `@mango-iiif/lychee`           | `AnnotationEditor`, `AnnotationBrowserTable` (for a host's own list), export and repository helpers, W3C types |
 | `@mango-iiif/lychee/element`   | `<mango-annotation-editor>`                                                            |
 | `@mango-iiif/lychee/style.css` | Editor styles (the viewer's live in `@mango-iiif/iiif-viewer/style.css`)               |
 
@@ -98,6 +98,7 @@ editor.config = {
     ai: { endpoint: "/api/describe" }, // "Suggest with AI" for images, shown only when set
     gallery: "open", // page thumbnails under the image: open, closed (toolbar toggle) or off
     autoSelect: true, // offer Auto Select (WebGPU, ~40 MB model on first use)
+    userId: undefined, // the signed-in user (a URI): the creator of new annotations; splits the list into Your / All annotations
     showJson: false, // show the W3C JSON being written
     pageId: undefined, // HTTP(S) id for exported AnnotationPages
     export: ["annotations", "structures"], // what the download and exportToHost() may hand over
@@ -216,7 +217,7 @@ AnnotationEditor            config, annotations, events, export
 │  └─ AnnotationToolbar     the drawing tools (@mango-iiif/annotation)
 ├─ AVStage                  <mango-av-media> (@mango-iiif/av), lazily loaded
 ├─ AnnotationSidebar        the intent-first form, shared by both (@mango-iiif/annotation)
-└─ AnnotationBrowserTable   every annotation, the user's and the item's
+└─ AnnotationList           every annotation on the page or recording, under the form
 ```
 
 The sidebar, toolbar and Annotorious facade come from `@mango-iiif/annotation`,

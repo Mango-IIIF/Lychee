@@ -76,15 +76,19 @@ test.describe("image", () => {
     await expect(page.locator(".anno-languages button").first().locator("svg")).toBeVisible();
     await page.getByRole("button", { name: "Save annotation" }).click();
 
-    await expect(page.getByRole("heading", { name: "Your annotations (1)" })).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Your annotations (1)" })).toBeVisible();
     const [saved] = await userAnnotations(page);
     expect(saved).toMatchObject({
       motivation: "commenting",
       label: { en: ["Station label"] },
-      body: [
-        { type: "TextualBody", value: "Names the station.", language: "en" },
-        { type: "TextualBody", value: "Yn enwi'r orsaf.", language: "cy" },
-      ],
+      // The same text in two languages is a Choice (IIIF Cookbook recipe 0346).
+      body: {
+        type: "Choice",
+        items: [
+          { type: "TextualBody", value: "Names the station.", language: "en" },
+          { type: "TextualBody", value: "Yn enwi'r orsaf.", language: "cy" },
+        ],
+      },
       target: {
         type: "SpecificResource",
         source: {
@@ -118,20 +122,25 @@ test.describe("image", () => {
     await page.getByPlaceholder("Separate with commas").fill("police, register");
     await page.getByRole("button", { name: "Save annotation" }).click();
 
-    const card = page.locator(".anno-card");
-    await expect(card).toContainText("Whole image · Tag");
-    expect((await userAnnotations(page))[0].body).toHaveLength(2);
+    // One tagging annotation per keyword (IIIF Cookbook recipe 0021).
+    const cards = page.locator(".annotation-list__card");
+    await expect(cards).toHaveCount(2);
+    await expect(cards.first()).toContainText("Whole image · Tag");
+    expect(await userAnnotations(page)).toHaveLength(2);
 
-    await card.getByRole("button", { name: "Edit" }).click();
-    await expect(page.getByPlaceholder("Separate with commas")).toHaveValue("police, register");
-    await page.getByPlaceholder("Separate with commas").fill("police");
+    const police = cards.filter({ hasText: "police" });
+    await police.getByRole("button", { name: "Edit" }).click();
+    await expect(page.getByPlaceholder("Separate with commas")).toHaveValue("police");
+    await page.getByPlaceholder("Separate with commas").fill("constable");
     await page.getByRole("button", { name: "Update annotation" }).click();
-    const [updated] = await userAnnotations(page);
-    expect(updated.body).toMatchObject({ value: "police", purpose: "tagging" });
-    expect(updated.modified).toBeTruthy();
+    const updated = (await userAnnotations(page)).find(
+      (annotation) => (annotation.body as { value?: string }).value === "constable",
+    );
+    expect(updated).toMatchObject({ motivation: "tagging", body: { value: "constable" } });
+    expect(updated!.modified).toBeTruthy();
 
-    await card.getByRole("button", { name: "Delete" }).click();
-    await expect(page.getByRole("heading", { name: "Your annotations (0)" })).toBeVisible();
+    await cards.filter({ hasText: "constable" }).getByRole("button", { name: "Delete" }).click();
+    await expect(page.getByRole("tab", { name: "Your annotations (1)" })).toBeVisible();
   });
 
   test("offers an area or the whole image, not the whole item", async ({ page }) => {
@@ -229,7 +238,7 @@ test.describe("audio", () => {
   test.beforeEach(async ({ page }) => {
     const params = new URLSearchParams({ manifest: new URL(AUDIO, "http://127.0.0.1:4173/").href, type: "audio" });
     await page.goto(`/annotation-editor.html?${params}`);
-    await expect(page.getByLabel("Start (seconds)")).toBeVisible();
+    await expect(page.getByLabel("Start", { exact: true })).toBeVisible();
   });
 
   test("lists the recording's transcript, its annotations in the list, and chapters in Contents", async ({ page }) => {
@@ -240,15 +249,34 @@ test.describe("audio", () => {
     await expect(page.getByRole("tab", { name: "Annotations", exact: true })).toHaveCount(0);
     await expect(page.getByRole("tab", { name: "Chapters" })).toHaveCount(0);
 
-    // The item's annotations, and no transcript lines among them.
-    await page.locator(".annotation-table__toggle").click();
-    const rows = page.locator(".annotation-table tbody tr");
-    await expect(rows.first()).toBeVisible();
-    await expect(rows.filter({ hasText: firstLine })).toHaveCount(0);
+    // The item's annotations are in the sidebar, with no table under the player, and no transcript lines among them.
+    await expect(page.locator(".annotation-table")).toHaveCount(0);
+    const cards = page.locator(".annotation-list__card");
 
-    // Choosing one of the item's annotations opens it in the form.
-    await rows.first().getByRole("button").first().click();
+    // The demo signs in as Jane Jones, who made five of the item's annotations.
+    await expect(page.getByRole("tab", { name: "Your annotations (5)" })).toHaveAttribute("aria-selected", "true");
+    await expect(cards).toHaveCount(5);
+    // They are hers but the item's, so they can be changed and not deleted.
+    await expect(cards.first().getByRole("button", { name: "Delete" })).toHaveCount(0);
+
+    // All annotations has everyone's, by name; other people's can be found but not changed.
+    await page.getByRole("tab", { name: /^All annotations/ }).click();
+    const others = cards.filter({ hasText: "Rhys Evans" });
+    await expect(others.first()).toBeVisible();
+    await expect(others.first().getByRole("button", { name: "Jump" })).toBeVisible();
+    await expect(others.getByRole("button", { name: "Edit" })).toHaveCount(0);
+    await expect(cards.filter({ hasText: "Yours" })).toHaveCount(5);
+    await expect(cards.filter({ hasText: firstLine })).toHaveCount(0);
+
+    // Editing one of hers from far down the list brings the form back into view, filled in.
+    const pane = page.locator(".annotation-editor__annotate");
+    const last = cards.filter({ hasText: "Yours" }).last();
+    await last.scrollIntoViewIfNeeded();
+    expect(await pane.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    await last.getByRole("button", { name: "Edit" }).click();
     await expect(page.getByRole("button", { name: "Update annotation" })).toBeVisible();
+    await expect.poll(() => pane.evaluate((element) => element.scrollTop)).toBe(0);
+    await expect(page.getByRole("group", { name: "What would you like to do?" })).toBeInViewport();
 
     await page.getByRole("tab", { name: "Contents" }).click();
     await expect(page.getByRole("navigation", { name: "Chapters" }).getByRole("button").first()).toContainText(
@@ -257,7 +285,7 @@ test.describe("audio", () => {
   });
 
   test("annotates a time range and validates it", async ({ page }) => {
-    await page.getByLabel("Start (seconds)").fill("30");
+    await page.getByLabel("Start", { exact: true }).fill("30");
     await page.getByLabel("End (optional)").fill("10");
     await page.getByRole("button", { name: "Transcribe" }).click();
     await page.getByPlaceholder("Type it exactly as you hear or see it").fill("My father worked on the railway.");
@@ -272,6 +300,50 @@ test.describe("audio", () => {
       body: { value: "My father worked on the railway.", language: "en" },
       target: { selector: { type: "FragmentSelector", value: "t=30,45.5" } },
     });
-    await expect(page.locator(".anno-card")).toContainText("0:30 – 0:45");
+    await expect(page.locator(".annotation-list__card").filter({ hasText: "My father worked" })).toContainText(
+      "0:30 – 0:45",
+    );
+  });
+
+  test("is one list when nobody is signed in", async ({ page }) => {
+    const params = new URLSearchParams({ manifest: new URL(AUDIO, "http://127.0.0.1:4173/").href, type: "audio", user: "" });
+    await page.goto(`/annotation-editor.html?${params}`);
+    await expect(page.getByRole("heading", { name: /^Annotations \(\d+\)$/ })).toBeVisible();
+    await expect(page.getByRole("tab", { name: /^Your annotations/ })).toHaveCount(0);
+    await expect(page.locator(".annotation-list__card").filter({ hasText: "Jane Jones" }).first()).toBeVisible();
+  });
+
+  test("splits Your annotations from All annotations when the host names the user", async ({ page }) => {
+    const user = "https://example.org/users/ann";
+    const params = new URLSearchParams({
+      manifest: new URL(AUDIO, "http://127.0.0.1:4173/").href,
+      type: "audio",
+      user,
+    });
+    await page.goto(`/annotation-editor.html?${params}`);
+    await expect(page.getByLabel("Start", { exact: true })).toBeVisible();
+
+    const mine = page.getByRole("tab", { name: /^Your annotations/ });
+    const all = page.getByRole("tab", { name: /^All annotations/ });
+    await expect(mine).toHaveText("Your annotations (0)");
+    await expect(page.locator(".annotation-list__card")).toHaveCount(0);
+
+    await page.getByLabel("Start", { exact: true }).fill("12");
+    await page.getByRole("button", { name: "Transcribe" }).click();
+    await page.getByPlaceholder("Type it exactly as you hear or see it").fill("The chapel was full.");
+    await page.getByRole("button", { name: "Save annotation" }).click();
+
+    // What the user writes is theirs, and says so.
+    const [saved] = await userAnnotations(page);
+    expect(saved).toMatchObject({ creator: { id: user, type: "Person" } });
+    await expect(mine).toHaveText("Your annotations (1)");
+    await expect(page.locator(".annotation-list__card")).toHaveCount(1);
+
+    // All annotations has the item's too, with the user's marked.
+    await all.click();
+    await expect(all).toHaveAttribute("aria-selected", "true");
+    const cards = page.locator(".annotation-list__card");
+    expect(await cards.count()).toBeGreaterThan(1);
+    await expect(cards.filter({ hasText: "The chapel was full." })).toContainText("Yours");
   });
 });

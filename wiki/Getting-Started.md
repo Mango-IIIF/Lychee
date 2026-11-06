@@ -29,9 +29,6 @@ mango-annotation-editor {
 }
 ```
 
-When the annotation list is open the element grows by 230px so the list has a
-box of its own rather than taking height off the canvas.
-
 ## In an application
 
 ```bash

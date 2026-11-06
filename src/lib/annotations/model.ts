@@ -66,7 +66,27 @@ export const textBody = (value: string, language: string, generator?: Generator)
   ...(generator ? { generator } : {}),
 });
 
-export const mediaFragment = (start: number | string, end?: number | string | null): string =>
+/** The ids of an annotation's `creator`, which may be a URI, an Agent, or a list of either. */
+export const creatorIds = (annotation: Annotation): string[] => {
+  const creators = Array.isArray(annotation.creator) ? annotation.creator : [annotation.creator];
+  return creators.flatMap((creator) => {
+    if (typeof creator === 'string') return [creator];
+    const id = (creator as { id?: unknown } | null | undefined)?.id;
+    return typeof id === 'string' ? [id] : [];
+  });
+};
+
+/** The first name an annotation's `creator` gives, if any. */
+export const creatorName = (annotation: Annotation): string | undefined => {
+  const creators = Array.isArray(annotation.creator) ? annotation.creator : [annotation.creator];
+  for (const creator of creators) {
+    const name = (creator as { name?: unknown } | null | undefined)?.name;
+    if (typeof name === 'string' && name.trim()) return name.trim();
+  }
+  return undefined;
+};
+
+export const mediaFragment =(start: number | string, end?: number | string | null): string =>
   `t=${Number(start) || 0}` + (end !== '' && end != null ? `,${Number(end)}` : '');
 
 export const timeTarget = (

@@ -241,6 +241,22 @@
       "edit": "Edit",
       "delete": "Delete"
     },
+    "list": {
+      "label": "Annotation lists",
+      "heading": "Annotations ({count})",
+      "mine": "Your annotations ({count})",
+      "all": "All annotations ({count})",
+      "empty": {
+        "mine": {
+          "image": "Your annotations on this image and item will appear here.",
+          "av": "Your annotations on this recording will appear here."
+        },
+        "all": {
+          "image": "Annotations on this image and item will appear here.",
+          "av": "Annotations on this recording will appear here."
+        }
+      }
+    },
     "table": {
       "heading": "All annotations ({count})",
       "show": "Show annotation list",

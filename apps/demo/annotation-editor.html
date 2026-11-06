@@ -27,16 +27,21 @@
        * ?json=1           shows the W3C JSON being written
        * ?gallery=off|closed|open   the page thumbnail strip (default: open)
        * ?lang=cy          interface language
+       * ?user=<id>        the signed-in user, whose annotations get a tab of their own
+       *                   (default: Jane Jones, a demo user who made some of the test annotations;
+       *                   ?user= with no value signs out)
        */
       const params = new URLSearchParams(location.search);
       const manifest = params.get('manifest') ?? new URL('manifests/constabulary.json', location.href).href;
       const type = params.get('type');
+      const user = params.has('user') ? params.get('user') : 'https://www.peoplescollection.wales/user/4567';
 
       const annotations = {
         languages: ['en', 'cy'],
         showJson: params.get('json') === '1',
         ...(params.get('gallery') ? { gallery: params.get('gallery') } : {}),
         ...(['image', 'audio', 'video'].includes(type) ? { mediaType: type } : {}),
+        ...(user ? { userId: user } : {}),
       };
 
       // AI suggestions and GeoNames need the demo's API server (`npm run dev` with a .env).

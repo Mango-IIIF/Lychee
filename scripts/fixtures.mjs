@@ -8,6 +8,10 @@ import { fileURLToPath } from 'node:url';
  * verbatim in apps/demo/fixtures; apps/demo/manifests is generated from them
  * with those identifiers rebased onto wherever the demo is served. External
  * media and the NLW manifest's identifiers are left alone.
+ *
+ * One edit to them: the suggested annotations (each annotations.json) are
+ * credited to fictional demo users as `Person` creators, so the editor's Your
+ * annotations tab has something in it; the drafting software is their `generator`.
  */
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
