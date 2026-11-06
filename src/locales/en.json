@@ -38,57 +38,61 @@
     "contents": {
       "label": "Contents",
       "panels": "Sidebar",
-      "hint": "Group the pages into sections, like a book's table of contents. Viewers show it as Contents.",
-      "empty": "No sections yet.",
-      "add": "Add section",
-      "addInside": "Add a section inside",
+      "hint": {
+        "image": "Group the pages into chapters, like a book's table of contents. Viewers show it as Contents.",
+        "av": "Add chapters at the playhead, then edit them here. Viewers show them as Contents."
+      },
+      "outline": "Chapters",
+      "empty": "No chapters yet.",
+      "untitled": "Untitled chapter",
+      "add": {
+        "image": "Add chapter",
+        "av": "Add chapter at {time}"
+      },
+      "addInside": "Add a chapter inside",
+      "edit": "Edit {title}",
+      "done": "Done",
       "save": "Save contents",
       "saved": "Contents saved.",
-      "fixFirst": "Fix the sections marked in red before saving.",
-      "title": "Section title",
+      "fixFirst": "Fix the chapters marked in red before saving.",
+      "needsFix": "needs fixing",
+      "titleIn": "Title ({language})",
+      "noLanguage": "no language",
+      "headingOnly": {
+        "image": "Heading only, without pages of its own",
+        "av": "Heading only, without a time of its own"
+      },
+      "headingHint": "A heading needs chapters inside it.",
       "from": "From",
       "to": "To",
       "thisPage": "This page",
       "start": "Start",
       "end": "End",
       "toEnd": "To the end",
-      "jump": "Go to",
+      "startHere": "Start at the playhead",
+      "endHere": "End at the playhead",
+      "timeFormat": "Enter a time such as 1:02:05, 2:05 or 125.",
+      "go": {
+        "image": "Go to {title}",
+        "av": "Play {title}"
+      },
       "up": "Move up",
       "down": "Move down",
-      "indent": "Move into the section above",
-      "outdent": "Move out of its section",
-      "delete": "Delete section",
+      "indent": "Move into the chapter above",
+      "outdent": "Move out of its chapter",
+      "delete": "Delete chapter",
       "locked": "This came with the item in a form the editor can't change, so it is kept as it is.",
-      "chapter": {
-        "hint": "Pick a chapter to edit it, or add one at the playhead.",
-        "outline": "Chapters",
-        "empty": "No chapters yet.",
-        "untitled": "Untitled chapter",
-        "title": "Chapter title",
-        "addAt": "Add chapter at {time}",
-        "startHere": "Start at the playhead",
-        "endHere": "End at the playhead",
-        "play": "Play from here",
-        "addInside": "Add a chapter inside",
-        "indent": "Move into the chapter above",
-        "outdent": "Move out of its chapter",
-        "delete": "Delete chapter",
-        "group": "This chapter groups the ones inside it.",
-        "path": "Inside",
-        "attention": "Chapters to fix before saving:",
-        "timeFormat": "Enter a time such as 1:02:05, 2:05 or 125."
-      },
       "problems": {
         "label": "Give it a title.",
-        "empty": "Choose what it covers, or add sections inside it.",
+        "empty": "Choose where it goes, or add chapters inside it.",
         "page": "It points to a page or recording that is not in this item.",
         "time": {
           "start": "Enter a start time of zero or more seconds.",
           "startAfterEnd": "The start time must be before the recording ends.",
           "end": "The end time must be after the start and within the recording."
         },
-        "gap": "There is a gap before this section: it plays as silence.",
-        "overlap": "This section starts before the one above it ends."
+        "gap": "There is a gap before this chapter: it plays as silence.",
+        "overlap": "This chapter starts before the one above it ends."
       }
     },
     "scope": {

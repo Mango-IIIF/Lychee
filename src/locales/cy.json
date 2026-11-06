@@ -38,57 +38,61 @@
     "contents": {
       "label": "Cynnwys",
       "panels": "Bar ochr",
-      "hint": "Grwpiwch y tudalennau yn adrannau, fel tabl cynnwys llyfr. Mae gwylwyr yn ei ddangos fel Cynnwys.",
-      "empty": "Dim adrannau eto.",
-      "add": "Ychwanegu adran",
-      "addInside": "Ychwanegu adran y tu mewn",
+      "hint": {
+        "image": "Grwpiwch y tudalennau yn benodau, fel tabl cynnwys llyfr. Mae gwylwyr yn ei ddangos fel Cynnwys.",
+        "av": "Ychwanegwch benodau wrth y pen chwarae, yna golygwch nhw yma. Mae gwylwyr yn eu dangos fel Cynnwys."
+      },
+      "outline": "Penodau",
+      "empty": "Dim penodau eto.",
+      "untitled": "Pennod heb deitl",
+      "add": {
+        "image": "Ychwanegu pennod",
+        "av": "Ychwanegu pennod am {time}"
+      },
+      "addInside": "Ychwanegu pennod y tu mewn",
+      "edit": "Golygu {title}",
+      "done": "Gorffen",
       "save": "Cadw cynnwys",
       "saved": "Cynnwys wedi'i gadw.",
-      "fixFirst": "Cywirwch yr adrannau sydd wedi'u marcio'n goch cyn cadw.",
-      "title": "Teitl yr adran",
+      "fixFirst": "Cywirwch y penodau sydd wedi'u marcio'n goch cyn cadw.",
+      "needsFix": "angen ei chywiro",
+      "titleIn": "Teitl ({language})",
+      "noLanguage": "dim iaith",
+      "headingOnly": {
+        "image": "Pennawd yn unig, heb dudalennau ei hun",
+        "av": "Pennawd yn unig, heb amser ei hun"
+      },
+      "headingHint": "Mae angen penodau y tu mewn i bennawd.",
       "from": "O",
       "to": "I",
       "thisPage": "Y dudalen hon",
       "start": "Dechrau",
       "end": "Diwedd",
       "toEnd": "Hyd y diwedd",
-      "jump": "Mynd i",
+      "startHere": "Dechrau wrth y pen chwarae",
+      "endHere": "Gorffen wrth y pen chwarae",
+      "timeFormat": "Rhowch amser fel 1:02:05, 2:05 neu 125.",
+      "go": {
+        "image": "Mynd i {title}",
+        "av": "Chwarae {title}"
+      },
       "up": "Symud i fyny",
       "down": "Symud i lawr",
-      "indent": "Symud i mewn i'r adran uchod",
-      "outdent": "Symud allan o'i hadran",
-      "delete": "Dileu adran",
+      "indent": "Symud i mewn i'r bennod uwchben",
+      "outdent": "Symud allan o'i phennod",
+      "delete": "Dileu pennod",
       "locked": "Daeth hwn gyda'r eitem mewn ffurf na all y golygydd ei newid, felly caiff ei gadw fel y mae.",
-      "chapter": {
-        "hint": "Dewiswch bennod i'w golygu, neu ychwanegwch un wrth y pen chwarae.",
-        "outline": "Penodau",
-        "empty": "Dim penodau eto.",
-        "untitled": "Pennod heb deitl",
-        "title": "Teitl y bennod",
-        "addAt": "Ychwanegu pennod am {time}",
-        "startHere": "Dechrau wrth y pen chwarae",
-        "endHere": "Gorffen wrth y pen chwarae",
-        "play": "Chwarae o'r fan hon",
-        "addInside": "Ychwanegu pennod y tu mewn",
-        "indent": "Symud i mewn i'r bennod uwchben",
-        "outdent": "Symud allan o'i phennod",
-        "delete": "Dileu pennod",
-        "group": "Mae'r bennod hon yn grwpio'r rhai sydd y tu mewn iddi.",
-        "path": "Y tu mewn i",
-        "attention": "Penodau i’w cywiro cyn cadw:",
-        "timeFormat": "Rhowch amser fel 1:02:05, 2:05 neu 125."
-      },
       "problems": {
         "label": "Rhowch deitl iddi.",
-        "empty": "Dewiswch beth mae'n ei gynnwys, neu ychwanegwch adrannau y tu mewn iddi.",
+        "empty": "Dewiswch i ble mae'n mynd, neu ychwanegwch benodau y tu mewn iddi.",
         "page": "Mae'n pwyntio at dudalen neu recordiad nad yw yn yr eitem hon.",
         "time": {
           "start": "Rhowch amser dechrau o sero eiliad neu fwy.",
           "startAfterEnd": "Rhaid i'r amser dechrau fod cyn i'r recordiad ddod i ben.",
           "end": "Rhaid i'r amser gorffen fod ar ôl y dechrau ac o fewn y recordiad."
         },
-        "gap": "Mae bwlch cyn yr adran hon: mae'n chwarae fel tawelwch.",
-        "overlap": "Mae'r adran hon yn dechrau cyn i'r un uwch ei phen orffen."
+        "gap": "Mae bwlch cyn y bennod hon: mae'n chwarae fel tawelwch.",
+        "overlap": "Mae'r bennod hon yn dechrau cyn i'r un uwch ei phen orffen."
       }
     },
     "scope": {

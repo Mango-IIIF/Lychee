@@ -185,10 +185,21 @@ describe("readStructures", () => {
     expect(indentSection(part.children, part.children[1].id)).toHaveLength(2);
   });
 
-  it("locks ranges that mix pages and subsections, or name more than one span", () => {
-    const mixed = { id: "m", type: "Range", label: { en: ["M"] }, items: [{ id: page(1), type: "Canvas" }, { id: "x", type: "Range", items: [] }] };
+  it("reads a Range with its own pages and subsections, as the spec allows", () => {
+    const child = { id: "x", type: "Range", label: { en: ["X"] }, items: [{ id: page(2), type: "Canvas" }] };
+    const mixed = { id: "m", type: "Range", label: { en: ["M"] }, items: [{ id: page(1), type: "Canvas" }, child] };
+    const [section] = readStructures([mixed]);
+    expect(section.locked).toBeUndefined();
+    expect(section.pages).toEqual([page(1)]);
+    expect(section.children.map((c) => c.id)).toEqual(["x"]);
+    expect(roundTrip([mixed])).toEqual([mixed]);
+  });
+
+  it("locks ranges with a page after a subsection, or more than one span", () => {
+    const child = { id: "x", type: "Range", label: { en: ["X"] }, items: [{ id: page(2), type: "Canvas" }] };
+    const after = { id: "m", type: "Range", label: { en: ["M"] }, items: [child, { id: page(1), type: "Canvas" }] };
     const twoSpans = { id: "t", type: "Range", items: [{ id: `${recording}#t=0,5`, type: "Canvas" }, { id: `${recording}#t=9,12`, type: "Canvas" }] };
-    expect(readStructures([mixed, twoSpans]).map((s) => Boolean(s.locked))).toEqual([true, true]);
+    expect(readStructures([after, twoSpans]).map((s) => Boolean(s.locked))).toEqual([true, true]);
   });
 
   it("leaves locked ones out of the checks", () => {
@@ -211,14 +222,46 @@ describe("editing", () => {
     expect(outdentSection(indented, "b").map((s) => s.id)).toEqual(["a", "b", "c"]);
   });
 
-  it("hands a section's own span to its first subsection, so parents only group", () => {
+  it("keeps a section's own pages or span when chapters go inside it", () => {
     const act = section("act", { label: { en: "Act one" }, time: { canvasId: recording, start: 0, end: 60 } });
     const [group] = addSection([act], section("scene", { label: { en: "Scene one" } }), "act");
-    expect(group.time).toBeUndefined();
-    expect(group.children.map((c) => [c.id, c.time])).toEqual([["scene", { canvasId: recording, start: 0, end: 60 }]]);
-    const [indented] = indentSection([section("p", { label: { en: "Part" }, pages: [page(1)] }), section("q", { label: { en: "Q" }, pages: [page(2)] })], "q");
-    expect(indented.pages).toEqual([]);
-    expect(indented.children.map((c) => c.pages)).toEqual([[page(1)], [page(2)]]);
+    expect(group.time).toEqual(act.time);
+    expect(group.children.map((c) => c.id)).toEqual(["scene"]);
+    // Indenting makes no untitled chapter to fill in: only the two that were there.
+    const both = [section("p", { label: { en: "Part" }, pages: [page(1)] }), section("q", { label: { en: "Q" }, pages: [page(2)] })];
+    const indented = indentSection(both, "q");
+    expect(indented).toHaveLength(1);
+    expect(indented[0].pages).toEqual([page(1)]);
+    expect(indented[0].children.map((c) => [c.id, c.pages])).toEqual([["q", [page(2)]]]);
+    expect(sectionProblems(indented, { canvasIds: pages })).toEqual([]);
+  });
+
+  it("lets a heading go nowhere itself, as long as chapters are inside it", () => {
+    const heading = section("h", { label: { en: "Part one" }, children: [section("c", { label: { en: "C" }, pages: [page(1)] })] });
+    expect(sectionProblems([heading], { canvasIds: pages })).toEqual([]);
+    const [range] = toStructures([heading], ["en"]);
+    expect(range.items).toEqual([expect.objectContaining({ id: "c", type: "Range" })]);
+    // A heading with nothing inside it is no Range: `items` needs one.
+    expect(sectionProblems([section("e", { label: { en: "E" } })], { canvasIds: pages })).toEqual([
+      { sectionId: "e", kind: "empty", level: "error" },
+    ]);
+  });
+
+  it("lines up only the innermost spans, so an outline span is no overlap", () => {
+    const act = section("act", {
+      label: { en: "Act" },
+      time: { canvasId: recording, start: 0, end: 60 },
+      children: [
+        section("s1", { label: { en: "S1" }, time: { canvasId: recording, start: 0, end: 30 } }),
+        section("s2", { label: { en: "S2" }, time: { canvasId: recording, start: 30, end: 60 } }),
+      ],
+    });
+    expect(sectionProblems([act], { canvasIds: [recording], durations: { [recording]: 60 } })).toEqual([]);
+    // A new chapter splits the scene it falls in, not the act around it.
+    const { sections, id } = addChapterAt([act], recording, 10, [recording]);
+    expect(sections[0].time).toEqual(act.time);
+    expect(sections[0].children.map((c) => c.time?.start)).toEqual([0, 10, 30]);
+    expect(sections[0].children[1].id).toBe(id);
   });
 
   it("moves among siblings only", () => {

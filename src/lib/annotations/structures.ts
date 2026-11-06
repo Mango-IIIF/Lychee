@@ -6,7 +6,10 @@
  * annotation and does not travel with them.
  *
  * Books list whole pages (IIIF Cookbook recipe 0024); recordings list spans of
- * time, written as `canvas#t=start,end` (recipe 0026). Properties the editor
+ * time, written as `canvas#t=start,end` (recipe 0026). A Range is "an ordered
+ * list of Canvases, and/or further Ranges", so a chapter may go to its own
+ * pages or span, hold chapters inside it, or both; a heading with neither is
+ * not a Range (its `items` must have at least one). Properties the editor
  * does not change (a thumbnail, a summary) are kept; a Range it cannot edit
  * (other kinds of target, hidden navigation) is kept exactly as it came.
  */
@@ -36,7 +39,10 @@ export interface SectionTime {
   end: number | null;
 }
 
-/** One entry in the table of contents, as the editor holds it. Written out as a Range. */
+/**
+ * One entry in the table of contents, as the editor holds it. Written out as a
+ * Range: its own pages or span first, then the chapters inside it.
+ */
 export interface Section {
   id: string;
   /** Language → title. */
@@ -129,8 +135,8 @@ const lockedSection = (value: unknown): Section => {
 /**
  * A Range as the editor's section. One it cannot edit faithfully is locked,
  * to be written back untouched: a target other than a whole canvas or one
- * `#t=` span of it, pages and subsections side by side, a hidden Range, a
- * label that is not a language map.
+ * `#t=` span of it, a page or span after a subsection (the editor writes its
+ * own first), a hidden Range, a label that is not a language map.
  */
 export const sectionFromRange = (value: unknown): Section => {
   if (
@@ -149,6 +155,7 @@ export const sectionFromRange = (value: unknown): Section => {
       continue;
     }
     if (!isObject(item) || item.type !== 'Canvas' || typeof item.id !== 'string') return lockedSection(value);
+    if (section.children.length) return lockedSection(value);
     if (Object.keys(item).some((key) => key !== 'id' && key !== 'type')) return lockedSection(value);
     const [canvasId, fragment] = item.id.split('#');
     const span = fragment ? timeRange(item.id) : null;
@@ -157,7 +164,6 @@ export const sectionFromRange = (value: unknown): Section => {
     if (span) section.time = { canvasId, start: span.start, end: span.end };
     else section.pages.push(item.id);
   }
-  if (section.children.length && (section.pages.length || section.time)) return lockedSection(value);
   const extra = Object.fromEntries(Object.entries(value).filter(([key]) => !EDITED.has(key)));
   return Object.keys(extra).length ? { ...section, extra } : section;
 };
@@ -188,33 +194,12 @@ export const updateSection = (
 export const removeSection = (sections: readonly Section[], id: string): Section[] =>
   mapTree(sections, (list) => list.filter((section) => section.id !== id));
 
-const hasOwnItems = (section: Section): boolean => section.pages.length > 0 || Boolean(section.time);
-
-/**
- * A section with subsections is a group, as in both recipes: its own pages or
- * span go to its first subsection, `child` when given, else a new untitled one.
- */
-const asGroup = (parent: Section, child?: Section): Section => {
-  if (!hasOwnItems(parent)) return parent;
-  const holder = child ?? newSection();
-  return {
-    ...parent,
-    pages: [],
-    time: undefined,
-    children: [{ ...holder, pages: parent.pages, time: parent.time }, ...parent.children],
-  };
-};
-
 /** Adds `child` at the end of `parentId`'s subsections, or at the top level without one. */
 export const addSection = (sections: readonly Section[], child: Section, parentId?: string): Section[] =>
   parentId
-    ? updateSection(sections, parentId, (parent) => {
-        if (parent.locked) return parent;
-        // The first subsection of a page or span takes it over: split it from there.
-        if (!parent.children.length && !hasOwnItems(child)) return asGroup(parent, child);
-        const group = asGroup(parent);
-        return { ...group, children: [...group.children, child] };
-      })
+    ? updateSection(sections, parentId, (parent) =>
+        parent.locked ? parent : { ...parent, children: [...parent.children, child] },
+      )
     : [...sections, child];
 
 /** Moves a section up (-1) or down (1) among its siblings. */
@@ -233,7 +218,7 @@ export const indentSection = (sections: readonly Section[], id: string): Section
   mapTree(sections, (list) => {
     const index = list.findIndex((section) => section.id === id);
     if (index < 1 || list[index - 1].locked) return list;
-    const parent = asGroup(list[index - 1]);
+    const parent = list[index - 1];
     return [
       ...list.slice(0, index - 1),
       { ...parent, children: [...parent.children, list[index]] },
@@ -292,6 +277,26 @@ export const sortByTime = (sections: readonly Section[], canvasIds: readonly str
 };
 
 /**
+ * The spans that play: chapters with chapters inside them are outlines of
+ * those, so only the innermost are lined up against each other.
+ */
+const playingSpans = (sections: readonly Section[], canvasId?: string): { id: string; time: SectionTime }[] =>
+  flattenSections(sections).flatMap(({ section }) =>
+    section.time && !section.locked && !section.children.length && (!canvasId || section.time.canvasId === canvasId)
+      ? [{ id: section.id, time: section.time }]
+      : [],
+  );
+
+/** A span from `at` until the next chapter on the recording starts, or to its end. */
+export const spanFrom = (sections: readonly Section[], canvasId: string, at: number): SectionTime => {
+  const next = playingSpans(sections, canvasId)
+    .map(({ time }) => time.start)
+    .filter((start) => start > at + TOLERANCE)
+    .sort((a, b) => a - b)[0];
+  return { canvasId, start: at, end: next ?? null };
+};
+
+/**
  * A new chapter from `at`. Inside a chapter it splits it there; elsewhere it runs
  * until the next chapter on the recording starts, or to the end. At a chapter's
  * start it is that chapter. Returns the chapter to edit.
@@ -302,16 +307,13 @@ export const addChapterAt = (
   at: number,
   canvasIds: readonly string[],
 ): { sections: Section[]; id: string } => {
-  const spans = flattenSections(sections).flatMap(({ section }) =>
-    section.time?.canvasId === canvasId ? [{ id: section.id, time: section.time }] : [],
-  );
+  const spans = playingSpans(sections, canvasId);
   const starting = spans.find(({ time }) => Math.abs(time.start - at) < TOLERANCE);
   if (starting) return { sections: [...sections], id: starting.id };
   const inside = spans.find(({ time }) => at > time.start && (time.end == null || at < time.end));
   const chapter = newSection();
   if (inside) return { sections: splitSection(sections, inside.id, at, chapter), id: chapter.id };
-  const next = spans.map(({ time }) => time.start).filter((start) => start > at).sort((a, b) => a - b)[0];
-  chapter.time = { canvasId, start: at, end: next ?? null };
+  chapter.time = spanFrom(sections, canvasId, at);
   return { sections: sortByTime([...sections, chapter], canvasIds), id: chapter.id };
 };
 
@@ -376,7 +378,8 @@ export const sectionProblems = (
       if (!known.has(time.canvasId)) add('page');
       const problem = validateTime(time.start, time.end ?? '', durations[time.canvasId] ?? 0);
       if (problem) add(`time.${problem}`);
-      else spans.push({ id: section.id, time });
+      // One with chapters inside it outlines them, so it is not lined up against them.
+      else if (!section.children.length) spans.push({ id: section.id, time });
     }
   }
   for (let i = 1; i < spans.length; i++) {
