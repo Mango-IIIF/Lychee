@@ -72,7 +72,6 @@
   import AiAssist from '../image/AiAssist.svelte';
   import ImageStage from '../image/ImageStage.svelte';
   import type { Tool } from '../image/annotorious';
-  import ChapterPanel from '../structures/ChapterPanel.svelte';
   import ContentsPanel from '../structures/ContentsPanel.svelte';
   import AnnotationList, { type AnnotationListItem } from './AnnotationList.svelte';
   import EditorShell from './EditorShell.svelte';
@@ -718,8 +717,8 @@
   let contentsEnabled = $derived(options.contents !== false);
   let sidePanel = $state<'annotate' | 'contents'>('annotate');
   let contentsStatus = $state('');
-  /** The recording's chapter open in the sidebar. */
-  let selectedChapter = $state<string | null>(null);
+  /** The chapter open for editing in the contents. */
+  let editingChapter = $state<string | null>(null);
 
   $effect(() => {
     if (!contentsEnabled && sidePanel === 'contents') sidePanel = 'annotate';
@@ -888,7 +887,7 @@
    */
   export function setStructures(ranges: unknown[]): void {
     store.setSections(readStructures(ranges));
-    selectedChapter = null;
+    editingChapter = null;
     contentsStatus = '';
   }
 
@@ -1008,38 +1007,23 @@
       {/if}
       {#if sidePanel === 'contents'}
         <div class="annotation-editor__contents">
-          {#if kind === 'image'}
-            <ContentsPanel
-              {languages}
-              bind:language
-              sections={store.sections}
-              canvases={contentsCanvases}
-              {currentCanvasId}
-              problems={contentsProblems}
-              dirty={contentsDirty}
-              status={contentsStatus}
-              onchange={(next) => (store.sections = next)}
-              onjump={jumpTo}
-              onsave={saveContents}
-            />
-          {:else}
-            <ChapterPanel
-              {languages}
-              bind:language
-              bind:selectedId={selectedChapter}
-              sections={store.sections}
-              canvases={contentsCanvases}
-              {currentCanvasId}
-              currentTime={playback.time}
-              playbackReady={playback.ready}
-              problems={contentsProblems}
-              dirty={contentsDirty}
-              status={contentsStatus}
-              onchange={(next) => (store.sections = next)}
-              onplay={jumpTo}
-              onsave={saveContents}
-            />
-          {/if}
+          <ContentsPanel
+            kind={kind === 'image' ? 'image' : 'av'}
+            {languages}
+            {language}
+            bind:editingId={editingChapter}
+            sections={store.sections}
+            canvases={contentsCanvases}
+            {currentCanvasId}
+            currentTime={playback.time}
+            playbackReady={playback.ready}
+            problems={contentsProblems}
+            dirty={contentsDirty}
+            status={contentsStatus}
+            onchange={(next) => (store.sections = next)}
+            ongo={jumpTo}
+            onsave={saveContents}
+          />
         </div>
       {:else}
       <div class="annotation-editor__annotate" bind:this={annotatePane}>

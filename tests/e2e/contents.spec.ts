@@ -30,6 +30,9 @@ const recordEvents = (page: Page) =>
 const events = (page: Page) =>
   page.evaluate(() => (window as unknown as { events: { type: string; detail: { structures: Range[] } }[] }).events);
 
+/** The title field, one per authoring language: the demo writes in English. */
+const TITLE = "Title (English)";
+
 const contents = (page: Page) => page.getByRole("region", { name: "Contents" });
 
 test.describe("contents of a book", () => {
@@ -40,23 +43,24 @@ test.describe("contents of a book", () => {
     await page.getByRole("tab", { name: "Contents" }).click();
   });
 
-  test("groups pages into nested sections and saves them as Ranges", async ({ page }) => {
+  test("groups pages into nested chapters and saves them as Ranges", async ({ page }) => {
     const panel = contents(page);
-    await panel.getByRole("button", { name: "Add section" }).click();
-    await panel.getByLabel("Section title").first().fill("Register");
+    // A new chapter opens for editing, its title one field per language.
+    await panel.getByRole("button", { name: "Add chapter" }).click();
+    await panel.getByLabel(TITLE).fill("Register");
 
-    // A subsection takes over its parent's pages; the parent becomes a group.
-    await panel.getByRole("button", { name: "Add a section inside" }).first().click();
-    await panel.getByLabel("Section title").nth(1).fill("First entries");
-    await panel.getByRole("combobox", { name: "To", exact: true }).first().selectOption({ index: 2 });
+    // A chapter inside keeps its parent's own page where it is.
+    await panel.getByRole("button", { name: "Add a chapter inside" }).click();
+    await panel.getByLabel(TITLE).fill("First entries");
+    await panel.getByRole("combobox", { name: "To", exact: true }).selectOption({ index: 2 });
 
     const [range] = await structures(page);
     expect(range).toMatchObject({
       type: "Range",
       label: { en: ["Register"] },
-      items: [{ type: "Range", label: { en: ["First entries"] } }],
+      items: [{ type: "Canvas" }, { type: "Range", label: { en: ["First entries"] } }],
     });
-    const [child] = range.items;
+    const child = range.items[1];
     expect(child.items).toHaveLength(3);
     expect(child.items.every((item) => item.type === "Canvas")).toBe(true);
 
@@ -67,7 +71,8 @@ test.describe("contents of a book", () => {
     expect(saved.detail.structures).toEqual([range]);
 
     // Nothing travels as an annotation, and a later save sends the whole table again.
-    await panel.getByLabel("Section title").first().fill("Constabulary register");
+    await panel.getByRole("button", { name: "Edit Register" }).click();
+    await panel.getByLabel(TITLE).fill("Constabulary register");
     await panel.getByRole("button", { name: "Save contents" }).click();
     const sent = await events(page);
     expect(sent.map((event) => event.type)).toEqual(["structuresSave", "structuresSave"]);
@@ -80,8 +85,8 @@ test.describe("contents of a book", () => {
     await expect(header.getByRole("button", { name: "Download annotations (0)" })).toBeDisabled();
 
     const panel = contents(page);
-    await panel.getByRole("button", { name: "Add section" }).click();
-    await panel.getByLabel("Section title").first().fill("Register");
+    await panel.getByRole("button", { name: "Add chapter" }).click();
+    await panel.getByLabel(TITLE).fill("Register");
     await panel.getByRole("button", { name: "Save contents" }).click();
 
     await page.evaluate(() => {
@@ -128,9 +133,41 @@ test.describe("contents of a book", () => {
     expect(Object.keys(both).sort()).toEqual(["exportAnnotationPage", "exportStructures"]);
   });
 
-  test("will not save a section without a title", async ({ page }) => {
+  test("indents a chapter into the one above without making another", async ({ page }) => {
     const panel = contents(page);
-    await panel.getByRole("button", { name: "Add section" }).click();
+    for (const title of ["Part one", "Part two"]) {
+      await panel.getByRole("button", { name: "Add chapter" }).click();
+      await panel.getByLabel(TITLE).fill(title);
+    }
+    await panel.getByRole("button", { name: "Move into the chapter above" }).click();
+
+    const [part] = await structures(page);
+    expect(await structures(page)).toHaveLength(1);
+    expect(part.label).toEqual({ en: ["Part one"] });
+    expect(part.items).toMatchObject([{ type: "Canvas" }, { type: "Range", label: { en: ["Part two"] } }]);
+    await expect(panel.locator(".toc__problem")).toHaveCount(0);
+    await expect(panel.getByRole("button", { name: "Save contents" })).toBeEnabled();
+  });
+
+  test("makes a chapter a heading over the chapters inside it", async ({ page }) => {
+    const panel = contents(page);
+    await panel.getByRole("button", { name: "Add chapter" }).click();
+    await panel.getByLabel(TITLE).fill("Volume one");
+    await panel.getByLabel("Heading only, without pages of its own").check();
+    // A heading on its own goes nowhere, which a Range may not do.
+    await expect(panel.getByText("A heading needs chapters inside it.")).toBeVisible();
+    await expect(panel.getByRole("button", { name: "Save contents" })).toBeDisabled();
+
+    await panel.getByRole("button", { name: "Add a chapter inside" }).click();
+    await panel.getByLabel(TITLE).fill("Entries");
+    const [heading] = await structures(page);
+    expect(heading.items).toMatchObject([{ type: "Range", label: { en: ["Entries"] } }]);
+    await expect(panel.getByRole("button", { name: "Save contents" })).toBeEnabled();
+  });
+
+  test("will not save a chapter without a title", async ({ page }) => {
+    const panel = contents(page);
+    await panel.getByRole("button", { name: "Add chapter" }).click();
     await expect(panel.getByText("Give it a title.")).toBeVisible();
     await expect(panel.getByRole("button", { name: "Save contents" })).toBeDisabled();
   });
@@ -147,7 +184,9 @@ test.describe("contents of a book", () => {
       ]),
     );
     const panel = contents(page);
-    await expect(panel.getByLabel("Section title")).toHaveValue("From the host");
+    await expect(panel.getByRole("button", { name: /From the host \(needs fixing\)/ })).toBeVisible();
+    await panel.getByRole("button", { name: "Edit From the host" }).click();
+    await expect(panel.getByLabel(TITLE)).toHaveValue("From the host");
     // A page the item does not have is flagged, and nothing is unsaved.
     await expect(panel.getByText("It points to a page or recording that is not in this item.")).toBeVisible();
     await expect(panel.getByRole("button", { name: "Save contents" })).toBeDisabled();
@@ -173,8 +212,8 @@ test.describe("contents of a recording", () => {
     const before = await structures(page);
     expect(before[0].items).toHaveLength(14);
 
-    await outline(page).getByRole("button", { name: /Learning hosiery production/ }).click();
-    const title = contents(page).getByLabel("Chapter title");
+    await outline(page).getByRole("button", { name: "Edit Learning hosiery production" }).click();
+    const title = contents(page).getByLabel(TITLE);
     await expect(title).toHaveValue("Learning hosiery production");
     await title.fill("Learning the trade");
 
@@ -188,8 +227,8 @@ test.describe("contents of a recording", () => {
   });
 
   test("types the player's hotkey letters into fields, rather than into the player", async ({ page }) => {
-    await outline(page).getByRole("button", { name: /Background and joining Corgi/ }).click();
-    const title = contents(page).getByLabel("Chapter title");
+    await outline(page).getByRole("button", { name: "Edit Background and joining Corgi" }).click();
+    const title = contents(page).getByLabel(TITLE);
     await title.fill("");
     // f, k, m and space are RAMP's fullscreen, play and mute keys.
     await title.pressSequentially("Fifty kilometres of film");
@@ -204,7 +243,7 @@ test.describe("contents of a recording", () => {
 
   test("writes chapters as time fragments, and flags a gap between them", async ({ page }) => {
     const panel = contents(page);
-    await outline(page).getByRole("button", { name: /Background and joining Corgi/ }).click();
+    await outline(page).getByRole("button", { name: "Edit Background and joining Corgi" }).click();
     const end = panel.getByLabel("End", { exact: true });
     await expect(end).toHaveValue("3:10");
     // Times read as clock times; plain seconds are taken too, and shown back as a clock time.
@@ -215,10 +254,10 @@ test.describe("contents of a recording", () => {
     await end.blur();
     await expect(end).toHaveValue("2:30");
     await expect(panel.getByText("Enter a time such as 1:02:05, 2:05 or 125.")).toHaveCount(0);
-    await expect(panel.getByRole("button", { name: /Learning hosiery production/ })).toBeVisible();
+    await expect(panel.getByRole("button", { name: "Edit Learning hosiery production" })).toBeVisible();
     // The next chapter still starts at 190: a gap, shown on that chapter.
-    await outline(page).getByRole("button", { name: /Learning hosiery production/ }).click();
-    await expect(panel.getByText("There is a gap before this section: it plays as silence.")).toBeVisible();
+    await outline(page).getByRole("button", { name: "Edit Learning hosiery production" }).click();
+    await expect(panel.getByText("There is a gap before this chapter: it plays as silence.")).toBeVisible();
 
     const fragments = (await structures(page))[0].items.slice(0, 2).map((range) => range.items[0].id.replace(/^.*#/, ""));
     expect(fragments).toEqual(["t=0,150", "t=190,422"]);
@@ -226,6 +265,6 @@ test.describe("contents of a recording", () => {
     // Deleting a chapter takes it out of the table.
     await panel.getByRole("button", { name: "Delete chapter" }).click();
     expect((await structures(page))[0].items).toHaveLength(13);
-    await expect(panel.getByLabel("Chapter title")).toHaveCount(0);
+    await expect(panel.getByLabel(TITLE)).toHaveCount(0);
   });
 });
