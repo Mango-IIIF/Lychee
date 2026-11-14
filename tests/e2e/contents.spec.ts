@@ -54,6 +54,12 @@ test.describe("contents of a book", () => {
     await panel.getByLabel(TITLE).fill("First entries");
     await panel.getByRole("combobox", { name: "To", exact: true }).selectOption({ index: 2 });
 
+    // Two authoring levels by default. The stronger parent row and branch make
+    // the relationship visible, and a child cannot gain another child.
+    await expect(panel.locator(".toc__row--parent")).toContainText("Register");
+    await expect(panel.locator(".toc__tree .toc__tree")).toContainText("First entries");
+    await expect(panel.getByRole("button", { name: "Add a chapter inside" })).toBeDisabled();
+
     const [range] = await structures(page);
     expect(range).toMatchObject({
       type: "Range",
@@ -77,6 +83,32 @@ test.describe("contents of a book", () => {
     const sent = await events(page);
     expect(sent.map((event) => event.type)).toEqual(["structuresSave", "structuresSave"]);
     expect(sent[1].detail.structures[0].label).toEqual({ en: ["Constabulary register"] });
+  });
+
+  test("allows the configured number of chapter levels", async ({ page }) => {
+    await page.evaluate(() => {
+      const editor = document.querySelector("mango-annotation-editor") as HTMLElement & { config: string };
+      const config = JSON.parse(editor.config);
+      config.annotations.contentsLevels = 3;
+      editor.config = JSON.stringify(config);
+    });
+
+    const panel = contents(page);
+    await panel.getByRole("button", { name: "Add chapter" }).click();
+    await panel.getByLabel(TITLE).fill("Part");
+    await panel.getByRole("button", { name: "Add a chapter inside" }).click();
+    await panel.getByLabel(TITLE).fill("Chapter");
+    await expect(panel.getByRole("button", { name: "Add a chapter inside" })).toBeEnabled();
+    await panel.getByRole("button", { name: "Add a chapter inside" }).click();
+    await panel.getByLabel(TITLE).fill("Section");
+    await expect(panel.getByRole("button", { name: "Add a chapter inside" })).toBeDisabled();
+
+    const [part] = await structures(page);
+    expect(part.items[1]).toMatchObject({
+      type: "Range",
+      label: { en: ["Chapter"] },
+      items: [{ type: "Canvas" }, { type: "Range", label: { en: ["Section"] } }],
+    });
   });
 
   test("downloads annotations, contents or both once contents are saved", async ({ page }) => {

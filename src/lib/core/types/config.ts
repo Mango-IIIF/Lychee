@@ -50,5 +50,10 @@ export type AnnotateConfig = ViewerConfig & {
      * true; turn it off where the host cannot save one, such as for a manifest it does not build.
      */
     contents?: boolean;
+    /**
+     * Maximum number of chapter levels that can be authored in Contents.
+     * Defaults to 2. Deeper levels already present in a manifest are preserved.
+     */
+    contentsLevels?: number;
   };
 };

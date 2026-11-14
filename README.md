@@ -103,6 +103,7 @@ editor.config = {
     pageId: undefined, // HTTP(S) id for exported AnnotationPages
     export: ["annotations", "structures"], // what the download and exportToHost() may hand over
     contents: true, // the Contents tab, for the item's table of contents; off where the host can't save one
+    contentsLevels: 2, // maximum chapter nesting levels that can be authored; existing deeper contents are preserved
   },
 };
 ```

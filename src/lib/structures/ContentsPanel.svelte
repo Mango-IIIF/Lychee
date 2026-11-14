@@ -37,6 +37,8 @@
    */
   interface Props {
     kind: 'image' | 'av';
+    /** Maximum number of levels that can be authored; existing deeper trees are preserved. */
+    maxLevels?: number;
     languages: string[];
     /** The language titles are shown in, in the outline. */
     language: string;
@@ -60,6 +62,7 @@
 
   let {
     kind,
+    maxLevels = 2,
     languages,
     language,
     sections,
@@ -204,10 +207,24 @@
     editingId = result.id;
   };
 
-  const addInside = (section: Section) => {
+  const addInside = (section: Section, depth: number) => {
+    if (depth + 1 >= maxLevels) return;
     const child = fresh();
     commit(addSection(sections, child, section.id));
     editingId = child.id;
+  };
+
+  /** Number of levels occupied by this chapter and its deepest descendant. */
+  const levelsOf = (section: Section): number =>
+    1 + (section.children.length ? Math.max(...section.children.map(levelsOf)) : 0);
+
+  const canAddInside = (depth: number) => depth + 1 < maxLevels;
+  const canIndent = (section: Section, index: number, depth: number) =>
+    index > 0 && depth + levelsOf(section) < maxLevels;
+
+  const indent = (section: Section, index: number, depth: number) => {
+    if (!canIndent(section, index, depth)) return;
+    commit(indentSection(sections, section.id));
   };
 
   const remove = (section: Section) => {
@@ -262,6 +279,8 @@
           class:toc__row--open={open}
           class:toc__row--current={currentId === section.id}
           class:toc__row--problem={hasError(section.id)}
+          class:toc__row--parent={section.children.length > 0}
+          class:toc__row--heading={isHeading(section)}
         >
           <button
             type="button"
@@ -422,7 +441,8 @@
           class="toc__icon"
           title={$t('annotate.contents.addInside')}
           aria-label={$t('annotate.contents.addInside')}
-          onclick={() => addInside(section)}
+          disabled={!canAddInside(depth)}
+          onclick={() => addInside(section, depth)}
         >
           <Plus size={15} aria-hidden="true" />
         </button>
@@ -454,8 +474,8 @@
         class="toc__icon"
         title={$t('annotate.contents.indent')}
         aria-label={$t('annotate.contents.indent')}
-        disabled={index === 0}
-        onclick={() => commit(indentSection(sections, section.id))}
+        disabled={!canIndent(section, index, depth)}
+        onclick={() => indent(section, index, depth)}
       >
         <ListIndentIncrease size={15} aria-hidden="true" />
       </button>
@@ -512,9 +532,24 @@
   }
 
   .toc__tree .toc__tree {
-    margin-top: 2px;
-    padding-left: 14px;
-    border-left: 2px solid var(--anno-dashed);
+    position: relative;
+    gap: 4px;
+    margin: 4px 0 6px 12px;
+    padding-left: 20px;
+    border-left: 2px solid var(--anno-accent);
+  }
+
+  .toc__tree .toc__tree > li {
+    position: relative;
+  }
+
+  .toc__tree .toc__tree > li::before {
+    position: absolute;
+    top: 18px;
+    left: -20px;
+    width: 12px;
+    border-top: 2px solid var(--anno-accent);
+    content: '';
   }
 
   .toc__row {
@@ -523,6 +558,15 @@
     gap: 2px;
     border: 1px solid transparent;
     border-radius: 6px;
+  }
+
+  .toc__row--parent {
+    background: color-mix(in srgb, var(--anno-tint) 55%, transparent);
+  }
+
+  .toc__row--parent .toc__name,
+  .toc__row--heading .toc__name {
+    font-weight: 600;
   }
 
   .toc__row:hover,

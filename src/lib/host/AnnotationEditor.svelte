@@ -715,6 +715,9 @@
    * and publishes it as the manifest's `structures`. It is not an annotation.
    */
   let contentsEnabled = $derived(options.contents !== false);
+  let contentsLevels = $derived(
+    Number.isInteger(options.contentsLevels) && (options.contentsLevels ?? 0) > 0 ? options.contentsLevels! : 2,
+  );
   let sidePanel = $state<'annotate' | 'contents'>('annotate');
   let contentsStatus = $state('');
   /** The chapter open for editing in the contents. */
@@ -1009,6 +1012,7 @@
         <div class="annotation-editor__contents">
           <ContentsPanel
             kind={kind === 'image' ? 'image' : 'av'}
+            maxLevels={contentsLevels}
             {languages}
             {language}
             bind:editingId={editingChapter}
