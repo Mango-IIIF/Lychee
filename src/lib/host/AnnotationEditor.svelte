@@ -1026,6 +1026,7 @@
             status={contentsStatus}
             onchange={(next) => (store.sections = next)}
             ongo={jumpTo}
+            oncanvaschange={(canvasId) => imageStage?.goToCanvas(canvasId)}
             onsave={saveContents}
           />
         </div>

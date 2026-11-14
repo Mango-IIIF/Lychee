@@ -66,6 +66,8 @@
       "from": "Desde",
       "to": "Hasta",
       "thisPage": "Esta página",
+      "previousPage": "Página anterior",
+      "nextPage": "Página siguiente",
       "start": "Inicio",
       "end": "Fin",
       "toEnd": "Hasta el final",

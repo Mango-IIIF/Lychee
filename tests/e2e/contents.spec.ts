@@ -12,9 +12,16 @@ const AUDIO = "manifests/iiif-pcw-550555/manifest.json";
 
 type Range = { id: string; type: string; label: Record<string, string[]>; items: Range[]; [key: string]: unknown };
 type Editor = HTMLElement & { getStructures(): Range[]; setStructures(structures: unknown[]): void };
+type ImageEditor = Editor & { getCanvasIndex(): number; getCanvasId(): string | null };
 
 const structures = (page: Page) =>
   page.evaluate(() => (document.querySelector("mango-annotation-editor") as Editor).getStructures());
+
+const canvasIndex = (page: Page) =>
+  page.evaluate(() => (document.querySelector("mango-annotation-editor") as ImageEditor).getCanvasIndex());
+
+const canvasId = (page: Page) =>
+  page.evaluate(() => (document.querySelector("mango-annotation-editor") as ImageEditor).getCanvasId());
 
 /** Collects the events the editor dispatches. */
 const recordEvents = (page: Page) =>
@@ -109,6 +116,25 @@ test.describe("contents of a book", () => {
       label: { en: ["Chapter"] },
       items: [{ type: "Canvas" }, { type: "Range", label: { en: ["Section"] } }],
     });
+  });
+
+  test("turns pages while an image chapter is being authored", async ({ page }) => {
+    const panel = contents(page);
+    await panel.getByRole("button", { name: "Add chapter" }).click();
+    await panel.getByLabel(TITLE).fill("Illustrations");
+
+    await expect(panel.getByRole("button", { name: "Previous page" })).toBeDisabled();
+    await panel.getByRole("button", { name: "Next page" }).click();
+    await expect.poll(() => canvasIndex(page)).toBe(1);
+
+    const currentCanvasId = await canvasId(page);
+    await panel.getByRole("button", { name: "This page" }).click();
+    expect((await structures(page))[0].items[0].id).toBe(currentCanvasId);
+
+    await panel.getByRole("combobox", { name: "To", exact: true }).selectOption({ index: 2 });
+    await expect.poll(() => canvasIndex(page)).toBe(2);
+    await panel.getByRole("button", { name: "Previous page" }).click();
+    await expect.poll(() => canvasIndex(page)).toBe(1);
   });
 
   test("downloads annotations, contents or both once contents are saved", async ({ page }) => {

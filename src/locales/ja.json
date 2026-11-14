@@ -66,6 +66,8 @@
       "from": "開始ページ",
       "to": "終了ページ",
       "thisPage": "このページ",
+      "previousPage": "前のページ",
+      "nextPage": "次のページ",
       "start": "開始",
       "end": "終了",
       "toEnd": "最後まで",

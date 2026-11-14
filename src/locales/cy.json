@@ -66,6 +66,8 @@
       "from": "O",
       "to": "I",
       "thisPage": "Y dudalen hon",
+      "previousPage": "Y dudalen flaenorol",
+      "nextPage": "Y dudalen nesaf",
       "start": "Dechrau",
       "end": "Diwedd",
       "toEnd": "Hyd y diwedd",

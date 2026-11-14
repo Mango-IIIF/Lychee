@@ -2,6 +2,8 @@
   import {
     ArrowDown,
     ArrowUp,
+    ChevronLeft,
+    ChevronRight,
     CircleAlert,
     ListIndentDecrease,
     ListIndentIncrease,
@@ -57,6 +59,8 @@
     onchange: (sections: Section[]) => void;
     /** Shows a chapter's page, or plays it from its start. */
     ongo: (section: Section) => void;
+    /** Shows a page while an image chapter is being authored. */
+    oncanvaschange?: (canvasId: string) => void;
     onsave: () => void;
   }
 
@@ -76,6 +80,7 @@
     status = '',
     onchange,
     ongo,
+    oncanvaschange,
     onsave,
   }: Props = $props();
 
@@ -159,6 +164,18 @@
 
   const setPages = (section: Section, from: string, to: string) =>
     change(section.id, (s) => ({ ...s, pages: pageSpan(canvasIds, from, to) }));
+
+  const choosePage = (section: Section, field: 'from' | 'to', canvasId: string) => {
+    if (field === 'from') setPages(section, canvasId, section.pages.at(-1) ?? canvasId);
+    else setPages(section, section.pages[0] ?? canvasId, canvasId);
+    oncanvaschange?.(canvasId);
+  };
+
+  let currentCanvasIndex = $derived(currentCanvasId ? canvasIds.indexOf(currentCanvasId) : -1);
+  const showPage = (delta: -1 | 1) => {
+    const canvasId = canvasIds[currentCanvasIndex + delta];
+    if (canvasId) oncanvaschange?.(canvasId);
+  };
 
   const setTime = (section: Section, field: 'start' | 'end', value: number | null) => {
     unreadable = { ...unreadable, [field]: false };
@@ -358,7 +375,7 @@
             <span>{$t('annotate.contents.from')}</span>
             <select
               value={section.pages[0] ?? ''}
-              onchange={(event) => setPages(section, event.currentTarget.value, section.pages.at(-1) ?? event.currentTarget.value)}
+              onchange={(event) => choosePage(section, 'from', event.currentTarget.value)}
             >
               {#each canvases as canvas (canvas.id)}
                 <option value={canvas.id}>{canvas.label}</option>
@@ -369,20 +386,42 @@
             <span>{$t('annotate.contents.to')}</span>
             <select
               value={section.pages.at(-1) ?? ''}
-              onchange={(event) => setPages(section, section.pages[0] ?? event.currentTarget.value, event.currentTarget.value)}
+              onchange={(event) => choosePage(section, 'to', event.currentTarget.value)}
             >
               {#each canvases as canvas (canvas.id)}
                 <option value={canvas.id}>{canvas.label}</option>
               {/each}
             </select>
           </label>
-          <button
-            type="button"
-            class="toc__small"
-            disabled={!currentCanvasId}
-            onclick={() => currentCanvasId && setPages(section, currentCanvasId, currentCanvasId)}
-            >{$t('annotate.contents.thisPage')}</button
-          >
+          <div class="toc__page-nav">
+            <button
+              type="button"
+              class="toc__icon"
+              disabled={currentCanvasIndex <= 0}
+              title={$t('annotate.contents.previousPage')}
+              aria-label={$t('annotate.contents.previousPage')}
+              onclick={() => showPage(-1)}
+            >
+              <ChevronLeft size={15} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              class="toc__small"
+              disabled={!currentCanvasId}
+              onclick={() => currentCanvasId && setPages(section, currentCanvasId, currentCanvasId)}
+              >{$t('annotate.contents.thisPage')}</button
+            >
+            <button
+              type="button"
+              class="toc__icon"
+              disabled={currentCanvasIndex < 0 || currentCanvasIndex >= canvasIds.length - 1}
+              title={$t('annotate.contents.nextPage')}
+              aria-label={$t('annotate.contents.nextPage')}
+              onclick={() => showPage(1)}
+            >
+              <ChevronRight size={15} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       {:else if section.time}
         {@const time = section.time}
@@ -696,6 +735,14 @@
 
   .toc__targets .toc__field {
     flex: 1 1 90px;
+  }
+
+  .toc__page-nav {
+    display: flex;
+    flex: 1 0 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
   }
 
   .toc__times {
