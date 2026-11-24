@@ -2,11 +2,11 @@
   import {
     ArrowDown,
     ArrowUp,
-    ChevronLeft,
-    ChevronRight,
+    Check,
     CircleAlert,
     ListIndentDecrease,
     ListIndentIncrease,
+    ListTree,
     Pencil,
     Plus,
     Trash2,
@@ -84,14 +84,34 @@
     onsave,
   }: Props = $props();
 
+  /** A newly created chapter stays neutral until typed into, closed, or saved. */
+  let freshId = $state<string | null>(null);
+  let attemptedSave = $state(false);
+
   let canvasIds = $derived(canvases.map((canvas) => canvas.id));
   let canvasLabels = $derived(new Map(canvases.map((canvas) => [canvas.id, canvas.label])));
   let blocking = $derived(problems.some((problem) => problem.level === 'error'));
+
+  const showProblem = (id: string) => attemptedSave || id !== freshId;
   const problemsOf = (id: string) => problems.filter((problem) => problem.sectionId === id);
-  const hasError = (id: string) => problems.some((p) => p.sectionId === id && p.level === 'error');
+  const visibleProblemsOf = (id: string) => (showProblem(id) ? problemsOf(id) : []);
+  const hasVisibleError = (id: string) =>
+    showProblem(id) && problems.some((p) => p.sectionId === id && p.level === 'error');
+  let visibleBlocking = $derived(
+    problems.some((problem) => problem.level === 'error' && showProblem(problem.sectionId)),
+  );
 
   $effect(() => {
-    if (editingId && !flattenSections(sections).some(({ section }) => section.id === editingId)) editingId = null;
+    if (editingId && !flattenSections(sections).some(({ section }) => section.id === editingId)) {
+      editingId = null;
+    }
+    if (freshId && editingId !== freshId) {
+      freshId = null;
+    }
+  });
+
+  $effect(() => {
+    if (!dirty) attemptedSave = false;
   });
 
   /** The innermost chapter showing now: the page in view, or the span playing. */
@@ -137,8 +157,10 @@
     }
   };
 
-  const setTitle = (section: Section, code: string, value: string) =>
+  const setTitle = (section: Section, code: string, value: string) => {
+    if (section.id === freshId) freshId = null;
     change(section.id, (s) => ({ ...s, label: { ...s.label, [code]: value } }));
+  };
 
   /* ---------------------------------------------------------- where it goes */
 
@@ -147,7 +169,7 @@
     if (section.time) return formatTime(section.time.start);
     if (!section.pages.length) return '';
     const first = canvasLabels.get(section.pages[0]) ?? '';
-    return section.pages.length > 1 ? `${first}–${canvasLabels.get(section.pages.at(-1)!) ?? ''}` : first;
+    return section.pages.length > 1 ? `${first} – ${canvasLabels.get(section.pages.at(-1)!) ?? ''}` : first;
   };
 
   const isHeading = (section: Section) => !section.pages.length && !section.time;
@@ -169,12 +191,6 @@
     if (field === 'from') setPages(section, canvasId, section.pages.at(-1) ?? canvasId);
     else setPages(section, section.pages[0] ?? canvasId, canvasId);
     oncanvaschange?.(canvasId);
-  };
-
-  let currentCanvasIndex = $derived(currentCanvasId ? canvasIds.indexOf(currentCanvasId) : -1);
-  const showPage = (delta: -1 | 1) => {
-    const canvasId = canvasIds[currentCanvasIndex + delta];
-    if (canvasId) oncanvaschange?.(canvasId);
   };
 
   const setTime = (section: Section, field: 'start' | 'end', value: number | null) => {
@@ -212,22 +228,27 @@
     );
 
   const add = () => {
+    attemptedSave = false;
     if (kind === 'image') {
       const chapter = fresh();
       commit(addSection(sections, chapter));
+      freshId = chapter.id;
       editingId = chapter.id;
       return;
     }
     if (!currentCanvasId) return;
     const result = addChapterAt(sections, currentCanvasId, now(), canvasIds);
     onchange(result.sections);
+    freshId = result.id;
     editingId = result.id;
   };
 
   const addInside = (section: Section, depth: number) => {
     if (depth + 1 >= maxLevels) return;
+    attemptedSave = false;
     const child = fresh();
     commit(addSection(sections, child, section.id));
+    freshId = child.id;
     editingId = child.id;
   };
 
@@ -245,43 +266,92 @@
   };
 
   const remove = (section: Section) => {
+    if (freshId === section.id) freshId = null;
     commit(removeSection(sections, section.id));
     editingId = null;
   };
 
-  const toggle = (section: Section) => (editingId = editingId === section.id ? null : section.id);
+  const toggle = (section: Section) => {
+    if (editingId === section.id) {
+      closeEditor();
+    } else {
+      freshId = null;
+      editingId = section.id;
+    }
+  };
 
-  /** Puts the cursor in a chapter's first field when it opens. */
+  const closeEditor = () => {
+    freshId = null;
+    editingId = null;
+  };
+
+  const handleSave = () => {
+    attemptedSave = true;
+    freshId = null;
+    if (blocking) {
+      const firstError = problems.find((p) => p.level === 'error');
+      if (firstError) editingId = firstError.sectionId;
+      return;
+    }
+    attemptedSave = false;
+    onsave();
+  };
+
+  const onTitleKeydown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      closeEditor();
+    }
+  };
+
+  /** Puts the cursor in a chapter's first input when it opens (or first button if locked). */
   const focusFirst = (node: HTMLElement) => {
-    node.querySelector<HTMLElement>('input, select, button')?.focus({ preventScroll: true });
+    (node.querySelector<HTMLElement>('input, select') ?? node.querySelector<HTMLElement>('button'))?.focus({
+      preventScroll: true,
+    });
     node.scrollIntoView?.({ block: 'nearest' });
   };
 </script>
 
 <section class="toc" aria-label={$t('annotate.contents.label')}>
-  <p class="toc__muted">{$t(`annotate.contents.hint.${kind}`)}</p>
+  {#if !sections.length}
+    <div class="toc__empty">
+      <p class="toc__empty-prompt">
+        <ListTree size={18} aria-hidden="true" />
+        <span>{$t(`annotate.contents.hint.${kind}`)}</span>
+      </p>
+      <button type="button" class="toc__primary" disabled={kind === 'av' && !currentCanvasId} onclick={add}>
+        <Plus size={16} aria-hidden="true" />
+        {kind === 'image' ? $t('annotate.contents.add.image') : $t('annotate.contents.add.av', { time: formatTime(currentTime) })}
+      </button>
+    </div>
+  {:else}
+    <p class="toc__muted">{$t(`annotate.contents.hint.${kind}`)}</p>
 
-  {#if sections.length}
     <nav aria-label={$t('annotate.contents.outline')}>
       {@render tree(sections, 0)}
     </nav>
-  {:else}
-    <p class="toc__muted">{$t('annotate.contents.empty')}</p>
-  {/if}
 
-  <div class="toc__footer">
     <button type="button" class="toc__add" disabled={kind === 'av' && !currentCanvasId} onclick={add}>
-      <Plus size={16} aria-hidden="true" />
+      <Plus size={15} aria-hidden="true" />
       {kind === 'image' ? $t('annotate.contents.add.image') : $t('annotate.contents.add.av', { time: formatTime(currentTime) })}
     </button>
-    <button type="button" class="toc__save" disabled={!dirty || blocking} onclick={onsave}>
-      {$t('annotate.contents.save')}
-    </button>
-  </div>
-  {#if blocking}
-    <p class="toc__muted">{$t('annotate.contents.fixFirst')}</p>
+  {/if}
+
+  {#if dirty}
+    <div class="toc__save-bar" class:toc__save-bar--problem={visibleBlocking}>
+      <span class="toc__save-note">
+        {visibleBlocking ? $t('annotate.contents.fixFirst') : $t('annotate.contents.unsaved')}
+      </span>
+      <button type="button" class="toc__save" onclick={handleSave}>
+        {$t('annotate.contents.save')}
+      </button>
+    </div>
   {:else if status}
-    <p class="toc__muted" role="status">{status}</p>
+    <p class="toc__status" role="status">
+      <Check size={14} aria-hidden="true" />
+      {status}
+    </p>
   {/if}
 </section>
 
@@ -290,41 +360,70 @@
     {#each list as section, index (section.id)}
       {@const name = nameOf(section)}
       {@const open = editingId === section.id}
+      {@const where = whereOf(section)}
       <li>
-        <div
-          class="toc__row"
-          class:toc__row--open={open}
-          class:toc__row--current={currentId === section.id}
-          class:toc__row--problem={hasError(section.id)}
-          class:toc__row--parent={section.children.length > 0}
-          class:toc__row--heading={isHeading(section)}
-        >
-          <button
-            type="button"
-            class="toc__go"
-            aria-current={currentId === section.id ? 'location' : undefined}
-            title={$t(`annotate.contents.go.${kind}`, { title: name })}
-            onclick={() => ongo(section)}
+        {#if !open}
+          <div
+            class="toc__row"
+            class:toc__row--current={currentId === section.id}
+            class:toc__row--problem={hasVisibleError(section.id)}
+            class:toc__row--parent={section.children.length > 0}
+            class:toc__row--heading={isHeading(section)}
           >
-            <span class="toc__where">{whereOf(section)}</span>
-            <span class="toc__name">{name}</span>
-            {#if hasError(section.id)}
-              <CircleAlert size={14} aria-hidden="true" />
-              <span class="toc__sr">({$t('annotate.contents.needsFix')})</span>
-            {/if}
-          </button>
-          <button
-            type="button"
-            class="toc__icon"
-            aria-expanded={open}
-            aria-label={$t('annotate.contents.edit', { title: name })}
-            title={$t('annotate.contents.edit', { title: name })}
-            onclick={() => toggle(section)}
-          >
-            <Pencil size={14} aria-hidden="true" />
-          </button>
-        </div>
-        {#if open}
+            <button
+              type="button"
+              class="toc__go"
+              aria-current={currentId === section.id ? 'location' : undefined}
+              title={$t(`annotate.contents.go.${kind}`, { title: name })}
+              onclick={() => ongo(section)}
+            >
+              <span class="toc__name-row">
+                <span class="toc__name">{name}</span>
+                {#if hasVisibleError(section.id)}
+                  <CircleAlert size={14} aria-hidden="true" />
+                  <span class="toc__sr">({$t('annotate.contents.needsFix')})</span>
+                {/if}
+              </span>
+              {#if where || isHeading(section)}
+                <span class="toc__where">{where || $t('annotate.contents.headingBadge')}</span>
+              {/if}
+            </button>
+            <div class="toc__row-actions">
+              {#if kind === 'image' && list.length > 1}
+                <button
+                  type="button"
+                  class="toc__icon toc__row-reorder"
+                  title={$t('annotate.contents.up')}
+                  aria-label={$t('annotate.contents.up')}
+                  disabled={index === 0}
+                  onclick={() => commit(moveSection(sections, section.id, -1))}
+                >
+                  <ArrowUp size={13} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  class="toc__icon toc__row-reorder"
+                  title={$t('annotate.contents.down')}
+                  aria-label={$t('annotate.contents.down')}
+                  disabled={index === list.length - 1}
+                  onclick={() => commit(moveSection(sections, section.id, 1))}
+                >
+                  <ArrowDown size={13} aria-hidden="true" />
+                </button>
+              {/if}
+              <button
+                type="button"
+                class="toc__icon"
+                aria-expanded="false"
+                aria-label={$t('annotate.contents.edit', { title: name })}
+                title={$t('annotate.contents.edit', { title: name })}
+                onclick={() => toggle(section)}
+              >
+                <Pencil size={14} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        {:else}
           {@render editor(section, index, list.length, depth)}
         {/if}
         {#if section.children.length}
@@ -336,8 +435,23 @@
 {/snippet}
 
 {#snippet editor(section: Section, index: number, siblings: number, depth: number)}
-  {@const own = problemsOf(section.id)}
-  <div class="toc__editor" class:toc__editor--problem={own.some((p) => p.level === 'error')} use:focusFirst>
+  {@const own = visibleProblemsOf(section.id)}
+  <div class="toc__card" class:toc__card--problem={own.some((p) => p.level === 'error')} use:focusFirst>
+    <div class="toc__card-head">
+      <span class="toc__card-eyebrow">
+        {section.id === freshId ? $t('annotate.contents.editingNew') : $t('annotate.contents.editingChapter')}
+      </span>
+      <button
+        type="button"
+        class="toc__icon toc__delete"
+        title={$t('annotate.contents.delete')}
+        aria-label={$t('annotate.contents.delete')}
+        onclick={() => remove(section)}
+      >
+        <Trash2 size={14} aria-hidden="true" />
+      </button>
+    </div>
+
     {#if section.locked}
       <p class="toc__muted">{$t('annotate.contents.locked')}</p>
     {:else}
@@ -349,77 +463,65 @@
               class="toc__title"
               type="text"
               lang={code === 'none' ? undefined : code}
+              placeholder={$t('annotate.contents.titlePlaceholder')}
               value={section.label[code] ?? ''}
               oninput={(event) => setTitle(section, code, event.currentTarget.value)}
+              onkeydown={onTitleKeydown}
             />
           </label>
         {/each}
       </div>
-
-      <label class="toc__check">
-        <input
-          type="checkbox"
-          checked={isHeading(section)}
-          onchange={(event) => setHeadingOnly(section, event.currentTarget.checked)}
-        />
-        {$t(`annotate.contents.headingOnly.${kind}`)}
-      </label>
 
       {#if isHeading(section)}
         {#if !section.children.length}
           <p class="toc__muted">{$t('annotate.contents.headingHint')}</p>
         {/if}
       {:else if kind === 'image'}
-        <div class="toc__targets">
-          <label class="toc__field">
-            <span>{$t('annotate.contents.from')}</span>
-            <select
-              value={section.pages[0] ?? ''}
-              onchange={(event) => choosePage(section, 'from', event.currentTarget.value)}
-            >
-              {#each canvases as canvas (canvas.id)}
-                <option value={canvas.id}>{canvas.label}</option>
-              {/each}
-            </select>
-          </label>
-          <label class="toc__field">
-            <span>{$t('annotate.contents.to')}</span>
-            <select
-              value={section.pages.at(-1) ?? ''}
-              onchange={(event) => choosePage(section, 'to', event.currentTarget.value)}
-            >
-              {#each canvases as canvas (canvas.id)}
-                <option value={canvas.id}>{canvas.label}</option>
-              {/each}
-            </select>
-          </label>
-          <div class="toc__page-nav">
-            <button
-              type="button"
-              class="toc__icon"
-              disabled={currentCanvasIndex <= 0}
-              title={$t('annotate.contents.previousPage')}
-              aria-label={$t('annotate.contents.previousPage')}
-              onclick={() => showPage(-1)}
-            >
-              <ChevronLeft size={15} aria-hidden="true" />
-            </button>
+        <div class="toc__page-rows">
+          <div class="toc__page-row">
+            <label class="toc__field">
+              <span>{$t('annotate.contents.from')}</span>
+              <select
+                value={section.pages[0] ?? ''}
+                onchange={(event) => choosePage(section, 'from', event.currentTarget.value)}
+              >
+                {#each canvases as canvas (canvas.id)}
+                  <option value={canvas.id}>{canvas.label}</option>
+                {/each}
+              </select>
+            </label>
             <button
               type="button"
               class="toc__small"
-              disabled={!currentCanvasId}
-              onclick={() => currentCanvasId && setPages(section, currentCanvasId, currentCanvasId)}
-              >{$t('annotate.contents.thisPage')}</button
+              disabled={!currentCanvasId || section.pages[0] === currentCanvasId}
+              title={$t('annotate.contents.useCurrentPage')}
+              aria-label={`${$t('annotate.contents.from')}: ${$t('annotate.contents.useCurrentPage')}`}
+              onclick={() => currentCanvasId && setPages(section, currentCanvasId, section.pages.at(-1) ?? currentCanvasId)}
             >
+              {$t('annotate.contents.useCurrent')}
+            </button>
+          </div>
+          <div class="toc__page-row">
+            <label class="toc__field">
+              <span>{$t('annotate.contents.to')}</span>
+              <select
+                value={section.pages.at(-1) ?? ''}
+                onchange={(event) => choosePage(section, 'to', event.currentTarget.value)}
+              >
+                {#each canvases as canvas (canvas.id)}
+                  <option value={canvas.id}>{canvas.label}</option>
+                {/each}
+              </select>
+            </label>
             <button
               type="button"
-              class="toc__icon"
-              disabled={currentCanvasIndex < 0 || currentCanvasIndex >= canvasIds.length - 1}
-              title={$t('annotate.contents.nextPage')}
-              aria-label={$t('annotate.contents.nextPage')}
-              onclick={() => showPage(1)}
+              class="toc__small"
+              disabled={!currentCanvasId || section.pages.at(-1) === currentCanvasId}
+              title={$t('annotate.contents.useCurrentPage')}
+              aria-label={`${$t('annotate.contents.to')}: ${$t('annotate.contents.useCurrentPage')}`}
+              onclick={() => currentCanvasId && setPages(section, section.pages[0] ?? currentCanvasId, currentCanvasId)}
             >
-              <ChevronRight size={15} aria-hidden="true" />
+              {$t('annotate.contents.useCurrent')}
             </button>
           </div>
         </div>
@@ -465,6 +567,15 @@
           <p class="toc__problem">{$t('annotate.contents.timeFormat')}</p>
         {/if}
       {/if}
+
+      <label class="toc__check">
+        <input
+          type="checkbox"
+          checked={isHeading(section)}
+          onchange={(event) => setHeadingOnly(section, event.currentTarget.checked)}
+        />
+        {$t(`annotate.contents.headingOnly.${kind}`)}
+      </label>
     {/if}
 
     {#each own as problem, n (n)}
@@ -474,19 +585,19 @@
     {/each}
 
     <div class="toc__actions">
-      {#if !section.locked}
+      {#if !section.locked && canAddInside(depth)}
         <button
           type="button"
-          class="toc__icon"
+          class="toc__small"
           title={$t('annotate.contents.addInside')}
           aria-label={$t('annotate.contents.addInside')}
-          disabled={!canAddInside(depth)}
           onclick={() => addInside(section, depth)}
         >
-          <Plus size={15} aria-hidden="true" />
+          <Plus size={13} aria-hidden="true" />
+          {$t('annotate.contents.addSub')}
         </button>
       {/if}
-      {#if kind === 'image'}
+      {#if kind === 'image' && siblings > 1}
         <button
           type="button"
           class="toc__icon"
@@ -495,7 +606,7 @@
           disabled={index === 0}
           onclick={() => commit(moveSection(sections, section.id, -1))}
         >
-          <ArrowUp size={15} aria-hidden="true" />
+          <ArrowUp size={14} aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -505,39 +616,32 @@
           disabled={index === siblings - 1}
           onclick={() => commit(moveSection(sections, section.id, 1))}
         >
-          <ArrowDown size={15} aria-hidden="true" />
+          <ArrowDown size={14} aria-hidden="true" />
         </button>
       {/if}
-      <button
-        type="button"
-        class="toc__icon"
-        title={$t('annotate.contents.indent')}
-        aria-label={$t('annotate.contents.indent')}
-        disabled={!canIndent(section, index, depth)}
-        onclick={() => indent(section, index, depth)}
-      >
-        <ListIndentIncrease size={15} aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        class="toc__icon"
-        title={$t('annotate.contents.outdent')}
-        aria-label={$t('annotate.contents.outdent')}
-        disabled={depth === 0}
-        onclick={() => commit(outdentSection(sections, section.id))}
-      >
-        <ListIndentDecrease size={15} aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        class="toc__icon"
-        title={$t('annotate.contents.delete')}
-        aria-label={$t('annotate.contents.delete')}
-        onclick={() => remove(section)}
-      >
-        <Trash2 size={15} aria-hidden="true" />
-      </button>
-      <button type="button" class="toc__small toc__done" onclick={() => (editingId = null)}>
+      {#if canIndent(section, index, depth)}
+        <button
+          type="button"
+          class="toc__icon"
+          title={$t('annotate.contents.indent')}
+          aria-label={$t('annotate.contents.indent')}
+          onclick={() => indent(section, index, depth)}
+        >
+          <ListIndentIncrease size={14} aria-hidden="true" />
+        </button>
+      {/if}
+      {#if depth > 0}
+        <button
+          type="button"
+          class="toc__icon"
+          title={$t('annotate.contents.outdent')}
+          aria-label={$t('annotate.contents.outdent')}
+          onclick={() => commit(outdentSection(sections, section.id))}
+        >
+          <ListIndentDecrease size={14} aria-hidden="true" />
+        </button>
+      {/if}
+      <button type="button" class="toc__done" onclick={closeEditor}>
         {$t('annotate.contents.done')}
       </button>
     </div>
@@ -558,13 +662,57 @@
     margin: 0;
     color: var(--viewer-muted);
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.45;
+  }
+
+  .toc__empty {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    border: 1px dashed var(--anno-dashed);
+    border-radius: 10px;
+    background: var(--anno-tint);
+  }
+
+  .toc__empty-prompt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0;
+    color: var(--viewer-text);
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  .toc__empty-prompt :global(svg) {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--anno-accent);
+  }
+
+  .toc__primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    height: 38px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--anno-accent);
+    color: var(--anno-on-accent);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
   }
 
   .toc__tree {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -573,9 +721,9 @@
   .toc__tree .toc__tree {
     position: relative;
     gap: 4px;
-    margin: 4px 0 6px 12px;
-    padding-left: 20px;
-    border-left: 2px solid var(--anno-accent);
+    margin: 6px 0 4px 12px;
+    padding-left: 16px;
+    border-left: 2px solid color-mix(in srgb, var(--anno-accent) 55%, transparent);
   }
 
   .toc__tree .toc__tree > li {
@@ -585,46 +733,44 @@
   .toc__tree .toc__tree > li::before {
     position: absolute;
     top: 18px;
-    left: -20px;
-    width: 12px;
-    border-top: 2px solid var(--anno-accent);
+    left: -16px;
+    width: 10px;
+    border-top: 2px solid color-mix(in srgb, var(--anno-accent) 55%, transparent);
     content: '';
   }
 
   .toc__row {
     display: flex;
     align-items: center;
-    gap: 2px;
-    border: 1px solid transparent;
-    border-radius: 6px;
+    gap: 4px;
+    padding-right: 4px;
+    border: 1px solid var(--viewer-panel-border);
+    border-radius: 8px;
+    background: var(--anno-raised);
   }
 
   .toc__row--parent {
-    background: color-mix(in srgb, var(--anno-tint) 55%, transparent);
-  }
-
-  .toc__row--parent .toc__name,
-  .toc__row--heading .toc__name {
-    font-weight: 600;
+    background: color-mix(in srgb, var(--anno-tint) 60%, var(--anno-raised));
   }
 
   .toc__row:hover,
   .toc__row--current {
+    border-color: color-mix(in srgb, var(--anno-accent) 55%, var(--viewer-panel-border));
     background: var(--anno-tint);
   }
 
-  .toc__row--open {
-    border-color: var(--anno-accent);
-    background: var(--anno-tint);
+  .toc__row--problem {
+    border-color: var(--viewer-danger);
   }
 
   .toc__go {
     display: flex;
     flex: 1;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
     min-width: 0;
-    padding: 6px 8px;
+    padding: 8px 6px 8px 10px;
     border: 0;
     background: transparent;
     color: inherit;
@@ -633,29 +779,51 @@
     cursor: pointer;
   }
 
-  .toc__row--current .toc__name {
+  .toc__name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .toc__name {
+    min-width: 0;
+    font-size: 13.5px;
     font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
   }
 
   .toc__where {
-    flex: none;
-    min-width: 4.5em;
-    max-width: 40%;
+    max-width: 100%;
     overflow: hidden;
     color: var(--viewer-muted);
+    font-size: 12px;
     font-variant-numeric: tabular-nums;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .toc__name {
-    flex: 1;
-    min-width: 0;
-    overflow-wrap: anywhere;
+  .toc__row--problem .toc__name-row {
+    color: var(--viewer-danger);
   }
 
-  .toc__row--problem .toc__go {
-    color: var(--viewer-danger);
+  .toc__row-actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .toc__row-reorder {
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+
+  .toc__row:hover .toc__row-reorder,
+  .toc__row:focus-within .toc__row-reorder {
+    opacity: 1;
   }
 
   .toc__sr {
@@ -667,25 +835,58 @@
     white-space: nowrap;
   }
 
-  .toc__editor {
+  .toc__card {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin: 4px 0 6px;
     padding: 12px;
-    border: 1px solid var(--viewer-panel-border);
-    border-radius: 8px;
+    border: 1px solid var(--anno-accent);
+    border-radius: 10px;
     background: var(--anno-raised);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   }
 
-  .toc__editor--problem {
+  .toc__card--problem {
     border-color: var(--viewer-danger);
   }
 
-  .toc__titles {
+  .toc__card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .toc__card-eyebrow {
+    color: var(--anno-accent);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .toc__card--problem .toc__card-eyebrow {
+    color: var(--viewer-danger);
+  }
+
+  .toc__delete {
+    color: var(--viewer-muted);
+  }
+
+  .toc__delete:hover:not(:disabled) {
+    color: var(--viewer-danger);
+  }
+
+  .toc__titles,
+  .toc__page-rows {
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .toc__page-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 6px;
   }
 
   .toc__field {
@@ -698,6 +899,7 @@
   .toc__field > span {
     color: var(--viewer-muted);
     font-size: 12px;
+    font-weight: 600;
   }
 
   input[type='text'],
@@ -705,13 +907,14 @@
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    height: 32px;
+    height: 34px;
     padding: 0 8px;
     border: 1px solid var(--anno-input-border);
     border-radius: 6px;
     background: var(--viewer-well-bg);
     color: inherit;
     font: inherit;
+    font-size: 13.5px;
   }
 
   .toc__title {
@@ -722,27 +925,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    color: var(--viewer-muted);
+    font-size: 12.5px;
     cursor: pointer;
-  }
-
-  .toc__targets {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 8px;
-  }
-
-  .toc__targets .toc__field {
-    flex: 1 1 90px;
-  }
-
-  .toc__page-nav {
-    display: flex;
-    flex: 1 0 100%;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
   }
 
   .toc__times {
@@ -756,7 +941,9 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
+    padding-top: 6px;
+    border-top: 1px solid var(--viewer-panel-border);
   }
 
   .toc__icon,
@@ -766,33 +953,55 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    min-width: 30px;
-    min-height: 30px;
-    padding: 0 8px;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0 7px;
     border: 1px solid transparent;
     border-radius: 6px;
     background: transparent;
     color: inherit;
     font: inherit;
     font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
   }
 
   .toc__small {
+    height: 34px;
+    padding: 0 9px;
     border-color: var(--anno-input-border);
+    background: var(--anno-tint);
+    color: var(--viewer-text);
+  }
+
+  .toc__actions .toc__small {
+    height: 28px;
+    padding: 0 8px;
   }
 
   .toc__done {
     margin-left: auto;
+    height: 28px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--anno-accent);
+    color: var(--anno-on-accent);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
   }
 
   .toc__icon:hover:not(:disabled),
   .toc__small:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--anno-accent) 45%, transparent);
     background: var(--anno-tint);
+    color: var(--anno-accent);
   }
 
   button:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
     cursor: default;
   }
 
@@ -806,34 +1015,75 @@
     color: var(--viewer-muted);
   }
 
-  .toc__footer {
-    display: flex;
-    gap: 8px;
-  }
-
-  .toc__add,
-  .toc__save {
+  .toc__add {
     display: inline-flex;
-    flex: 1;
     align-items: center;
     justify-content: center;
     gap: 6px;
+    width: 100%;
     min-height: 36px;
+    border: 1px dashed var(--anno-dashed);
     border-radius: 8px;
+    background: transparent;
+    color: inherit;
     font: inherit;
+    font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
   }
 
-  .toc__add {
-    border: 1px dashed var(--anno-dashed);
-    background: transparent;
-    color: inherit;
+  .toc__add:hover:not(:disabled) {
+    border-color: var(--anno-accent);
+    background: var(--anno-tint);
+    color: var(--anno-accent);
+  }
+
+  .toc__save-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--viewer-panel-border);
+    border-radius: 10px;
+    background: var(--anno-tint);
+  }
+
+  .toc__save-bar--problem {
+    border-color: var(--viewer-danger);
+  }
+
+  .toc__save-note {
+    color: var(--viewer-muted);
+    font-size: 12.5px;
+  }
+
+  .toc__save-bar--problem .toc__save-note {
+    color: var(--viewer-danger);
   }
 
   .toc__save {
-    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 38px;
+    border: 0;
+    border-radius: 6px;
     background: var(--anno-accent);
     color: var(--anno-on-accent);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .toc__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    color: var(--anno-accent);
+    font-size: 13px;
+    font-weight: 600;
   }
 </style>
