@@ -87,6 +87,17 @@ const magneticCursor = (code: string) => {
 
 const SAM_WORKER_REF = /new URL\("assets\/(sam2-worker-[\w-]+\.js)", import\.meta\.url\)/;
 
+/*
+ * Vite can't find the workers at build time (this plugin emits them afterwards), so it
+ * leaves their URLs as `new URL("./annotorious/assets/…", "" + import.meta.url)`. That
+ * `"" +` hides them from the host app's bundler, which then never copies the workers:
+ * the browser gets the site's HTML fallback instead ("non-JavaScript MIME type").
+ * Plain `new URL("…", import.meta.url)` is what Vite, webpack, Rollup and Parcel copy.
+ */
+const WORKER_URL =
+  /new URL\(\s*(["'`]\.\/annotorious\/assets\/[\w.-]+\.js["'`])\s*,\s*(?:""|''|``)\s*\+\s*import\.meta\.url\s*\)/g;
+const HIDDEN_WORKER_URL = /annotorious\/assets\/[\w.-]+\.js["'`]\s*,\s*(?:""|''|``)\s*\+\s*import\.meta\.url/;
+
 /**
  * Workers are emitted as files under `annotorious/assets/` next to the bundle
  * and referenced relative to it, so the library works when hosted under a
@@ -121,9 +132,19 @@ export const smartTools = (): Plugin => {
       }
       return undefined;
     },
+    renderChunk(code) {
+      if (!code.includes('annotorious/assets/')) return null;
+      const out = code.replace(WORKER_URL, 'new URL($1, import.meta.url)');
+      return out === code ? null : { code: out, map: null };
+    },
     // The rewritten URLs don't exist next to the source module, so Vite leaves
     // them to resolve at runtime, against the bundle — where these land.
-    generateBundle() {
+    generateBundle(_options, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type === 'chunk' && HIDDEN_WORKER_URL.test(chunk.code)) {
+          this.error(`${chunk.fileName}: a smart-tool worker URL is hidden from host bundlers; review renderChunk.`);
+        }
+      }
       for (const [name, source] of workers) {
         this.emitFile({ type: 'asset', fileName: `annotorious/assets/${name}`, source });
       }
