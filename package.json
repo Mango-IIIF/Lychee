@@ -1,6 +1,6 @@
 {
   "name": "@mango-iiif/lychee",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "A IIIF annotation editor for Mango: Annotorious drawing and smart tools for images, RAMP for audio and video, W3C Web Annotation output.",
   "license": "MIT",
   "repository": {
