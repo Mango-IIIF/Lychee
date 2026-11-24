@@ -1,6 +1,6 @@
 {
   "name": "@mango-iiif/lychee",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A IIIF annotation editor for Mango: Annotorious drawing and smart tools for images, RAMP for audio and video, W3C Web Annotation output.",
   "license": "MIT",
   "repository": {
@@ -43,9 +43,12 @@
       "types": "./src/dist/index.d.ts"
     },
     "./element": {
-      "import": "./src/dist/element.js"
+      "import": "./src/dist/mango-annotation-editor.js"
     },
-    "./style.css": "./src/dist/annotate.css"
+    "./standalone": {
+      "import": "./src/dist/mango-annotation-editor.js"
+    },
+    "./style.css": "./src/dist/lychee.css"
   },
   "workspaces": [
     "apps/*"
@@ -70,6 +73,11 @@
   },
   "peerDependencies": {
     "svelte": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "svelte": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@annotorious/openseadragon": "3.9.5",

@@ -21,7 +21,11 @@ const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf8'))
  * The two smart-tool plugins are the exception: they are bundled so the fixes in
  * build/smartTools.ts ship with the library.
  */
-const BUNDLED = ['@annotorious/plugin-magnetic-outline', '@annotorious/plugin-segment-anything'];
+const BUNDLED = [
+  '@annotorious/plugin-magnetic-outline',
+  '@annotorious/plugin-segment-anything',
+  '@lucide/svelte',
+];
 const externalPackages = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }).filter(
   (name) => !BUNDLED.includes(name),
 );
