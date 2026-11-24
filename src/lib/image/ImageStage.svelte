@@ -10,6 +10,7 @@
     type ViewerPlugin,
   } from '@mango-iiif/iiif-viewer/core';
   import type { AnnotateConfig } from '../core/types/config';
+  import { t } from '../core/i18n';
   import type { AnnotationStore } from '../annotations/store.svelte';
   import { canvasesOf, idOf, label } from '../annotations/iiif';
   import { targetSource } from '../annotations/model';
@@ -42,6 +43,7 @@
     /** A shape the user has just drawn. */
     onregioncreate?: (id: string) => void;
     onregiondelete: (id: string) => void;
+    oncanceldraw?: () => void;
     onbeforecanvaschange?: () => boolean;
     /** Where the viewer's own events (pageChange, zoomChange, …) are dispatched. */
     eventTarget?: EventTarget | null;
@@ -63,6 +65,7 @@
     onselect,
     onregioncreate,
     onregiondelete,
+    oncanceldraw,
     onbeforecanvaschange,
     eventTarget = null,
     theme = 'dark',
@@ -202,11 +205,29 @@
     controller?.release(regionId, shape);
   };
 
+  const HINT_TOOLS = new Set<Tool>(['rectangle', 'polygon', 'ellipse', 'path', 'line']);
+  let activeHintTool = $derived(HINT_TOOLS.has(tool) ? tool : null);
+
+  const cancelDraw = () => {
+    if (oncanceldraw) oncanceldraw();
+    else tool = 'select';
+  };
+
+  const onWindowKeydown = (event: KeyboardEvent) => {
+    if (event.key !== 'Escape' || !activeHintTool) return;
+    const target = event.target as HTMLElement | null;
+    if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+    event.preventDefault();
+    cancelDraw();
+  };
+
   const onSamCommand = (command: SamCommand) => {
     samMode = 'add';
     controller?.samCommand(command);
   };
 </script>
+
+<svelte:window onkeydown={onWindowKeydown} />
 
 <div class="image-stage">
   <div class="image-stage__viewer">
@@ -232,6 +253,15 @@
       gallery={galleryAvailable ? galleryOpen : undefined}
       ongallerytoggle={() => (galleryOpen = !galleryOpen)}
     />
+    {#if activeHintTool}
+      <div class="image-stage__draw-hint" role="status" aria-live="polite">
+        <span class="image-stage__draw-hint-dot" aria-hidden="true"></span>
+        <span class="image-stage__draw-hint-text">{$t(`annotate.tools.hints.${activeHintTool}`)}</span>
+        <button type="button" class="image-stage__draw-hint-cancel" onclick={cancelDraw}>
+          {$t('annotate.region.cancelDraw')}
+        </button>
+      </div>
+    {/if}
   {/if}
   </div>
   {#if galleryAvailable && galleryOpen}
@@ -280,5 +310,58 @@
     opacity: 1;
     pointer-events: auto;
     transform: none;
+  }
+
+  .image-stage__draw-hint {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100% - 140px);
+    padding: 6px 8px 6px 14px;
+    border: 1px solid var(--anno-accent);
+    border-radius: 999px;
+    background: var(--anno-raised);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+    color: var(--viewer-text);
+    font-size: 13px;
+    line-height: 1.35;
+    transform: translateX(-50%);
+    pointer-events: auto;
+  }
+
+  .image-stage__draw-hint-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--anno-accent);
+    flex-shrink: 0;
+  }
+
+  .image-stage__draw-hint-text {
+    font-weight: 500;
+  }
+
+  .image-stage__draw-hint-cancel {
+    flex-shrink: 0;
+    height: 26px;
+    padding: 0 10px;
+    border: 1px solid var(--viewer-panel-border);
+    border-radius: 999px;
+    background: var(--anno-tint);
+    color: var(--viewer-text);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .image-stage__draw-hint-cancel:hover,
+  .image-stage__draw-hint-cancel:focus-visible {
+    border-color: var(--anno-accent);
+    color: var(--anno-accent);
   }
 </style>

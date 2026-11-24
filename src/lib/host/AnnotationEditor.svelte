@@ -281,7 +281,15 @@
 
   const onShapeSelect = (id: string | undefined) => {
     shapeId = id;
-    if (!id) return;
+    if (!id) {
+      // Deselecting on the image clears the sidebar target unless the user has unsaved work.
+      if (!editId && !hasContent(draft, languages)) {
+        regionId = undefined;
+        draft = emptyDraft();
+        error = '';
+      }
+      return;
+    }
     // One of the manifest's shapes: open it for editing, outside Annotorious's selection handler.
     if (sourceOf(id)) {
       queueMicrotask(() => editSource(id));
@@ -318,6 +326,20 @@
     if (!drawingOnce) return;
     drawingOnce = false;
     tool = 'select';
+  };
+
+  const cancelDraw = () => {
+    drawingOnce = false;
+    tool = 'select';
+  };
+
+  const clearTarget = () => {
+    resetForm();
+    if (kind === 'image') {
+      regionId = undefined;
+      shapeId = undefined;
+      scope = 'region';
+    }
   };
 
   const deleteShape = () => {
@@ -414,8 +436,7 @@
       sourceEdit = null;
       store.existing = store.existing.filter((a) => a.id !== source.id);
     }
-    // Keep the target, so another annotation on the same shape or moment can follow.
-    resetForm();
+    clearTarget();
     end = '';
   };
 
@@ -969,6 +990,7 @@
           onselect={onShapeSelect}
           onregioncreate={onRegionCreate}
           onregiondelete={onRegionDelete}
+          oncanceldraw={cancelDraw}
           eventTarget={eventTarget ?? root}
           {theme}
         />
@@ -1053,9 +1075,11 @@
         cards={[]}
         selectedId={editId}
         ondrawbox={drawBox}
+        oncanceldraw={cancelDraw}
         ondeleteshape={deleteShape}
+        oncleartarget={clearTarget}
         onsave={save}
-        oncancel={resetForm}
+        oncancel={clearTarget}
         onedit={edit}
         ondelete={remove}
         onlocate={locate}
