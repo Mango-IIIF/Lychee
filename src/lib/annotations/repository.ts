@@ -13,7 +13,7 @@
  * from Mango.
  */
 
-import type { Annotation, AnnotationPage } from './types';
+import type { Annotation, AnnotationPage } from '@mango-iiif/annotation';
 
 /** Why a repository call failed, in terms the UI can act on. */
 export type RepositoryErrorKind =

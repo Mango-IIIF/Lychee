@@ -2,7 +2,42 @@
   import { tick, untrack } from 'svelte';
   import {
     AnnotationSidebar,
+    MOTIVATION_OF,
+    annotationText,
+    annotationTitle,
+    bodiesOfDraft,
+    bodyValue,
+    canvasScale as scaleOf,
+    canvasesOf,
+    creatorIds,
+    creatorName,
+    draftProblem,
+    emptyDraft,
+    formatTime,
+    hasContent,
+    idOf,
+    intentOf,
+    label,
+    labelOf,
+    mediaKindOf,
+    metadataOf,
+    motivationsOf,
+    newId,
+    readAnnotation,
+    tagDrafts,
+    targetSource,
+    timeRange,
+    timeTarget,
+    validateTime,
+    wikidataLabels,
+    type Annotation,
+    type AuthorityEntity,
+    type BodyContext,
+    type Draft,
     type IdentifySnippetContext,
+    type LoadNote,
+    type NamedEntity,
+    type Scope,
   } from '@mango-iiif/annotation';
   import '@mango-iiif/annotation/style.css';
   import {
@@ -18,38 +53,10 @@
   import { setLocale, t, translate } from '../core/i18n';
   import type { AnnotateConfig } from '../core/types/config';
   import { providersFor } from '../authorities/endpoint';
-  import type { AuthorityEntity, NamedEntity } from '../authorities/types';
-  import { wikidataLabels } from '../authorities/wikidata';
   import EntityPicker from '../authorities/EntityPicker.svelte';
   import { needsNames, withFetchedNames } from '../authorities/names';
-  import {
-    MOTIVATION_OF,
-    bodiesOfDraft,
-    bodyValue,
-    draftProblem,
-    emptyDraft,
-    hasContent,
-    intentOf,
-    labelOf,
-    readAnnotation,
-    tagDrafts,
-    type BodyContext,
-    type Draft,
-    type LoadNote,
-  } from '../annotations/intents';
-  import { canvasScale as scaleOf, canvasesOf, idOf, label, mediaKindOf, metadataOf } from '../annotations/iiif';
   import { normaliseAuthoringLanguages } from '../annotations/languages';
   import { loadExistingAnnotations } from '../annotations/load';
-  import {
-    annotationText,
-    annotationTitle,
-    creatorIds,
-    creatorName,
-    motivationsOf,
-    newId,
-    targetSource,
-    timeTarget,
-  } from '../annotations/model';
   import {
     exportAnnotationPage,
     exportStructures,
@@ -66,8 +73,6 @@
     type Range,
     type Section,
   } from '../annotations/structures';
-  import { formatTime, timeRange, validateTime } from '../annotations/time';
-  import type { Annotation, Scope } from '../annotations/types';
   import { recordFromW3C, toW3C, type ExportContext, type UserRecord } from '../annotations/w3c';
   import AVStage, { type AVPlayback } from '../av/AVStage.svelte';
   import { aiImageUrl, type AiSuggestion } from '../image/ai';

@@ -1,7 +1,11 @@
-import { annotationPageRefs, idOf } from './iiif';
-import { bodiesOf, motivationsOf } from './model';
-import { timeRange } from './time';
-import type { Annotation } from './types';
+import {
+  annotationPageRefs,
+  bodiesOf,
+  idOf,
+  motivationsOf,
+  timeRange,
+  type Annotation,
+} from '@mango-iiif/annotation';
 
 type Json = Record<string, unknown>;
 

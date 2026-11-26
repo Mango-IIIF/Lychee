@@ -21,7 +21,13 @@ import {
   type OpenSeadragonAnnotator,
 } from '@annotorious/openseadragon';
 import { mountPlugin as mountMagneticOutline } from '@annotorious/plugin-magnetic-outline';
-import { AnnotoriousEditor, type SamCommand, type SamState, type Tool } from '@mango-iiif/annotation';
+import {
+  AnnotoriousEditor,
+  type LocalStoreChanges,
+  type SamCommand,
+  type SamState,
+  type Tool,
+} from '@mango-iiif/annotation';
 import type { ImageTarget, Region } from '../annotations/w3c';
 
 import '@annotorious/openseadragon/annotorious-openseadragon.css';
@@ -30,16 +36,6 @@ import '@annotorious/plugin-magnetic-outline/plugin-magnetic-outline.css';
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
 
 export type { SamCommand, SamState, Tool };
-
-export const DRAW_TOOLS: readonly Tool[] = [
-  'rectangle',
-  'polygon',
-  'ellipse',
-  'path',
-  'line',
-  'intelligent-scissors',
-  'magnetic-cursor',
-];
 
 export interface ImageAnnotatorCallbacks {
   onRegionChange(region: Region): void;
@@ -69,15 +65,6 @@ type SamPlugin = ReturnType<
   typeof import('@annotorious/plugin-segment-anything/openseadragon').mountOpenSeadragonPlugin
 >;
 
-type StoreChanges = {
-  created?: ImageAnnotation[];
-  updated?: { newValue: ImageAnnotation }[];
-  deleted?: ImageAnnotation[];
-};
-
-/** Origin.LOCAL from @annotorious/core, which the OSD bundle does not re-export. */
-const ORIGIN_LOCAL = 'LOCAL';
-
 export class ImageAnnotatorController {
   readonly editor: AnnotoriousEditor;
   readonly anno: OpenSeadragonAnnotator;
@@ -91,6 +78,8 @@ export class ImageAnnotatorController {
   private samBusy = false;
   private samCurrent: string | undefined;
   private samOffs: (() => void)[] = [];
+  private offLocal: () => void;
+  private offSelect: () => void;
   private destroyed = false;
 
   private style = (annotation: ImageAnnotation): DrawingStyle => {
@@ -121,17 +110,15 @@ export class ImageAnnotatorController {
     // The editor would import its own copy on first use; this one carries the fixes in build/smartTools.ts.
     mountMagneticOutline(this.anno);
 
-    this.anno.state.store.observe(this.onStoreChange, { origin: ORIGIN_LOCAL as never });
-    this.anno.on('selectionChanged', this.onSelection);
-    viewer.element.addEventListener('pointerdown', this.onPointerDown, true);
+    this.offLocal = this.editor.onLocalChange(this.onStoreChange);
+    this.offSelect = this.editor.on('select', this.onSelection);
     // OpenSeadragon can be destroyed before Svelte runs its teardown; release SAM while
     // its mouse tracker still exists.
     viewer.addHandler('before-destroy', this.destroy);
   }
 
   /** Only user changes; the shapes set by `setCanvas` arrive as REMOTE and are ignored. */
-  private onStoreChange = (event: { changes: StoreChanges }) => {
-    const { created = [], updated = [], deleted = [] } = event.changes;
+  private onStoreChange = ({ created = [], updated = [], deleted = [] }: LocalStoreChanges) => {
     for (const a of created) this.emitRegion(a);
     for (const { newValue } of updated) this.emitRegion(newValue);
     for (const a of deleted) this.callbacks.onRegionDelete(a.id);
@@ -149,46 +136,6 @@ export class ImageAnnotatorController {
   /** SAM selects and clears its draft on every refinement; those are not user selections. */
   private onSelection = (selected: ImageAnnotation[]) => {
     if (this.tool !== 'smart-select') this.callbacks.onSelect(selected[0]?.id);
-  };
-
-  /**
-   * While a shape is selected Annotorious shows its editor in place of the drawing tool, so
-   * a press on empty image would only deselect and the user would have to click again to
-   * draw. Deselect on the press instead, and replay it to the tool once it has mounted.
-   */
-  private onPointerDown = (event: PointerEvent) => {
-    const layer = event.target as Element;
-    if (
-      !event.isTrusted ||
-      !DRAW_TOOLS.includes(this.tool) ||
-      !layer.classList?.contains('a9s-osd-drawinglayer') ||
-      this.anno.getSelected().length === 0
-    ) {
-      return;
-    }
-    this.anno.setSelected(undefined);
-    // Annotorious mounts the tool in its next microtask flush; the replay stays on the layer
-    // so OpenSeadragon does not see the press twice.
-    queueMicrotask(() =>
-      layer.dispatchEvent(
-        new PointerEvent('pointerdown', {
-          clientX: event.clientX,
-          clientY: event.clientY,
-          screenX: event.screenX,
-          screenY: event.screenY,
-          button: event.button,
-          buttons: event.buttons,
-          pointerId: event.pointerId,
-          pointerType: event.pointerType,
-          isPrimary: event.isPrimary,
-          shiftKey: event.shiftKey,
-          ctrlKey: event.ctrlKey,
-          altKey: event.altKey,
-          metaKey: event.metaKey,
-          cancelable: true,
-        }),
-      ),
-    );
   };
 
   /** Shows one canvas's shapes: the user's regions and the manifest's own annotations. */
@@ -250,8 +197,7 @@ export class ImageAnnotatorController {
 
   /** A region's bounds in image pixels. */
   getBounds(id: string): Bounds | undefined {
-    const b = this.anno.state.store.getAnnotation(id)?.target.selector.geometry.bounds;
-    return b && { x: b.minX, y: b.minY, w: b.maxX - b.minX, h: b.maxY - b.minY };
+    return this.editor.getBounds(id);
   }
 
   /* ---------------------------------------------------------------- SAM */
@@ -376,11 +322,10 @@ export class ImageAnnotatorController {
     if (this.destroyed) return;
     this.destroyed = true;
     this.viewer.removeHandler('before-destroy', this.destroy);
-    this.viewer.element?.removeEventListener('pointerdown', this.onPointerDown, true);
     this.samOffs.forEach((off) => off());
     this.sam?.destroy();
-    this.anno.state.store.unobserve(this.onStoreChange);
-    this.anno.off('selectionChanged', this.onSelection);
+    this.offLocal();
+    this.offSelect();
     this.editor.destroy();
   };
 }

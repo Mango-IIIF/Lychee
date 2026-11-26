@@ -1,6 +1,6 @@
+import type { Annotation } from '@mango-iiif/annotation';
 import type { Region, UserRecord } from './w3c';
 import type { Section } from './structures';
-import type { Annotation } from './types';
 
 /*
  * The editor's annotations: shapes drawn in Annotorious and the user's

@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import {
+  canvasScale,
+  formatTime,
+  mediaKindOf,
+  parseTime,
+  timeRange,
+  validateTime,
+  type Annotation,
+} from '@mango-iiif/annotation';
 import { exportAnnotationPage, isPublishable } from './export';
-import { canvasScale, mediaKindOf } from './iiif';
-import { formatTime, parseTime, timeRange, validateTime } from './time';
 import { recordFromW3C, toW3C, type ExportContext, type Region, type UserRecord } from './w3c';
-import type { Annotation } from './types';
 
 const CANVAS = 'https://example.org/canvas/1';
 const MANIFEST = 'https://example.org/manifest';

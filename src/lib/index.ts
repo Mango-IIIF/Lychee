@@ -18,6 +18,11 @@ export {
   type AnnotationRepository,
 } from './annotations/repository';
 export { readStructures, toStructures, type Range } from './annotations/structures';
-export type { Annotation, AnnotationBody, AnnotationPage, AnnotationTarget } from './annotations/types';
-export type { AuthorityEndpointConfig } from './authorities/types';
+export type {
+  Annotation,
+  AnnotationBody,
+  AnnotationPage,
+  AnnotationTarget,
+  AuthorityEndpointConfig,
+} from '@mango-iiif/annotation';
 export type { AnnotateConfig } from './core/types/config';

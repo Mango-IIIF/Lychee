@@ -10,7 +10,7 @@
  * `label` / `description` may instead be language maps (`{ en: '…', cy: '…' }`).
  */
 
-import type { Intent, TextField } from '../annotations/intents';
+import type { Intent, TextField } from '@mango-iiif/annotation';
 
 export interface AiRequest {
   imageUrl: string;

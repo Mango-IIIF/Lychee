@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { bodiesOfDraft, labelOf, readAnnotation, tagDrafts, type Draft } from './intents';
-import { annotationText, bodiesOf } from './model';
-import type { Annotation, AnnotationBody } from './types';
+import {
+  annotationText,
+  bodiesOf,
+  bodiesOfDraft,
+  labelOf,
+  readAnnotation,
+  tagDrafts,
+  type Annotation,
+  type AnnotationBody,
+  type Draft,
+} from '@mango-iiif/annotation';
 
 /*
  * Annotations exactly as People's Collection Wales serves them back (from php-annotations'

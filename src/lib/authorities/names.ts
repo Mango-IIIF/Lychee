@@ -1,4 +1,4 @@
-import type { NamedEntity } from './types';
+import type { NamedEntity } from '@mango-iiif/annotation';
 
 /*
  * An entity's name in each language is the user's to set. The authority only suggests it:

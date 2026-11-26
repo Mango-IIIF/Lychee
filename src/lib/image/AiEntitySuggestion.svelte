@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from '../core/i18n';
-  import type { AuthorityEntity, AuthorityProvider } from '../authorities/types';
+  import type { AuthorityEntity, AuthorityProvider } from '@mango-iiif/annotation';
   import type { AiEntity } from './ai';
 
   /** One entity the model named, looked up in its authority so the user can link the right match. */

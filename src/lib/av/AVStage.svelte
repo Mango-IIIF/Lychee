@@ -13,7 +13,7 @@
 <script lang="ts">
   import type { AVPlayerConfig, AVPlayerState, MangoAVMediaElement } from '@mango-iiif/av';
   import { t } from '../core/i18n';
-  import { canvasesOf, idOf, label } from '../annotations/iiif';
+  import { canvasesOf, idOf, label } from '@mango-iiif/annotation';
   import { loadAVMedia } from './elements';
 
   /**

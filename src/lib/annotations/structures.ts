@@ -14,10 +14,15 @@
  * (other kinds of target, hidden navigation) is kept exactly as it came.
  */
 
-import { idOf, label } from './iiif';
-import { newId } from './model';
-import { timeRange, validateTime, type TimeProblem } from './time';
-import type { LanguageMap } from './types';
+import {
+  idOf,
+  label,
+  newId,
+  timeRange,
+  validateTime,
+  type LanguageMap,
+  type TimeProblem,
+} from '@mango-iiif/annotation';
 
 export interface CanvasRef {
   id: string;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Sparkles } from '@lucide/svelte';
   import { t } from '../core/i18n';
-  import type { AuthorityEntity, AuthorityProvider } from '../authorities/types';
+  import type { AuthorityEntity, AuthorityProvider } from '@mango-iiif/annotation';
   import AiEntitySuggestion from './AiEntitySuggestion.svelte';
   import { requestSuggestions, type AiRequest, type AiResult, type AiSuggestion } from './ai';
 

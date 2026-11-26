@@ -1,5 +1,5 @@
 import type { ViewerConfig } from '@mango-iiif/iiif-viewer/core';
-import type { AuthorityEndpointConfig } from '../../authorities/types';
+import type { AuthorityEndpointConfig } from '@mango-iiif/annotation';
 
 /** The viewer's config, plus the editor's own authoring setup. */
 export type AnnotateConfig = ViewerConfig & {

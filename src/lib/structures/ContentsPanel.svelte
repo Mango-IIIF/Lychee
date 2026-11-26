@@ -28,7 +28,7 @@
     type Section,
     type SectionProblem,
   } from '../annotations/structures';
-  import { formatTime, parseTime } from '../annotations/time';
+  import { formatTime, parseTime } from '@mango-iiif/annotation';
 
   /**
    * The table of contents, the same for a book and a recording: an outline of

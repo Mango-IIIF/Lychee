@@ -2,7 +2,7 @@
   import { X } from '@lucide/svelte';
   import { t } from '../core/i18n';
   import { namesFor, withName } from './names';
-  import type { AuthorityEntity, AuthorityProvider, NamedEntity } from './types';
+  import type { AuthorityEntity, AuthorityProvider, NamedEntity } from '@mango-iiif/annotation';
 
   /**
    * The Identify panel, given to the sidebar as its `identify` snippet: search a reference source,

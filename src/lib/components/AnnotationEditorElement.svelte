@@ -22,7 +22,7 @@
   } from '@mango-iiif/iiif-viewer/core';
   import type { ExportData, ExportKind } from '../annotations/export';
   import type { Range } from '../annotations/structures';
-  import type { Annotation } from '../annotations/types';
+  import type { Annotation } from '@mango-iiif/annotation';
   import type { AnnotateConfig } from '../core/types/config';
   import AnnotationEditor from '../host/AnnotationEditor.svelte';
 

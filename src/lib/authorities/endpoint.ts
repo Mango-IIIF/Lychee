@@ -1,5 +1,9 @@
-import type { AuthorityEndpointConfig, AuthorityEntity, AuthorityProvider } from './types';
-import { wikidata } from './wikidata';
+import {
+  wikidata,
+  type AuthorityEndpointConfig,
+  type AuthorityEntity,
+  type AuthorityProvider,
+} from '@mango-iiif/annotation';
 
 interface EndpointResponse {
   results?: { id: string; uri: string; label: string; description?: string }[];

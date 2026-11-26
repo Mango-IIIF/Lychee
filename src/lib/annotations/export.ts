@@ -6,9 +6,8 @@
  * `urn:uuid:` identifiers until a host assigns HTTP(S) ones.
  */
 
-import { annotationPage } from './model';
+import { annotationPage, type Annotation, type AnnotationPage } from '@mango-iiif/annotation';
 import type { Range } from './structures';
-import type { Annotation, AnnotationPage } from './types';
 
 export type ExportOptions = {
   /** Public HTTP(S) identifier for the page. Omitted from a draft page when absent. */

@@ -1,8 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { authoritiesOf, authorityBodies } from './annotations';
+import {
+  authoritiesOf,
+  authorityBodies,
+  wikidataLabels,
+  type NamedEntity,
+} from '@mango-iiif/annotation';
 import { namesFor, needsNames, withFetchedNames, withName } from './names';
-import type { NamedEntity } from './types';
-import { wikidataLabels } from './wikidata';
 
 describe('entity names', () => {
   afterEach(() => vi.unstubAllGlobals());

@@ -1,7 +1,15 @@
 <script lang="ts">
   import { onDestroy, untrack } from 'svelte';
   import type OpenSeadragon from 'openseadragon';
-  import { AnnotationToolbar } from '@mango-iiif/annotation';
+  import {
+    AnnotationToolbar,
+    canvasesOf,
+    idOf,
+    label,
+    targetSource,
+    toImageAnnotation,
+    type Annotation,
+  } from '@mango-iiif/annotation';
   import {
     ViewerCore,
     manifestsStore,
@@ -12,10 +20,7 @@
   import type { AnnotateConfig } from '../core/types/config';
   import { t } from '../core/i18n';
   import type { AnnotationStore } from '../annotations/store.svelte';
-  import { canvasesOf, idOf, label } from '../annotations/iiif';
-  import { targetSource } from '../annotations/model';
-  import type { Annotation } from '../annotations/types';
-  import { toImageAnnotation, type Region } from '../annotations/w3c';
+  import type { Region } from '../annotations/w3c';
   import { ImageAnnotatorController, type Bounds, type SamCommand, type SamState, type Tool } from './annotorious';
   import GalleryStrip from './GalleryStrip.svelte';
 
