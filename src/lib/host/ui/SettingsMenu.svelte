@@ -88,10 +88,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     border: 0;
-    border-radius: 8px;
+    border-radius: 6px;
     background: transparent;
     color: var(--viewer-text);
     cursor: pointer;
@@ -103,8 +103,8 @@
   }
 
   .anno-settings__button :global(svg) {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 
   .anno-settings__menu {
@@ -147,7 +147,7 @@
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: 14px;
+    font-size: 12.5px;
     text-align: left;
     cursor: pointer;
   }

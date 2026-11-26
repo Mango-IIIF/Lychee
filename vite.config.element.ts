@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import { webcrypto } from 'node:crypto';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { smartTools } from './build/smartTools';
@@ -34,10 +34,10 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify('production'),
   },
   resolve: {
-    dedupe: ['svelte', '@lucide/svelte', 'openseadragon', 'react', 'react-dom'],
+    dedupe: ['svelte', '@lucide/svelte', 'openseadragon', 'react', 'react-dom', '@mango-iiif/av'],
   },
   plugins: [
-    smartTools(),
+    smartTools({ workerBase: '../annotorious/assets' }),
     svelte({
       configFile: resolve(__dirname, 'svelte.config.js'),
       dynamicCompileOptions({ filename }) {
@@ -46,6 +46,9 @@ export default defineConfig({
     }),
     {
       name: 'mango-annotate-element-shadow-css',
+      buildStart() {
+        rmSync(resolve(__dirname, 'src/dist/standalone'), { recursive: true, force: true });
+      },
       closeBundle() {
         const jsPath = resolve(__dirname, 'src/dist/mango-annotation-editor.js');
         const cssPath = resolve(__dirname, 'src/dist/mango-annotation-editor.css');
@@ -81,6 +84,7 @@ export default defineConfig({
     },
     rolldownOptions: {
       output: {
+        chunkFileNames: 'standalone/[name]-[hash].js',
         assetFileNames: 'mango-annotation-editor.[ext]',
       },
     },

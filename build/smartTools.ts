@@ -62,14 +62,15 @@ const samWorkerRuntime = (code: string) => {
 /** plugin-magnetic-outline loads its worker from `/assets/` at the site root. */
 const MAGNETIC_WORKER = '/assets/get-keypoints-worker-BNnnN2-f.js';
 
-const magneticWorker = (code: string) => {
+const magneticWorker = (code: string, workerBase: string) => {
   if (!code.includes(`"${MAGNETIC_WORKER}"`)) {
     throw new Error('Magnetic outline worker path changed upstream; review the patch.');
   }
+  const name = path.basename(MAGNETIC_WORKER);
   // The comment keeps Vite's worker plugin from trying to bundle a file that only exists in the output.
   return code.replace(
     `"${MAGNETIC_WORKER}"`,
-    `/* @vite-ignore */ new URL("./annotorious${MAGNETIC_WORKER}", import.meta.url)`,
+    `/* @vite-ignore */ new URL("${workerBase}/${name}", import.meta.url)`,
   );
 };
 
@@ -95,7 +96,7 @@ const SAM_WORKER_REF = /new URL\("assets\/(sam2-worker-[\w-]+\.js)", import\.met
  * Plain `new URL("…", import.meta.url)` is what Vite, webpack, Rollup and Parcel copy.
  */
 const WORKER_URL =
-  /new URL\(\s*(["'`]\.\/annotorious\/assets\/[\w.-]+\.js["'`])\s*,\s*(?:""|''|``)\s*\+\s*import\.meta\.url\s*\)/g;
+  /new URL\(\s*(["'`]\.\.?\/annotorious\/assets\/[\w.-]+\.js["'`])\s*,\s*(?:""|''|``)\s*\+\s*import\.meta\.url\s*\)/g;
 const HIDDEN_WORKER_URL = /annotorious\/assets\/[\w.-]+\.js["'`]\s*,\s*(?:""|''|``)\s*\+\s*import\.meta\.url/;
 
 /**
@@ -103,7 +104,8 @@ const HIDDEN_WORKER_URL = /annotorious\/assets\/[\w.-]+\.js["'`]\s*,\s*(?:""|''|
  * and referenced relative to it, so the library works when hosted under a
  * subdirectory and a consuming bundler can copy them as ordinary assets.
  */
-export const smartTools = (): Plugin => {
+export const smartTools = (options: { workerBase?: string } = {}): Plugin => {
+  const workerBase = options.workerBase ?? './annotorious/assets';
   const workers = new Map<string, string>();
   return {
     name: 'mango-annotate-smart-tools',
@@ -118,14 +120,14 @@ export const smartTools = (): Plugin => {
         const file = path.join(packageDir(SAM), 'dist/assets', match[1]);
         workers.set(match[1], samWorkerRuntime(fs.readFileSync(file, 'utf8')));
         return {
-          code: code.replace(SAM_WORKER_REF, `new URL("./annotorious/assets/${match[1]}", import.meta.url)`),
+          code: code.replace(SAM_WORKER_REF, `new URL("${workerBase}/${match[1]}", import.meta.url)`),
           map: null,
         };
       }
       if (endsWith(id, `/${MAGNETIC}/dist/plugin-magnetic-outline.js`)) {
         const name = path.basename(MAGNETIC_WORKER);
         workers.set(name, fs.readFileSync(path.join(packageDir(MAGNETIC), 'dist/assets', name), 'utf8'));
-        return { code: magneticWorker(code), map: null };
+        return { code: magneticWorker(code, workerBase), map: null };
       }
       if (endsWith(id, `/${MAGNETIC}/dist/style.css`)) {
         return { code: magneticCursor(code), map: null };

@@ -6,6 +6,7 @@
   } from '@mango-iiif/annotation';
   import '@mango-iiif/annotation/style.css';
   import {
+    ViewerHeader,
     fetchManifest,
     manifestsStore,
     normaliseViewerConfig,
@@ -13,6 +14,7 @@
     type ViewerCoreInstance,
     type ViewerPlugin,
   } from '@mango-iiif/iiif-viewer/core';
+  import pkg from '../../../package.json';
   import { setLocale, t, translate } from '../core/i18n';
   import type { AnnotateConfig } from '../core/types/config';
   import { providersFor } from '../authorities/endpoint';
@@ -78,7 +80,6 @@
   import { isTheme, storedTheme, storeTheme, type Theme } from './themes';
   import ExportMenu from './ui/ExportMenu.svelte';
   import SettingsMenu from './ui/SettingsMenu.svelte';
-  import ViewerHeader from './ui/ViewerHeader.svelte';
 
   /**
    * The annotation editor: Mango's viewer as the image stage with Annotorious
@@ -537,7 +538,7 @@
     const pane = annotatePane;
     if (!pane) return;
     const smooth = !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const behavior: ScrollBehavior = smooth ? 'smooth' : 'auto';
+    const behavior = smooth ? 'smooth' : 'auto';
     // Side by side the pane scrolls itself; stacked on a phone it is the editor that scrolls.
     if (pane.scrollHeight > pane.clientHeight) pane.scrollTo({ top: 0, behavior });
     else pane.scrollIntoView({ block: 'nearest', behavior });
@@ -953,7 +954,18 @@
 
 <EditorShell {theme} bind:root>
   {#snippet title()}
-    <ViewerHeader {manifestId} {manifestEntry} />
+    <ViewerHeader
+      {manifestId}
+      {manifestEntry}
+      brand={$t('about.brand')}
+      buttonTitle={$t('about.buttonTitle')}
+      buttonLabel={$t('about.buttonLabel')}
+      aboutTitle={$t('about.title')}
+      aboutDescription={$t('about.description')}
+      aboutVersion={pkg.version}
+      aboutHomepage={pkg.homepage}
+      aboutVisitLabel={$t('about.visit')}
+    />
   {/snippet}
 
   {#snippet actions()}
@@ -1163,16 +1175,6 @@
     --anno-input-border: rgba(76, 58, 35, 0.32);
     --anno-code-bg: #3d3023;
     --anno-code-text: #f7f0e3;
-  }
-
-  :global(.viewer--annotation-editor[data-theme='ringo']) {
-    --anno-accent: #a8232b;
-    --anno-on-accent: #fff4b8;
-    --anno-surface: var(--viewer-surface);
-    --anno-raised: #fffbe0;
-    --anno-input-border: rgba(74, 48, 0, 0.36);
-    --anno-code-bg: #2e2000;
-    --anno-code-text: #fff4b8;
   }
 
   .annotation-editor {

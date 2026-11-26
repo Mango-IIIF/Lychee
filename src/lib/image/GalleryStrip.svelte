@@ -60,7 +60,7 @@
   .gallery-strip {
     display: flex;
     gap: 8px;
-    padding: 8px 12px;
+    padding: 6px 12px;
     overflow-x: auto;
     border-top: 1px solid var(--viewer-panel-border);
     background: var(--anno-surface);
@@ -72,8 +72,8 @@
     display: grid;
     flex: 0 0 auto;
     place-items: center;
-    width: 64px;
-    height: 80px;
+    width: 52px;
+    height: 64px;
     padding: 0;
     overflow: hidden;
     border: 2px solid transparent;

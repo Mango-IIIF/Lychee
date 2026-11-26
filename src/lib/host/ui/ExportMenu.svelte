@@ -65,7 +65,7 @@
       onclick={() => (open = !open)}
     >
       {$t('annotate.export.menu')}
-      <ChevronDown size={16} aria-hidden="true" />
+      <ChevronDown size={14} aria-hidden="true" />
     </button>
     {#if open}
       <div class="anno-export__menu" id={menuId} role="menu">
@@ -107,14 +107,17 @@
   .anno-export__button {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
+    gap: 5px;
+    height: 30px;
+    padding: 0 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background: var(--anno-accent);
     color: var(--anno-on-accent);
     font-family: inherit;
+    font-size: 12.5px;
     font-weight: 600;
+    line-height: 1;
     cursor: pointer;
   }
 
@@ -141,13 +144,13 @@
   }
 
   [role='menuitem'] {
-    padding: 8px 10px;
+    padding: 6px 10px;
     border: 0;
     border-radius: 6px;
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: 14px;
+    font-size: 12.5px;
     text-align: left;
     cursor: pointer;
   }

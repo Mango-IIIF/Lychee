@@ -280,7 +280,7 @@
 
   .image-stage__viewer {
     /* The drawing tools stop short of Mango's controls, the row under the image. */
-    --anno-controls-height: 64px;
+    --anno-controls-height: 52px;
     container: anno-stage / inline-size;
     position: relative;
     display: grid;
@@ -301,7 +301,7 @@
     position: static;
     width: 100%;
     margin: 0;
-    padding: 8px 12px;
+    padding: 6px 12px;
     border: 0;
     border-top: 1px solid var(--viewer-panel-border);
     background: var(--viewer-stage-bottom-bg);
