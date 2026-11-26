@@ -87,24 +87,24 @@
         <div class="annotation-list__actions">
           {#if item.locate === 'jump'}
             <button type="button" class="anno-subtle" onclick={() => onlocate(item.id)}>
-              <Play size={14} aria-hidden="true" />
+              <Play size={13} aria-hidden="true" />
               {$t('annotate.cards.jump')}
             </button>
           {:else if item.locate === 'show'}
             <button type="button" class="anno-subtle" onclick={() => onlocate(item.id)}>
-              <Eye size={14} aria-hidden="true" />
+              <Eye size={13} aria-hidden="true" />
               {$t('annotate.cards.show')}
             </button>
           {/if}
           {#if item.editable}
             <button type="button" class="anno-subtle" onclick={() => onedit(item.id)}>
-              <Pencil size={14} aria-hidden="true" />
+              <Pencil size={13} aria-hidden="true" />
               {$t('annotate.cards.edit')}
             </button>
           {/if}
           {#if item.deletable}
             <button type="button" class="anno-subtle" onclick={() => ondelete(item.id)}>
-              <Trash2 size={14} aria-hidden="true" />
+              <Trash2 size={13} aria-hidden="true" />
               {$t('annotate.cards.delete')}
             </button>
           {/if}
@@ -119,34 +119,34 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 16px 20px 20px;
+    padding: 14px 16px 16px;
     border-top: 1px solid var(--viewer-panel-border);
-    font-size: 15px;
+    font-size: 13.5px;
   }
 
   h3 {
     margin: 0;
-    font-size: 15px;
+    font-size: 13.5px;
   }
 
   .annotation-list__tabs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 4px;
-    padding: 4px;
+    padding: 3px;
     border-radius: 8px;
     background: var(--anno-tint);
   }
 
   .annotation-list__tabs button {
-    min-height: 36px;
+    min-height: 30px;
     padding: 0 8px;
     border: 0;
     border-radius: 6px;
     background: transparent;
     color: var(--viewer-muted);
     font: inherit;
-    font-size: 14px;
+    font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -160,18 +160,18 @@
   .annotation-list__items {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
 
   .annotation-list__card {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 12px;
+    padding: 10px;
     border: 1px solid var(--viewer-panel-border);
     border-radius: 8px;
     background: var(--anno-raised);
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .annotation-list__card.selected {
@@ -184,7 +184,7 @@
     align-items: center;
     gap: 6px;
     color: var(--viewer-muted);
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
   }
 

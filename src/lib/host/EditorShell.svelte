@@ -144,30 +144,30 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     border: 1px solid var(--viewer-panel-border);
     border-radius: var(--viewer-chrome-radius);
     background: var(--viewer-panel);
     color: var(--viewer-text);
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
     z-index: 10;
     line-height: 1;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .viewer__fullscreen-btn--labelled {
     width: auto;
-    padding-inline: 10px;
+    padding-inline: 8px;
     border-color: transparent;
     background: transparent;
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .viewer__fullscreen-btn :global(svg) {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
   }
 
   .editor-shell__body {

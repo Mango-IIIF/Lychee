@@ -652,36 +652,36 @@
   .toc {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     min-height: 0;
     color: var(--viewer-text);
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .toc__muted {
     margin: 0;
     color: var(--viewer-muted);
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.45;
   }
 
   .toc__empty {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 14px;
+    gap: 10px;
+    padding: 12px;
     border: 1px dashed var(--anno-dashed);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--anno-tint);
   }
 
   .toc__empty-prompt {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
     margin: 0;
     color: var(--viewer-text);
-    font-size: 13.5px;
+    font-size: 12.5px;
     line-height: 1.45;
   }
 
@@ -697,14 +697,14 @@
     justify-content: center;
     gap: 6px;
     width: 100%;
-    height: 38px;
-    padding: 0 14px;
+    height: 34px;
+    padding: 0 12px;
     border: 0;
     border-radius: 6px;
     background: var(--anno-accent);
     color: var(--anno-on-accent);
     font: inherit;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -770,7 +770,7 @@
     align-items: flex-start;
     gap: 2px;
     min-width: 0;
-    padding: 8px 6px 8px 10px;
+    padding: 7px 6px 7px 10px;
     border: 0;
     background: transparent;
     color: inherit;
@@ -789,7 +789,7 @@
 
   .toc__name {
     min-width: 0;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 600;
     line-height: 1.3;
     overflow-wrap: anywhere;
@@ -799,7 +799,7 @@
     max-width: 100%;
     overflow: hidden;
     color: var(--viewer-muted);
-    font-size: 12px;
+    font-size: 11.5px;
     font-variant-numeric: tabular-nums;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -859,7 +859,7 @@
 
   .toc__card-eyebrow {
     color: var(--anno-accent);
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
   }
 
@@ -898,7 +898,7 @@
 
   .toc__field > span {
     color: var(--viewer-muted);
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
   }
 
@@ -907,14 +907,14 @@
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    height: 34px;
+    height: 30px;
     padding: 0 8px;
     border: 1px solid var(--anno-input-border);
     border-radius: 6px;
     background: var(--viewer-well-bg);
     color: inherit;
     font: inherit;
-    font-size: 13.5px;
+    font-size: 12.5px;
   }
 
   .toc__title {
@@ -926,7 +926,7 @@
     align-items: center;
     gap: 8px;
     color: var(--viewer-muted);
-    font-size: 12.5px;
+    font-size: 12px;
     cursor: pointer;
   }
 
@@ -967,28 +967,28 @@
   }
 
   .toc__small {
-    height: 34px;
-    padding: 0 9px;
+    height: 30px;
+    padding: 0 8px;
     border-color: var(--anno-input-border);
     background: var(--anno-tint);
     color: var(--viewer-text);
   }
 
   .toc__actions .toc__small {
-    height: 28px;
-    padding: 0 8px;
+    height: 26px;
+    padding: 0 7px;
   }
 
   .toc__done {
     margin-left: auto;
-    height: 28px;
-    padding: 0 12px;
+    height: 26px;
+    padding: 0 10px;
     border: 0;
     border-radius: 6px;
     background: var(--anno-accent);
     color: var(--anno-on-accent);
     font: inherit;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -1021,13 +1021,13 @@
     justify-content: center;
     gap: 6px;
     width: 100%;
-    min-height: 36px;
+    min-height: 32px;
     border: 1px dashed var(--anno-dashed);
-    border-radius: 8px;
+    border-radius: 7px;
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -1042,9 +1042,9 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 12px;
+    padding: 10px;
     border: 1px solid var(--viewer-panel-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--anno-tint);
   }
 
@@ -1054,7 +1054,7 @@
 
   .toc__save-note {
     color: var(--viewer-muted);
-    font-size: 12.5px;
+    font-size: 12px;
   }
 
   .toc__save-bar--problem .toc__save-note {
@@ -1066,13 +1066,13 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 38px;
+    min-height: 34px;
     border: 0;
     border-radius: 6px;
     background: var(--anno-accent);
     color: var(--anno-on-accent);
     font: inherit;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -1083,7 +1083,7 @@
     gap: 6px;
     margin: 0;
     color: var(--anno-accent);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
   }
 </style>

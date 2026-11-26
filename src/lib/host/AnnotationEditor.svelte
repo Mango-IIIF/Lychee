@@ -1179,7 +1179,7 @@
     --mango-viewer-av-player-max-width: calc((100cqh - 24px) * 16 / 9);
 
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 370px);
     grid-template-rows: minmax(0, 1fr);
     grid-template-areas: 'stage sidebar';
     height: 100%;
@@ -1223,7 +1223,7 @@
   .annotation-editor__tabs {
     display: flex;
     gap: 4px;
-    padding: 10px 20px 0;
+    padding: 8px 16px 0;
     border-left: 1px solid var(--viewer-panel-border);
     border-bottom: 1px solid var(--viewer-panel-border);
     background: var(--anno-surface);
@@ -1231,13 +1231,13 @@
 
   .annotation-editor__tabs button {
     margin-bottom: -1px;
-    padding: 8px 12px;
+    padding: 7px 10px;
     border: 0;
     border-bottom: 2px solid transparent;
     background: transparent;
     color: var(--viewer-muted);
     font: inherit;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -1250,7 +1250,7 @@
   .annotation-editor__contents {
     box-sizing: border-box;
     min-height: 0;
-    padding: 20px;
+    padding: 16px;
     overflow: auto;
     border-left: 1px solid var(--viewer-panel-border);
     background: var(--anno-surface);
