@@ -57,8 +57,10 @@ export const COLOURS = {
   draft: '#2dd4bf',
   /** A shape with at least one of the user's annotations. */
   annotated: '#f59e0b',
-  /** The manifest's own annotations; selecting one opens it for editing. */
+  /** The manifest's own editable annotations; selecting one opens it for editing. */
   existing: '#94a3b8',
+  /** Manifest annotations the current user may view but not edit. */
+  readonly: '#64748b',
 } as const;
 
 type SamPlugin = ReturnType<
@@ -71,6 +73,7 @@ export class ImageAnnotatorController {
   private canvasId = '';
   private tool: Tool = 'select';
   private existingIds = new Set<string>();
+  private editableExistingIds = new Set<string>();
   private annotatedIds = new Set<string>();
   private sam: SamPlugin | undefined;
   private samRequested = false;
@@ -83,11 +86,18 @@ export class ImageAnnotatorController {
   private destroyed = false;
 
   private style = (annotation: ImageAnnotation): DrawingStyle => {
-    const colour = this.existingIds.has(annotation.id)
-      ? COLOURS.existing
-      : this.annotatedIds.has(annotation.id)
-        ? COLOURS.annotated
-        : COLOURS.draft;
+    if (this.existingIds.has(annotation.id)) {
+      const editable = this.editableExistingIds.has(annotation.id);
+      const colour = editable ? COLOURS.existing : COLOURS.readonly;
+      return {
+        stroke: colour,
+        strokeWidth: editable ? 2 : 1.5,
+        strokeOpacity: editable ? 0.9 : 0.55,
+        fill: colour,
+        fillOpacity: editable ? 0.12 : 0.05,
+      };
+    }
+    const colour = this.annotatedIds.has(annotation.id) ? COLOURS.annotated : COLOURS.draft;
     return { stroke: colour, strokeWidth: 2, fill: colour, fillOpacity: 0.12 };
   };
 
@@ -102,7 +112,9 @@ export class ImageAnnotatorController {
         this.tool === 'smart-select'
           ? UserSelectAction.NONE
           : this.existingIds.has(annotation.id)
-            ? UserSelectAction.SELECT
+            ? this.editableExistingIds.has(annotation.id)
+              ? UserSelectAction.SELECT
+              : UserSelectAction.NONE
             : UserSelectAction.EDIT) as never,
       style: this.style,
     });
@@ -139,11 +151,27 @@ export class ImageAnnotatorController {
   };
 
   /** Shows one canvas's shapes: the user's regions and the manifest's own annotations. */
-  setCanvas(canvasId: string, regions: Region[], existing: ImageAnnotation[]): void {
+  setCanvas(
+    canvasId: string,
+    regions: Region[],
+    existing: ImageAnnotation[],
+    editableExistingIds?: Iterable<string>,
+  ): void {
     this.canvasId = canvasId;
     this.existingIds = new Set(existing.map((a) => a.id));
+    if (editableExistingIds !== undefined) {
+      this.editableExistingIds = new Set(editableExistingIds);
+    } else {
+      this.editableExistingIds = new Set(this.existingIds);
+    }
     const own = regions.filter((r) => r.canvasId === canvasId).map(this.shapeOf);
     this.anno.setAnnotations([...existing, ...own], true);
+  }
+
+  /** Updates which manifest shapes may be selected for editing, restyling them in place. */
+  setEditableExisting(ids: Iterable<string>): void {
+    this.editableExistingIds = new Set(ids);
+    this.anno.setStyle(this.style);
   }
 
   private shapeOf = (region: Region): ImageAnnotation =>
@@ -152,6 +180,7 @@ export class ImageAnnotatorController {
   /** Swaps one of the manifest's shapes for an editable region of the user's. */
   adopt(existingId: string, region: Region): void {
     this.existingIds.delete(existingId);
+    this.editableExistingIds.delete(existingId);
     if (this.anno.state.store.getAnnotation(existingId)) this.anno.removeAnnotation(existingId);
     if (!this.anno.state.store.getAnnotation(region.id)) this.anno.addAnnotation(this.shapeOf(region));
   }
@@ -161,6 +190,7 @@ export class ImageAnnotatorController {
     if (this.anno.state.store.getAnnotation(regionId)) this.anno.removeAnnotation(regionId);
     if (!existing) return;
     this.existingIds.add(existing.id);
+    this.editableExistingIds.add(existing.id);
     if (!this.anno.state.store.getAnnotation(existing.id)) this.anno.addAnnotation(existing);
   }
 

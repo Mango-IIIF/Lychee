@@ -9,7 +9,6 @@
     bodyValue,
     canvasScale as scaleOf,
     canvasesOf,
-    creatorIds,
     creatorName,
     draftProblem,
     emptyDraft,
@@ -57,6 +56,7 @@
   import EntityPicker from '../authorities/EntityPicker.svelte';
   import { needsNames, withFetchedNames } from '../authorities/names';
   import { loadExistingAnnotations } from '../annotations/load';
+  import { resolveAnnotationPolicy } from '../annotations/permissions';
   import {
     exportAnnotationPage,
     exportStructures,
@@ -112,6 +112,7 @@
     ) as AnnotateConfig,
   );
   let options = $derived(normalisedConfig.annotations ?? {});
+  let policy = $derived(resolveAnnotationPolicy(options));
   let languages = $derived(normaliseAuthoringLanguages(options.languages, normalisedConfig.language ?? 'en'));
   let providers = $derived(providersFor(options));
 
@@ -374,7 +375,11 @@
     const { target: _t, label: _l, body: _b, motivation: _m, modified: _mo, ...kept } = previous ?? {};
     const created = previous ? previous.created : now;
     // The user is the creator of what they write; an annotation that already has one keeps it.
-    const creator = options.userId && !kept.creator ? { id: options.userId, type: 'Person' } : undefined;
+    const userName = options.userName?.trim();
+    const creator =
+      policy.userId && !kept.creator
+        ? { id: policy.userId, type: 'Person', ...(userName ? { name: userName } : {}) }
+        : undefined;
     return {
       ...kept,
       id,
@@ -450,7 +455,7 @@
     const record = recordOf(id);
     if (!record) return;
     const annotation = userAnnotations.find((a) => a.id === id);
-    if (!annotation) return;
+    if (!annotation || !policy.canEdit(annotation, true)) return;
     if (sourceEdit) resetForm();
     editId = id;
     const read = readAnnotation(annotation, languages, language);
@@ -480,8 +485,7 @@
   /** Opens one of the manifest's annotations in the form; its shape or time range can then be changed too. */
   const editSource = (id: string) => {
     const annotation = sourceOf(id);
-    // Someone else's annotation is theirs to change: it can be read and found, not edited.
-    if (!annotation || !canEdit(annotation)) return;
+    if (!annotation || !policy.canEdit(annotation, false)) return;
     const { record, region: shape } = recordFromW3C(annotation, ctx);
     const source = record.canvasId;
     if (kind === 'image' && source && source !== canvasId) {
@@ -526,10 +530,36 @@
   };
 
   const remove = (id: string) => {
-    if (!store.removeRecord(id)) return;
+    const record = recordOf(id);
+    if (record) {
+      const annotation = userAnnotations.find((a) => a.id === id);
+      if (!annotation || !policy.canDelete(annotation, true)) return;
+      if (!store.removeRecord(id)) return;
+      emit('annotationDelete', { id });
+      if (editId === id) resetForm();
+      return;
+    }
+    const source = sourceOf(id);
+    if (!source || !policy.canDelete(source, false)) return;
+    if (editId === id || sourceEdit?.id === id) resetForm();
+    store.existing = store.existing.filter((a) => a.id !== id);
     emit('annotationDelete', { id });
-    if (editId === id) resetForm();
   };
+
+  /* If host config revokes edit permission while an annotation is open, close the edit cleanly. */
+  $effect(() => {
+    const currentPolicy = policy;
+    untrack(() => {
+      if (!editId) return;
+      if (sourceEdit) {
+        const source = sourceOf(sourceEdit.id);
+        if (!source || !currentPolicy.canEdit(source, false)) resetForm();
+      } else {
+        const annotation = userAnnotations.find((a) => a.id === editId);
+        if (annotation && !currentPolicy.canEdit(annotation, true)) resetForm();
+      }
+    });
+  });
 
   /** The sidebar's scrolling pane, with the form at its top. */
   let annotatePane: HTMLDivElement | null = $state(null);
@@ -552,15 +582,22 @@
   /** Opens an annotation in the form: one of the user's, else one of the manifest's they may edit; else just goes to it. */
   const openAnnotation = (id: string) => {
     sidePanel = 'annotate';
+    const record = recordOf(id);
     const source = sourceOf(id);
-    if (recordOf(id)) edit(id);
-    else if (source && canEdit(source)) editSource(id);
-    else return locate(id);
+    if (record) {
+      const annotation = userAnnotations.find((a) => a.id === id);
+      if (annotation && policy.canEdit(annotation, true)) edit(id);
+      else return locate(id);
+    } else if (source && policy.canEdit(source, false)) {
+      editSource(id);
+    } else {
+      return locate(id);
+    }
     void showForm();
   };
 
   const locate = (id: string) => {
-    const annotation = [...userAnnotations, ...store.existing].find((a) => a.id === id);
+    const annotation = [...userAnnotations, ...visibleExisting].find((a) => a.id === id);
     if (!annotation) return;
     if (kind === 'image') {
       const source = targetSource(annotation.target);
@@ -678,19 +715,15 @@
   };
 
   /*
-   * The sidebar lists every annotation on what is showing (the page, or the
+   * The sidebar lists every visible annotation on what is showing (the page, or the
    * recording, and the whole item), the user's and the item's: recordings in time order.
-   * With a user id it is split into Your annotations and All annotations.
+   * With a user id and `visibility: 'all'`, it splits into Your annotations and All annotations.
+   * With `visibility: 'own'`, only the user's annotations are shown in both the list and canvas.
    */
-  const isMine = (annotation: Annotation) =>
-    Boolean(recordOf(annotation.id)) ||
-    Boolean(options.userId && creatorIds(annotation).includes(options.userId));
-
-  /**
-   * The user's own can be edited, and so can the item's that nobody is named
-   * as making. One with someone else as its creator cannot.
-   */
-  const canEdit = (annotation: Annotation) => isMine(annotation) || annotation.creator == null;
+  let visibleExisting = $derived(store.existing.filter((annotation) => policy.isVisible(annotation, false)));
+  let editableExistingIds = $derived(
+    visibleExisting.filter((annotation) => policy.canEdit(annotation, false)).map((annotation) => annotation.id),
+  );
 
   const hasSelector = (annotation: Annotation) =>
     typeof annotation.target === 'object' && 'selector' in annotation.target && Boolean(annotation.target.selector);
@@ -706,7 +739,7 @@
   let listItems: AnnotationListItem[] = $derived.by(() => {
     const showing = [
       ...userAnnotations,
-      ...store.existing.filter((annotation) => !annotation.body || annotationText(annotation)),
+      ...visibleExisting.filter((annotation) => !annotation.body || annotationText(annotation)),
     ].filter((annotation) => {
       const source = targetSource(annotation.target);
       return source === currentCanvasId || source === canonicalId;
@@ -717,15 +750,16 @@
     }
     return showing.map((annotation) => {
       const record = recordOf(annotation.id);
+      const isRecord = Boolean(record);
       return {
         id: annotation.id,
         eyebrow: `${kind === 'image' ? imageScopeLabel(annotation) : timeLabel(annotation)} · ${intentLabel(annotation)}`,
         title: annotationTitle(annotation),
         text: annotationText(annotation),
         by: creatorName(annotation),
-        mine: isMine(annotation),
-        editable: canEdit(annotation),
-        deletable: Boolean(record),
+        mine: policy.isMine(annotation, isRecord),
+        editable: policy.canEdit(annotation, isRecord),
+        deletable: policy.canDelete(annotation, isRecord),
         locate:
           kind !== 'image' ? 'jump' : (record ? record.regionId : hasSelector(annotation)) ? 'show' : undefined,
       } satisfies AnnotationListItem;
@@ -892,10 +926,10 @@
     return imageStage?.getViewer() ?? null;
   }
 
-  /** The current canvas's annotations: the manifest's and the user's own. */
+  /** The current canvas's visible annotations: the manifest's and the user's own. */
   export function getAnnotations(): Annotation[] {
     const id = currentCanvasId;
-    return [...store.existing, ...userAnnotations].filter((a) => {
+    return [...visibleExisting, ...userAnnotations].filter((a) => {
       const source = targetSource(a.target);
       return source === id || source === canonicalId;
     });
@@ -948,11 +982,20 @@
 
   export function removeAnnotation(id: string): void {
     const record = recordOf(id);
-    remove(id);
-    // A shape imported with the annotation goes with it.
-    if (record?.regionId && !store.records.some((r) => r.regionId === record.regionId)) {
-      imageStage?.removeRegion(record.regionId);
-      store.removeRegion(record.regionId);
+    if (record) {
+      if (store.removeRecord(id)) emit('annotationDelete', { id });
+      if (editId === id) resetForm();
+      // A shape imported with the annotation goes with it.
+      if (record.regionId && !store.records.some((r) => r.regionId === record.regionId)) {
+        imageStage?.removeRegion(record.regionId);
+        store.removeRegion(record.regionId);
+      }
+      return;
+    }
+    if (sourceOf(id)) {
+      if (editId === id || sourceEdit?.id === id) resetForm();
+      store.existing = store.existing.filter((a) => a.id !== id);
+      emit('annotationDelete', { id });
     }
   }
 </script>
@@ -1003,6 +1046,8 @@
           canvasScale={ctx.canvasScale}
           annotatedIds={store.records.flatMap((r) => (r.regionId ? [r.regionId] : []))}
           annotatedCanvasIds={store.records.flatMap((r) => (r.canvasId ? [r.canvasId] : []))}
+          existingAnnotations={visibleExisting}
+          {editableExistingIds}
           selectedRegionId={shapeId}
           onselect={onShapeSelect}
           onregioncreate={onRegionCreate}
@@ -1123,7 +1168,8 @@
       <AnnotationList
         items={listItems}
         kind={kind === 'image' ? 'image' : 'av'}
-        split={Boolean(options.userId)}
+        split={Boolean(policy.userId) && policy.visibility === 'all'}
+        onlyMine={policy.visibility === 'own'}
         selectedId={editId}
         onlocate={locate}
         onedit={openAnnotation}

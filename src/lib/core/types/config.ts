@@ -1,6 +1,46 @@
 import type { ViewerConfig } from '@mango-iiif/iiif-viewer/core';
 import type { AuthorityEndpointConfig } from '@mango-iiif/annotation';
 
+/** Which annotations a user may modify (`all`, `own`, or `none`). */
+export type AnnotationPermissionScope = 'all' | 'own' | 'none';
+
+/**
+ * UI-level editing and deleting permissions for the current user.
+ * Hosts should map their own roles (admin, content owner, volunteer, …) onto
+ * these capabilities and enforce the same rules server-side.
+ */
+export interface AnnotationPermissions {
+  /**
+   * Which annotations the user can edit:
+   * - `'all'`: any annotation (admins / content owners), including others' and unattributed ones
+   * - `'own'`: only the user's own annotations (session drafts + matching `userId`)
+   * - `'none'`: no annotations can be edited
+   */
+  edit?: AnnotationPermissionScope;
+  /**
+   * Which annotations the user can delete:
+   * - `'all'`: any annotation, including manifest-loaded ones (emits `annotationDelete`)
+   * - `'own'`: the user's own annotations, including manifest-loaded ones matching `userId`
+   * - `'none'`: nothing can be deleted
+   *
+   * Defaults to matching `edit` when `permissions` is provided.
+   */
+  delete?: AnnotationPermissionScope;
+  /**
+   * Whether manifest annotations without a `creator` can be edited/deleted when
+   * the scope is `'own'`. Always allowed when scope is `'all'`.
+   * Defaults to `false` when `permissions` is configured.
+   */
+  editUnattributed?: boolean;
+}
+
+/**
+ * Which annotations are shown in the sidebar list and on the image canvas:
+ * - `'all'` (default): show every annotation (with Your / All tabs when `userId` is set)
+ * - `'own'`: show only the signed-in user's annotations
+ */
+export type AnnotationVisibility = 'all' | 'own';
+
 /** The viewer's config, plus the editor's own authoring setup. */
 export type AnnotateConfig = ViewerConfig & {
   annotations?: {
@@ -32,10 +72,26 @@ export type AnnotateConfig = ViewerConfig & {
     autoSelect?: boolean;
     /**
      * The signed-in user's id, ideally a URI. New annotations get it as their
-     * `creator`, and the audio and video list splits into Your annotations
-     * (theirs, made here or with this creator) and All annotations.
+     * `creator`, and the annotation list splits into Your annotations (theirs,
+     * made here or with this creator) and All annotations (unless `visibility: 'own'`).
      */
     userId?: string;
+    /**
+     * Optional display name for the signed-in user. Written as `creator.name` on
+     * new annotations alongside `userId`.
+     */
+    userName?: string;
+    /**
+     * Editing and deleting permissions for the signed-in user (e.g.
+     * `{ edit: 'all', delete: 'all' }` for admins/content owners, or
+     * `{ edit: 'own', delete: 'own' }` for volunteers).
+     */
+    permissions?: AnnotationPermissions;
+    /**
+     * Which annotations are visible in the sidebar and on the image canvas:
+     * `'all'` (default) or `'own'` (only annotations belonging to `userId`).
+     */
+    visibility?: AnnotationVisibility;
     /** Show the W3C JSON of the annotation being written. Default false. */
     showJson?: boolean;
     /** HTTP(S) id for exported AnnotationPages; drafts get none. */

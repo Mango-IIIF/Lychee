@@ -40,6 +40,10 @@
     annotatedIds: string[];
     /** Canvas ids with at least one of the user's annotations, marked in the gallery strip. */
     annotatedCanvasIds?: string[];
+    /** Manifest annotations visible on the stage (defaults to `store.existing`). */
+    existingAnnotations?: Annotation[];
+    /** Manifest annotation ids the current user may select to edit on the image. */
+    editableExistingIds?: string[];
     /** The shape the sidebar is about. */
     selectedRegionId?: string;
     tool?: Tool;
@@ -64,6 +68,8 @@
     canvasScale,
     annotatedIds,
     annotatedCanvasIds = [],
+    existingAnnotations = undefined,
+    editableExistingIds = undefined,
     selectedRegionId,
     tool = $bindable('select'),
     canvasId = $bindable(null),
@@ -158,18 +164,29 @@
     };
   });
 
-  /* The current canvas's shapes. Re-run on canvas change only: regions changed by the user are already drawn. */
+  /* The current canvas's shapes. Re-run on canvas or visible-existing change: user regions are already drawn. */
   $effect(() => {
     const instance = controller;
     const id = canvasId;
-    const existing = store.existing;
+    const existing = existingAnnotations ?? store.existing;
     if (!instance || !id) return;
     const scale = canvasScale[id] ?? { sx: 1, sy: 1 };
     const shapes = existing
       .filter((annotation) => targetSource(annotation.target) === id)
       .map((annotation) => toImageAnnotation(annotation, id, scale))
       .filter((shape) => shape !== null);
-    instance.setCanvas(id, untrack(() => store.regions), shapes);
+    instance.setCanvas(
+      id,
+      untrack(() => store.regions),
+      shapes,
+      untrack(() => editableExistingIds),
+    );
+  });
+
+  $effect(() => {
+    if (editableExistingIds !== undefined) {
+      controller?.setEditableExisting(editableExistingIds);
+    }
   });
 
   $effect(() => {

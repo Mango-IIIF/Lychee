@@ -98,7 +98,10 @@ editor.config = {
     ai: { endpoint: "/api/describe" }, // "Suggest with AI" for images, shown only when set
     gallery: "open", // page thumbnails under the image: open, closed (toolbar toggle) or off
     autoSelect: true, // offer Auto Select (WebGPU, ~40 MB model on first use)
-    userId: undefined, // the signed-in user (a URI): the creator of new annotations; splits the list into Your / All annotations
+    userId: undefined, // the signed-in user (a URI): stamped as creator on new annotations; splits the list into Your / All annotations
+    userName: undefined, // optional display name written as creator.name on new annotations
+    permissions: undefined, // { edit?: 'all' | 'own' | 'none', delete?: 'all' | 'own' | 'none', editUnattributed?: boolean }
+    visibility: "all", // 'all' (default) or 'own' (only show the signed-in user's annotations in sidebar and canvas)
     showJson: false, // show the W3C JSON being written
     pageId: undefined, // HTTP(S) id for exported AnnotationPages
     export: ["annotations", "structures"], // what the download and exportToHost() may hand over

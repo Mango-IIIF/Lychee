@@ -10,9 +10,9 @@
     locate?: 'show' | 'jump';
     /** The user's: made here, handed over by the host, or with their `creator`. */
     mine: boolean;
-    /** The user's, or the item's with no creator: someone else's cannot be changed. */
+    /** The user's, or allowed by edit permissions: someone else's cannot be changed unless permitted. */
     editable: boolean;
-    /** Only the user's own records can be deleted; the item's stay with the item. */
+    /** Whether the current user is permitted to delete this annotation. */
     deletable: boolean;
   }
 </script>
@@ -23,26 +23,39 @@
 
   /**
    * The annotations on the page or recording, under the sidebar's form. With a user id
-   * there are two tabs, Your annotations and All annotations; without one it is a single list.
+   * and visibility 'all', there are two tabs (Your annotations and All annotations);
+   * with visibility 'own', only the user's annotations are listed; without a user id
+   * it is a single list of all annotations.
    */
   interface Props {
     items: AnnotationListItem[];
     kind: 'image' | 'av';
     /** Split into Your annotations and All annotations. */
     split?: boolean;
+    /** Only the signed-in user's annotations are shown (no All annotations tab). */
+    onlyMine?: boolean;
     selectedId?: string | null;
     onlocate: (id: string) => void;
     onedit: (id: string) => void;
     ondelete: (id: string) => void;
   }
 
-  let { items, kind, split = false, selectedId = null, onlocate, onedit, ondelete }: Props = $props();
+  let {
+    items,
+    kind,
+    split = false,
+    onlyMine = false,
+    selectedId = null,
+    onlocate,
+    onedit,
+    ondelete,
+  }: Props = $props();
 
   let tab = $state<'mine' | 'all'>('mine');
   let mine = $derived(items.filter((item) => item.mine));
   let shown = $derived(split && tab === 'mine' ? mine : items);
   let empty = $derived(
-    $t(`annotate.list.empty.${split && tab === 'mine' ? 'mine' : 'all'}.${kind}`),
+    $t(`annotate.list.empty.${onlyMine || (split && tab === 'mine') ? 'mine' : 'all'}.${kind}`),
   );
 </script>
 
@@ -63,7 +76,9 @@
       >
     </div>
   {:else}
-    <h3 id="annotation-list-heading">{$t('annotate.list.heading', { count: items.length })}</h3>
+    <h3 id="annotation-list-heading">
+      {$t(onlyMine ? 'annotate.list.mine' : 'annotate.list.heading', { count: items.length })}
+    </h3>
   {/if}
 
   <div class="annotation-list__items" role={split ? 'tabpanel' : undefined}>

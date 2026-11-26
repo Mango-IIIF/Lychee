@@ -25,4 +25,14 @@ export type {
   AnnotationTarget,
   AuthorityEndpointConfig,
 } from '@mango-iiif/annotation';
-export type { AnnotateConfig } from './core/types/config';
+export {
+  resolveAnnotationPolicy,
+  type PermissionOptions,
+  type ResolvedAnnotationPolicy,
+} from './annotations/permissions';
+export type {
+  AnnotateConfig,
+  AnnotationPermissionScope,
+  AnnotationPermissions,
+  AnnotationVisibility,
+} from './core/types/config';

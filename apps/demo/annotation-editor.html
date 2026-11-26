@@ -30,11 +30,27 @@
        * ?user=<id>        the signed-in user, whose annotations get a tab of their own
        *                   (default: Jane Jones, a demo user who made some of the test annotations;
        *                   ?user= with no value signs out)
+       * ?userName=<name>  optional display name written as creator.name on new annotations
+       * ?edit=all|own|none       override edit permission scope (e.g. ?edit=all for admin/owner)
+       * ?delete=all|own|none     override delete permission scope (defaults to ?edit)
+       * ?visibility=all|own      'own' hides other users' annotations in sidebar and canvas
        */
       const params = new URLSearchParams(location.search);
       const manifest = params.get('manifest') ?? new URL('manifests/constabulary.json', location.href).href;
       const type = params.get('type');
       const user = params.has('user') ? params.get('user') : 'https://www.peoplescollection.wales/user/4567';
+      const userName = params.get('userName');
+      const edit = params.get('edit');
+      const del = params.get('delete');
+      const visibility = params.get('visibility');
+      const validScope = (v) => ['all', 'own', 'none'].includes(v);
+      const permissions =
+        validScope(edit) || validScope(del)
+          ? {
+              ...(validScope(edit) ? { edit } : {}),
+              ...(validScope(del) ? { delete: del } : {}),
+            }
+          : undefined;
 
       const annotations = {
         languages: ['en', 'cy'],
@@ -42,6 +58,9 @@
         ...(params.get('gallery') ? { gallery: params.get('gallery') } : {}),
         ...(['image', 'audio', 'video'].includes(type) ? { mediaType: type } : {}),
         ...(user ? { userId: user } : {}),
+        ...(userName ? { userName } : {}),
+        ...(permissions ? { permissions } : {}),
+        ...(visibility === 'all' || visibility === 'own' ? { visibility } : {}),
       };
 
       // AI suggestions and GeoNames need the demo's API server (`npm run dev` with a .env).
