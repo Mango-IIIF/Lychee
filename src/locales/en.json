@@ -25,16 +25,6 @@
       "both": "Annotations and contents",
       "unsaved": "Contents has unsaved changes: save it to include them."
     },
-    "sidebar": {
-      "label": "Annotate",
-      "editing": "Editing annotation",
-      "language": "Language",
-      "hasText": "Has text",
-      "save": "Save annotation",
-      "update": "Update annotation",
-      "cancel": "Cancel edit",
-      "json": "What gets saved"
-    },
     "contents": {
       "label": "Contents",
       "panels": "Sidebar",
@@ -108,108 +98,21 @@
     "scope": {
       "label": "What is it about?",
       "region": "An area",
-      "canvas": "This image",
-      "short": {
-        "region": "Area",
-        "canvas": "Whole image",
-        "manifest": "Whole item",
-        "time": "Moment"
-      }
+      "canvas": "This image"
     },
     "region": {
-      "none": "Draw a box on the image, or click a shape.",
       "drawing": "Click on the image to start, and again to finish.",
-      "cancelDraw": "Cancel",
-      "selected": "Area selected, {w} × {h} px",
-      "count": "annotations: {count}",
-      "draw": "Draw a box",
-      "redraw": "Redraw",
-      "delete": "Delete shape"
-    },
-    "time": {
-      "start": "Start (seconds)",
-      "end": "End (optional)",
-      "useCurrent": "Use current time"
+      "selected": "Area selected, {w} × {h} px"
     },
     "intents": {
-      "question": "What would you like to do?",
-      "choose": "Choose an option above to see the boxes you need.",
-      "note": {
-        "label": "Add a note",
-        "hint": {
-          "image": "Share your own thoughts, memories or background about this part of the image.",
-          "av": "Share your own thoughts, memories or background about this moment."
-        }
-      },
-      "transcribe": {
-        "label": "Transcribe",
-        "hint": {
-          "image": "Write down the text exactly as it appears in this area. It can then be searched.",
-          "av": "Write down exactly what is said. It can be searched and shown as captions."
-        }
-      },
-      "tag": {
-        "label": "Tag",
-        "hint": {
-          "image": "Add a few keywords to help people find this.",
-          "av": "Add a few keywords to help people find this."
-        }
-      },
-      "identify": {
-        "label": "Identify",
-        "hint": {
-          "image": "Say exactly who, what or where this is, using a shared reference like Wikidata.",
-          "av": "Say exactly who, what or where this is, using a shared reference like Wikidata."
-        }
-      },
-      "highlight": {
-        "label": "Highlight",
-        "hint": {
-          "image": "Mark this part of the image as worth a look. No text needed.",
-          "av": "Mark this moment as worth hearing. No text needed."
-        }
-      },
-      "link": {
-        "label": "Link",
-        "hint": {
-          "image": "Connect this to another item in the collection.",
-          "av": "Connect this moment to another item or recording in the collection."
-        }
-      }
-    },
-    "fields": {
-      "optional": "optional",
-      "title": "Title",
-      "titlePlaceholder": "A short title",
-      "note": "Your note",
-      "notePlaceholder": "What does this show or tell us?",
-      "transcription": "What is said or written",
-      "transcriptionPlaceholder": "Type it exactly as you hear or see it",
-      "tags": "Keywords",
-      "tagsPlaceholder": "Separate with commas",
-      "why": "Why it matters",
-      "whyPlaceholder": "e.g. First mention of the strike",
-      "linkUrl": "Related item or recording",
-      "linkUrlPlaceholder": "Paste a link",
-      "linkFrom": "From (seconds)",
-      "linkTo": "To (optional)"
+      "choose": "Choose an option above to see the boxes you need."
     },
     "identify": {
-      "question": "Who, what or where is this?",
-      "source": "Look up in",
-      "search": "Search {provider}",
-      "placeholder": "Find a person, place or subject",
-      "searching": "Searching {provider}…",
-      "noResults": "No matches.",
-      "linked": "Linked",
-      "remove": "Remove {label}",
-      "none": "No reference sources are configured.",
       "name": "Name in {language}",
       "missing": "{provider} has no {language} name. Add one, or leave it empty."
     },
     "ai": {
       "label": "AI suggestions",
-      "flag": "AI",
       "loading": "Looking at the image…",
       "suggest": {
         "region": "Suggest with AI (this area)",
@@ -229,7 +132,6 @@
       "use": "Use",
       "link": "Link",
       "linked": "Linked",
-      "suggestedBy": "Suggested by {model}",
       "unplaced": "Not offered: {language} is not one of the languages this editor saves."
     },
     "problems": {
@@ -244,17 +146,6 @@
         "startAfterEnd": "The start time must be before the recording ends.",
         "end": "The end time must be after the start and within the recording."
       }
-    },
-    "cards": {
-      "heading": "Your annotations ({count})",
-      "empty": {
-        "image": "Your annotations on this image and item will appear here.",
-        "av": "Your annotations on this recording will appear here."
-      },
-      "show": "Show",
-      "jump": "Jump",
-      "edit": "Edit",
-      "delete": "Delete"
     },
     "list": {
       "label": "Annotation lists",
@@ -303,8 +194,6 @@
     },
     "gallery": {
       "label": "Pages",
-      "show": "Show pages",
-      "hide": "Hide pages",
       "page": "Page {n}: {label}",
       "annotated": "Has your annotations"
     },
@@ -313,46 +202,13 @@
       "colour": "Viewer colour"
     },
     "tools": {
-      "label": "Drawing tools",
-      "select": "Select and move",
-      "rectangle": "Rectangle",
-      "polygon": "Polygon (click points, double-click to finish)",
-      "ellipse": "Ellipse",
-      "path": "Freehand",
-      "line": "Line",
-      "smart": "Smart tools",
-      "closeSmart": "Close smart tools",
-      "intelligent-scissors": "Smart Scissors",
-      "magnetic-cursor": "Edge Snap",
-      "smart-select": "Auto Select",
-      "enable": "Turn on {tool}",
       "hints": {
         "rectangle": "Click one corner, move, and click the opposite corner.",
         "polygon": "Click to place corners, double-click to finish.",
         "ellipse": "Click one corner, move, and click to finish the oval.",
         "path": "Click to start tracing, move, and click to finish.",
-        "line": "Click the start point, move, and click the end point.",
-        "intelligent-scissors": "Click to start, follow the edge, then click to place points.",
-        "intelligent-scissorsMore": "Double-click to finish. Useful for curved and complex outlines.",
-        "magnetic-cursor": "Snap the cursor to nearby edges as you draw.",
-        "magnetic-cursorMore": "Useful for clear, high-contrast outlines."
+        "line": "Click the start point, move, and click the end point."
       }
-    },
-    "sam": {
-      "unsupported": "Auto Select needs WebGPU. Use Chrome or Edge on a desktop computer.",
-      "error": "Auto Select could not start: {message}",
-      "loading": "Loading the selection model…",
-      "download": "Model download",
-      "cached": "The model is cached in your browser after the first download.",
-      "instructions": "Hover to preview. Click an object, then add or remove points to refine its outline.",
-      "mode": "Auto Select mode",
-      "add": "Select object",
-      "remove": "Remove area",
-      "busy": "Analysing the view…",
-      "shift": "Shift-click also removes an area.",
-      "paused": "Selection paused. Drag the image to move.",
-      "done": "Done",
-      "reset": "Reset"
     },
     "av": {
       "recording": "Recording",

@@ -25,16 +25,6 @@
       "both": "Anotaciones e índice",
       "unsaved": "El índice tiene cambios sin guardar: guárdelo para incluirlos."
     },
-    "sidebar": {
-      "label": "Anotar",
-      "editing": "Editando la anotación",
-      "language": "Idioma",
-      "hasText": "Tiene texto",
-      "save": "Guardar anotación",
-      "update": "Actualizar anotación",
-      "cancel": "Cancelar edición",
-      "json": "Lo que se guarda"
-    },
     "contents": {
       "label": "Índice",
       "panels": "Barra lateral",
@@ -108,108 +98,21 @@
     "scope": {
       "label": "¿A qué se refiere?",
       "region": "Una zona",
-      "canvas": "Esta imagen",
-      "short": {
-        "region": "Zona",
-        "canvas": "Imagen completa",
-        "manifest": "Elemento completo",
-        "time": "Momento"
-      }
+      "canvas": "Esta imagen"
     },
     "region": {
-      "none": "Dibuje un recuadro en la imagen o haga clic en una forma.",
       "drawing": "Haga clic en la imagen para empezar y otra vez para terminar.",
-      "cancelDraw": "Cancelar",
-      "selected": "Zona seleccionada, {w} × {h} px",
-      "count": "anotaciones: {count}",
-      "draw": "Dibujar un recuadro",
-      "redraw": "Redibujar",
-      "delete": "Eliminar forma"
-    },
-    "time": {
-      "start": "Inicio (segundos)",
-      "end": "Fin (opcional)",
-      "useCurrent": "Usar el tiempo actual"
+      "selected": "Zona seleccionada, {w} × {h} px"
     },
     "intents": {
-      "question": "¿Qué le gustaría hacer?",
-      "choose": "Elija una opción para ver los campos necesarios.",
-      "note": {
-        "label": "Añadir una nota",
-        "hint": {
-          "image": "Comparta sus ideas, recuerdos o contexto sobre esta parte de la imagen.",
-          "av": "Comparta sus ideas, recuerdos o contexto sobre este momento."
-        }
-      },
-      "transcribe": {
-        "label": "Transcribir",
-        "hint": {
-          "image": "Escriba el texto exactamente como aparece en esta zona. Así se podrá buscar.",
-          "av": "Escriba exactamente lo que se dice. Se podrá buscar y mostrar como subtítulos."
-        }
-      },
-      "tag": {
-        "label": "Etiquetar",
-        "hint": {
-          "image": "Añada algunas palabras clave para ayudar a encontrar esto.",
-          "av": "Añada algunas palabras clave para ayudar a encontrar esto."
-        }
-      },
-      "identify": {
-        "label": "Identificar",
-        "hint": {
-          "image": "Indique exactamente quién o qué es, o dónde está, con una referencia compartida como Wikidata.",
-          "av": "Indique exactamente quién o qué es, o dónde está, con una referencia compartida como Wikidata."
-        }
-      },
-      "highlight": {
-        "label": "Destacar",
-        "hint": {
-          "image": "Marque esta parte de la imagen como digna de ver. No hace falta texto.",
-          "av": "Marque este momento como digno de escuchar. No hace falta texto."
-        }
-      },
-      "link": {
-        "label": "Enlazar",
-        "hint": {
-          "image": "Conecte esto con otro elemento de la colección.",
-          "av": "Conecte este momento con otro elemento o grabación de la colección."
-        }
-      }
-    },
-    "fields": {
-      "optional": "opcional",
-      "title": "Título",
-      "titlePlaceholder": "Un título breve",
-      "note": "Su nota",
-      "notePlaceholder": "¿Qué muestra o nos cuenta esto?",
-      "transcription": "Lo que se dice o se escribe",
-      "transcriptionPlaceholder": "Escríbalo exactamente como lo oye o lo ve",
-      "tags": "Palabras clave",
-      "tagsPlaceholder": "Separe con comas",
-      "why": "Por qué importa",
-      "whyPlaceholder": "p. ej. Primera mención de la huelga",
-      "linkUrl": "Elemento o grabación relacionados",
-      "linkUrlPlaceholder": "Pegue un enlace",
-      "linkFrom": "Desde (segundos)",
-      "linkTo": "Hasta (opcional)"
+      "choose": "Elija una opción para ver los campos necesarios."
     },
     "identify": {
-      "question": "¿Quién o qué es esto, o dónde está?",
-      "source": "Buscar en",
-      "search": "Buscar en {provider}",
-      "placeholder": "Buscar una persona, lugar o tema",
-      "searching": "Buscando en {provider}…",
-      "noResults": "Sin resultados.",
-      "linked": "Enlazado",
-      "remove": "Quitar {label}",
-      "none": "No hay fuentes de referencia configuradas.",
       "name": "Nombre en {language}",
       "missing": "{provider} no tiene nombre en {language}. Añada uno o déjelo vacío."
     },
     "ai": {
       "label": "Sugerencias de IA",
-      "flag": "IA",
       "loading": "Analizando la imagen…",
       "suggest": {
         "region": "Sugerir con IA (esta zona)",
@@ -229,7 +132,6 @@
       "use": "Usar",
       "link": "Enlazar",
       "linked": "Enlazado",
-      "suggestedBy": "Sugerido por {model}",
       "unplaced": "No se ofrece: {language} no es uno de los idiomas que guarda este editor."
     },
     "problems": {
@@ -244,17 +146,6 @@
         "startAfterEnd": "El inicio debe ser anterior al final de la grabación.",
         "end": "El final debe ser posterior al inicio y estar dentro de la grabación."
       }
-    },
-    "cards": {
-      "heading": "Sus anotaciones ({count})",
-      "empty": {
-        "image": "Sus anotaciones sobre esta imagen y este elemento aparecerán aquí.",
-        "av": "Sus anotaciones sobre esta grabación aparecerán aquí."
-      },
-      "show": "Mostrar",
-      "jump": "Ir",
-      "edit": "Editar",
-      "delete": "Eliminar"
     },
     "list": {
       "label": "Listas de anotaciones",
@@ -303,8 +194,6 @@
     },
     "gallery": {
       "label": "Páginas",
-      "show": "Mostrar páginas",
-      "hide": "Ocultar páginas",
       "page": "Página {n}: {label}",
       "annotated": "Tiene sus anotaciones"
     },
@@ -313,46 +202,13 @@
       "colour": "Color del visor"
     },
     "tools": {
-      "label": "Herramientas de dibujo",
-      "select": "Seleccionar y mover",
-      "rectangle": "Rectángulo",
-      "polygon": "Polígono (haga clic en puntos, doble clic para terminar)",
-      "ellipse": "Elipse",
-      "path": "A mano alzada",
-      "line": "Línea",
-      "smart": "Herramientas inteligentes",
-      "closeSmart": "Cerrar herramientas inteligentes",
-      "intelligent-scissors": "Tijeras inteligentes",
-      "magnetic-cursor": "Ajuste a bordes",
-      "smart-select": "Selección automática",
-      "enable": "Activar {tool}",
       "hints": {
         "rectangle": "Haga clic en una esquina, mueva el cursor y haga clic en la esquina opuesta.",
         "polygon": "Haga clic para colocar esquinas, doble clic para terminar.",
         "ellipse": "Haga clic en una esquina, mueva el cursor y haga clic para terminar la elipse.",
         "path": "Haga clic para empezar a trazar, mueva el cursor y haga clic para terminar.",
-        "line": "Haga clic en el punto inicial, mueva el cursor y haga clic en el punto final.",
-        "intelligent-scissors": "Haga clic para empezar, siga el borde y haga clic para colocar puntos.",
-        "intelligent-scissorsMore": "Doble clic para terminar. Útil para contornos curvos y complejos.",
-        "magnetic-cursor": "El cursor se ajusta a los bordes cercanos al dibujar.",
-        "magnetic-cursorMore": "Útil para contornos nítidos y de alto contraste."
+        "line": "Haga clic en el punto inicial, mueva el cursor y haga clic en el punto final."
       }
-    },
-    "sam": {
-      "unsupported": "La selección automática necesita WebGPU. Use Chrome o Edge en un ordenador de escritorio.",
-      "error": "No se pudo iniciar la selección automática: {message}",
-      "loading": "Cargando el modelo de selección…",
-      "download": "Descarga del modelo",
-      "cached": "El modelo se guarda en su navegador tras la primera descarga.",
-      "instructions": "Pase el cursor para previsualizar. Haga clic en un objeto y añada o quite puntos para afinar el contorno.",
-      "mode": "Modo de selección automática",
-      "add": "Seleccionar objeto",
-      "remove": "Quitar zona",
-      "busy": "Analizando la vista…",
-      "shift": "Mayús+clic también quita una zona.",
-      "paused": "Selección en pausa. Arrastre la imagen para moverla.",
-      "done": "Hecho",
-      "reset": "Restablecer"
     },
     "av": {
       "recording": "Grabación",

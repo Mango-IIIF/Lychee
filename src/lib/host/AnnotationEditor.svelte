@@ -23,6 +23,7 @@
     metadataOf,
     motivationsOf,
     newId,
+    normaliseAuthoringLanguages,
     readAnnotation,
     tagDrafts,
     targetSource,
@@ -55,7 +56,6 @@
   import { providersFor } from '../authorities/endpoint';
   import EntityPicker from '../authorities/EntityPicker.svelte';
   import { needsNames, withFetchedNames } from '../authorities/names';
-  import { normaliseAuthoringLanguages } from '../annotations/languages';
   import { loadExistingAnnotations } from '../annotations/load';
   import {
     exportAnnotationPage,
