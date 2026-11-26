@@ -207,8 +207,6 @@
   /** The shape the form is about; survives clicking away so you can pan while writing. */
   let regionId = $state<string | undefined>(undefined);
   let scope = $state<Scope>('region');
-  /** "Draw a box" draws one box, then returns to selecting. */
-  let drawingOnce = false;
 
   /* Audio / video */
   let avStage: AVStage | null = $state(null);
@@ -325,18 +323,15 @@
     }
     regionId = undefined;
     shapeId = undefined;
-    drawingOnce = true;
     tool = 'rectangle';
   };
 
+  /** Return to the select tool after finishing any shape so subsequent clicks don't start new shapes. */
   const onRegionCreate = () => {
-    if (!drawingOnce) return;
-    drawingOnce = false;
     tool = 'select';
   };
 
   const cancelDraw = () => {
-    drawingOnce = false;
     tool = 'select';
   };
 
