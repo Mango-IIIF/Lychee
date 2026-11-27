@@ -87,3 +87,65 @@ export const exportStructures = (structures: readonly Range[]): StructuresExport
     publicationValid: structures.length > 0 && unresolvedIdentities.length === 0,
   };
 };
+
+/**
+ * A batch of session changes for hosts (e.g. a CMS such as Drupal) that validate
+ * and persist annotation actions on an explicit Save or Submit.
+ *
+ * Each item in `created` and `updated` is a standard W3C Annotation (no custom
+ * action properties mixed into the W3C JSON); `deleted` lists identifiers removed
+ * from the manifest or host store.
+ */
+export type AnnotationChangeset = {
+  manifestId: string;
+  /** New annotations created during this session (draft `urn:uuid:` ids until the host assigns HTTP(S) ids). */
+  created: Annotation[];
+  /** Existing annotations modified during this session (keep their original ids). */
+  updated: Annotation[];
+  /** Identifiers of existing annotations deleted during this session. */
+  deleted: string[];
+  /** Saved table of contents Ranges, included when changed during this session. */
+  structures?: Range[];
+  /** True when the saved table of contents differs from what was loaded. */
+  structuresChanged: boolean;
+  /** True when any annotation was created, updated, or deleted, or the table of contents changed. */
+  hasChanges: boolean;
+};
+
+export type BuildChangesetOptions = {
+  manifestId: string;
+  userAnnotations: readonly Annotation[];
+  modifiedExistingIds: readonly string[];
+  deletedExistingIds: readonly string[];
+  structures?: readonly Range[];
+  structuresChanged?: boolean;
+};
+
+export const buildChangeset = ({
+  manifestId,
+  userAnnotations,
+  modifiedExistingIds,
+  deletedExistingIds,
+  structures,
+  structuresChanged = false,
+}: BuildChangesetOptions): AnnotationChangeset => {
+  const updatedIds = new Set(modifiedExistingIds);
+  const created: Annotation[] = [];
+  const updated: Annotation[] = [];
+  for (const annotation of userAnnotations) {
+    const { '@context': _context, ...clean } = annotation;
+    if (updatedIds.has(annotation.id)) updated.push(clean as Annotation);
+    else created.push(clean as Annotation);
+  }
+  const deleted = [...new Set(deletedExistingIds)];
+  const hasChanges = created.length > 0 || updated.length > 0 || deleted.length > 0 || structuresChanged;
+  return {
+    manifestId,
+    created,
+    updated,
+    deleted,
+    ...(structuresChanged && structures ? { structures: [...structures] } : {}),
+    structuresChanged,
+    hasChanges,
+  };
+};

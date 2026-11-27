@@ -1,0 +1,419 @@
+:root {
+  --drupal-bar: #0f172a;
+  --drupal-bar-muted: #94a3b8;
+  --drupal-blue: #003ecc;
+  --drupal-blue-hover: #0032a8;
+  --drupal-bg: #f3f4f9;
+  --drupal-surface: #ffffff;
+  --drupal-border: #d4d8e2;
+  --drupal-text: #1f2937;
+  --drupal-muted: #555e6d;
+  --drupal-green-bg: #e7f6ec;
+  --drupal-green-fg: #136136;
+  --drupal-amber-bg: #fef4e1;
+  --drupal-amber-fg: #8c4f00;
+  --drupal-red-bg: #fdebec;
+  --drupal-red-fg: #a11c24;
+  --drupal-blue-bg: #e8f0fe;
+  --drupal-blue-fg: #174ea6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--drupal-bg);
+  color: var(--drupal-text);
+  line-height: 1.45;
+}
+
+.drupal-toolbar {
+  background: var(--drupal-bar);
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.drupal-toolbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.drupal-toolbar__badge {
+  background: rgba(56, 189, 248, 0.2);
+  color: #7dd3fc;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.drupal-toolbar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.drupal-toolbar label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--drupal-bar-muted);
+  font-size: 12px;
+}
+
+.drupal-toolbar select {
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 12.5px;
+}
+
+.drupal-header {
+  background: var(--drupal-surface);
+  border-bottom: 1px solid var(--drupal-border);
+  padding: 16px 24px 0;
+}
+
+.drupal-header__inner,
+.drupal-main {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.drupal-breadcrumbs {
+  font-size: 12.5px;
+  color: var(--drupal-muted);
+  margin-bottom: 6px;
+}
+
+.drupal-breadcrumbs a {
+  color: var(--drupal-blue);
+  text-decoration: none;
+}
+
+.drupal-title {
+  margin: 0 0 12px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.drupal-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.drupal-tab {
+  display: inline-block;
+  padding: 9px 14px;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--drupal-muted);
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.drupal-tab.is-active {
+  background: var(--drupal-bg);
+  color: var(--drupal-text);
+  border-color: var(--drupal-border);
+  margin-bottom: -1px;
+}
+
+.drupal-main {
+  padding: 18px 24px 40px;
+}
+
+.card {
+  background: var(--drupal-surface);
+  border: 1px solid var(--drupal-border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.save-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.save-bar__pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: #eef1f6;
+  color: var(--drupal-muted);
+}
+
+.pill--created {
+  background: var(--drupal-green-bg);
+  color: var(--drupal-green-fg);
+}
+
+.pill--updated {
+  background: var(--drupal-blue-bg);
+  color: var(--drupal-blue-fg);
+}
+
+.pill--deleted {
+  background: var(--drupal-red-bg);
+  color: var(--drupal-red-fg);
+}
+
+.pill--warn {
+  background: var(--drupal-amber-bg);
+  color: var(--drupal-amber-fg);
+}
+
+.save-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn--primary {
+  background: var(--drupal-blue);
+  color: #fff;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--drupal-blue-hover);
+}
+
+.btn--primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn--secondary {
+  background: var(--drupal-surface);
+  color: var(--drupal-text);
+  border-color: var(--drupal-border);
+}
+
+.btn--secondary:hover {
+  background: #f8fafc;
+}
+
+.node-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--drupal-text);
+}
+
+.field input[type="text"],
+.field textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #b6becd;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 13.5px;
+}
+
+.field textarea {
+  min-height: 40px;
+  resize: vertical;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13.5px;
+  border: 1px solid transparent;
+}
+
+.alert--success {
+  background: var(--drupal-green-bg);
+  color: var(--drupal-green-fg);
+  border-color: #b7e4c7;
+}
+
+.alert--error {
+  background: var(--drupal-red-bg);
+  color: var(--drupal-red-fg);
+  border-color: #f5c2c7;
+}
+
+.alert--info {
+  background: var(--drupal-blue-bg);
+  color: var(--drupal-blue-fg);
+  border-color: #c2d7fa;
+}
+
+.editor-frame {
+  background: var(--drupal-surface);
+  border: 1px solid var(--drupal-border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+mango-annotation-editor {
+  --mango-viewer-height: min(760px, 78vh);
+}
+
+details.json-drawer {
+  background: var(--drupal-surface);
+  border: 1px solid var(--drupal-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+details.json-drawer summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+pre.json-block {
+  margin: 12px 0 0;
+  padding: 14px;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 6px;
+  overflow: auto;
+  max-height: 520px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--drupal-surface);
+  border: 1px solid var(--drupal-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.stat-card__label {
+  font-size: 12px;
+  color: var(--drupal-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.stat-card__value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+table.ops-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+table.ops-table th,
+table.ops-table td {
+  text-align: left;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--drupal-border);
+  vertical-align: top;
+}
+
+table.ops-table th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--drupal-muted);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.json-tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.json-tabs__buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.json-tabs__btn {
+  padding: 6px 12px;
+  border: 1px solid var(--drupal-border);
+  border-radius: 6px;
+  background: var(--drupal-bg);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.json-tabs__btn.is-active {
+  background: var(--drupal-blue);
+  color: #fff;
+  border-color: var(--drupal-blue);
+}

@@ -243,9 +243,10 @@ test.describe("audio", () => {
 
   test("lists the recording's transcript, its annotations in the list, and chapters in Contents", async ({ page }) => {
     const firstLine = "Right, okay, can I have your name to start with?";
-    await expect(page.getByRole("tabpanel", { name: "Transcript" }).getByRole("listitem").first()).toContainText(firstLine);
+    await expect(page.getByRole("region", { name: "Transcript" }).getByRole("listitem").first()).toContainText(firstLine);
 
-    // The editor's list has the annotations and Contents the chapters, so the player has neither tab.
+    // The editor's list has the annotations and Contents the chapters, so the player shows the transcript without a tab bar.
+    await expect(page.getByRole("tab", { name: "Transcript" })).toHaveCount(0);
     await expect(page.getByRole("tab", { name: "Annotations", exact: true })).toHaveCount(0);
     await expect(page.getByRole("tab", { name: "Chapters" })).toHaveCount(0);
 

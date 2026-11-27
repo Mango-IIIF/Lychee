@@ -20,7 +20,7 @@
     ViewerPlugin,
     ViewerStateSnapshot,
   } from '@mango-iiif/iiif-viewer/core';
-  import type { ExportData, ExportKind } from '../annotations/export';
+  import type { AnnotationChangeset, ExportData, ExportKind } from '../annotations/export';
   import type { Range } from '../annotations/structures';
   import type { Annotation } from '@mango-iiif/annotation';
   import type { AnnotateConfig } from '../core/types/config';
@@ -138,6 +138,25 @@
   /** Sends the host `exportAnnotationPage` and/or `exportStructures`, as the download does, without the file. */
   export function exportToHost(include?: ExportKind[]): ExportData {
     return editor?.exportToHost(include) ?? {};
+  }
+
+  /** Pending session changes (`created`, `updated`, `deleted`, plus `structures` if modified). */
+  export function getChangeset(): AnnotationChangeset {
+    return (
+      editor?.getChangeset() ?? {
+        manifestId: manifestId ?? '',
+        created: [],
+        updated: [],
+        deleted: [],
+        structuresChanged: false,
+        hasChanges: false,
+      }
+    );
+  }
+
+  /** True when the sidebar form or table of contents has edits not yet applied/saved. */
+  export function hasUnsavedDraft(): boolean {
+    return editor?.hasUnsavedDraft() ?? false;
   }
 
   /** Adds a W3C annotation to the user's own, e.g. one loaded from the host's store. */

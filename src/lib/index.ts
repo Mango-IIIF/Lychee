@@ -2,9 +2,12 @@ export { default as AnnotationEditor } from './host/AnnotationEditor.svelte';
 export { default as AnnotationBrowserTable } from './table/AnnotationBrowserTable.svelte';
 export type { TableRow } from './table/types';
 export {
+  buildChangeset,
   exportAnnotationPage,
   exportStructures,
   isPublishable,
+  type AnnotationChangeset,
+  type BuildChangesetOptions,
   type ExportData,
   type ExportKind,
   type ExportResult,

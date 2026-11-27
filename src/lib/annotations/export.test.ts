@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { exportStructures, normaliseExportKinds } from "./export";
+import type { Annotation } from "@mango-iiif/annotation";
+import { buildChangeset, exportStructures, normaliseExportKinds } from "./export";
 import { newSection, readStructures, toStructures } from "./structures";
 
 const canvas = "https://example.org/canvas/1";
@@ -40,5 +41,59 @@ describe("exportStructures", () => {
       ["en"],
     );
     expect(exportStructures(structures).publicationValid).toBe(true);
+  });
+});
+
+describe("buildChangeset", () => {
+  const make = (id: string): Annotation => ({
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    id,
+    type: "Annotation",
+    motivation: "commenting",
+    target: canvas,
+  });
+
+  it("separates newly created annotations from modified existing ones and deduplicates deletions", () => {
+    const result = buildChangeset({
+      manifestId: "https://example.org/manifest/1",
+      userAnnotations: [make("urn:uuid:new-1"), make("https://example.org/anno/42")],
+      modifiedExistingIds: ["https://example.org/anno/42"],
+      deletedExistingIds: ["https://example.org/anno/9", "https://example.org/anno/9"],
+    });
+
+    expect(result.manifestId).toBe("https://example.org/manifest/1");
+    expect(result.created.map((a) => a.id)).toEqual(["urn:uuid:new-1"]);
+    expect(result.updated.map((a) => a.id)).toEqual(["https://example.org/anno/42"]);
+    expect(result.deleted).toEqual(["https://example.org/anno/9"]);
+    expect(result.created[0]).not.toHaveProperty("@context");
+    expect(result.structuresChanged).toBe(false);
+    expect(result.structures).toBeUndefined();
+    expect(result.hasChanges).toBe(true);
+  });
+
+  it("reports hasChanges=false when nothing changed and includes structures only when changed", () => {
+    const empty = buildChangeset({
+      manifestId: "https://example.org/manifest/1",
+      userAnnotations: [],
+      modifiedExistingIds: [],
+      deletedExistingIds: [],
+      structures: [],
+      structuresChanged: false,
+    });
+    expect(empty.hasChanges).toBe(false);
+    expect(empty.structures).toBeUndefined();
+
+    const structures = toStructures([newSection({ label: { en: "Intro" }, pages: [canvas] })], ["en"]);
+    const withToc = buildChangeset({
+      manifestId: "https://example.org/manifest/1",
+      userAnnotations: [],
+      modifiedExistingIds: [],
+      deletedExistingIds: [],
+      structures,
+      structuresChanged: true,
+    });
+    expect(withToc.hasChanges).toBe(true);
+    expect(withToc.structuresChanged).toBe(true);
+    expect(withToc.structures).toEqual(structures);
   });
 });

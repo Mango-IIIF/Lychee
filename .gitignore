@@ -12,3 +12,4 @@ playwright-report
 docs
 .env
 apps/demo/manifests
+apps/drupal-poc/submissions
