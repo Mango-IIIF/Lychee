@@ -51,6 +51,8 @@
     onselect: (id: string | undefined) => void;
     /** A shape the user has just drawn. */
     onregioncreate?: (id: string) => void;
+    /** An existing shape was moved or resized. */
+    onregionupdate?: (id: string) => void;
     onregiondelete: (id: string) => void;
     oncanceldraw?: () => void;
     onbeforecanvaschange?: () => boolean;
@@ -75,6 +77,7 @@
     canvasId = $bindable(null),
     onselect,
     onregioncreate,
+    onregionupdate,
     onregiondelete,
     oncanceldraw,
     onbeforecanvaschange,
@@ -150,6 +153,7 @@
         const created = !store.regions.some((r) => r.id === region.id);
         store.upsertRegion(region);
         if (created) onregioncreate?.(region.id);
+        else onregionupdate?.(region.id);
       },
       onRegionDelete: (id) => onregiondelete(id),
       onSelect: (id) => onselect(id),

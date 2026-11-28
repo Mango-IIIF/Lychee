@@ -102,6 +102,11 @@ export type AnnotateConfig = ViewerConfig & {
      */
     export?: ('annotations' | 'structures')[];
     /**
+     * Show the header's Download button. Default true; turn off when the host
+     * provides its own Save or Submit action (e.g. inside a CMS form).
+     */
+    showExport?: boolean;
+    /**
      * Offer the Contents tab, for writing the item's table of contents. Default
      * true; turn it off where the host cannot save one, such as for a manifest it does not build.
      */

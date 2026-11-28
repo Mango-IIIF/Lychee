@@ -58,9 +58,11 @@
   import { loadExistingAnnotations } from '../annotations/load';
   import { resolveAnnotationPolicy } from '../annotations/permissions';
   import {
+    buildChangeset,
     exportAnnotationPage,
     exportStructures,
     normaliseExportKinds,
+    type AnnotationChangeset,
     type ExportData,
     type ExportKind,
   } from '../annotations/export';
@@ -308,10 +310,23 @@
   };
 
   const onRegionDelete = (id: string) => {
-    for (const removed of store.removeRegion(id)) emit('annotationDelete', { id: removed });
+    for (const removed of store.removeRegion(id)) {
+      if (store.isModifiedExisting(removed)) store.markExistingDeleted(removed);
+      emit('annotationDelete', { id: removed });
+    }
     if (regionId === id) regionId = undefined;
     if (shapeId === id) shapeId = undefined;
     if (editId && !recordOf(editId) && !sourceEdit) resetForm();
+  };
+
+  /** Moving or resizing a shape updates the W3C target of every saved annotation attached to it. */
+  const onRegionUpdate = (id: string) => {
+    const moved = store.regions.find((r) => r.id === id);
+    if (!moved) return;
+    for (const record of store.records) {
+      if (record.regionId !== id) continue;
+      emit('annotationUpdate', { annotation: toW3C(record, moved, ctx) });
+    }
   };
 
   const drawBox = () => {
@@ -440,6 +455,7 @@
     if (source) {
       // Updated, the manifest's annotation becomes one of the user's, keeping its id and its new shape.
       sourceEdit = null;
+      store.markExistingModified(source.id);
       store.existing = store.existing.filter((a) => a.id !== source.id);
     }
     clearTarget();
@@ -530,6 +546,7 @@
       const annotation = userAnnotations.find((a) => a.id === id);
       if (!annotation || !policy.canDelete(annotation, true)) return;
       if (!store.removeRecord(id)) return;
+      if (store.isModifiedExisting(id)) store.markExistingDeleted(id);
       emit('annotationDelete', { id });
       if (editId === id) resetForm();
       return;
@@ -538,6 +555,7 @@
     if (!source || !policy.canDelete(source, false)) return;
     if (editId === id || sourceEdit?.id === id) resetForm();
     store.existing = store.existing.filter((a) => a.id !== id);
+    store.markExistingDeleted(id);
     emit('annotationDelete', { id });
   };
 
@@ -792,6 +810,7 @@
 
   let structures: Range[] = $derived(toStructures(store.sections, languages));
   let savedStructures: Range[] = $derived(toStructures(store.savedSections, languages));
+  let initialStructures: Range[] = $derived(toStructures(store.initialSections, languages));
   let contentsCanvases = $derived(
     canvases.map((canvas, index) => ({
       id: idOf(canvas),
@@ -859,6 +878,22 @@
 
   let exportStatus = $state('');
   let exportKinds = $derived(normaliseExportKinds(options.export));
+
+  let structuresChanged = $derived(JSON.stringify(savedStructures) !== JSON.stringify(initialStructures));
+  let changeset: AnnotationChangeset = $derived(
+    buildChangeset({
+      manifestId: canonicalId,
+      userAnnotations,
+      modifiedExistingIds: store.modifiedExistingIds,
+      deletedExistingIds: store.deletedExistingIds,
+      structures: savedStructures,
+      structuresChanged,
+    }),
+  );
+
+  $effect(() => {
+    emit('changesetChange', changeset);
+  });
 
   /**
    * Hands the host what `include` names, one event per kind, so each can go to
@@ -958,6 +993,16 @@
     return exportData(normaliseExportKinds(include).filter((kind) => exportKinds.includes(kind)));
   }
 
+  /** Pending session changes (`created`, `updated`, `deleted`, plus `structures` when changed). */
+  export function getChangeset(): AnnotationChangeset {
+    return changeset;
+  }
+
+  /** True when the sidebar annotation form or table of contents has uncommitted edits. */
+  export function hasUnsavedDraft(): boolean {
+    return hasContent(draft, languages) || contentsDirty;
+  }
+
   const importAnnotation = (annotation: Annotation) => {
     const { record, region } = recordFromW3C(annotation, ctx);
     if (region) store.upsertRegion(region);
@@ -978,7 +1023,10 @@
   export function removeAnnotation(id: string): void {
     const record = recordOf(id);
     if (record) {
-      if (store.removeRecord(id)) emit('annotationDelete', { id });
+      if (store.removeRecord(id)) {
+        if (store.isModifiedExisting(id)) store.markExistingDeleted(id);
+        emit('annotationDelete', { id });
+      }
       if (editId === id) resetForm();
       // A shape imported with the annotation goes with it.
       if (record.regionId && !store.records.some((r) => r.regionId === record.regionId)) {
@@ -990,6 +1038,7 @@
     if (sourceOf(id)) {
       if (editId === id || sourceEdit?.id === id) resetForm();
       store.existing = store.existing.filter((a) => a.id !== id);
+      store.markExistingDeleted(id);
       emit('annotationDelete', { id });
     }
   }
@@ -1012,16 +1061,18 @@
   {/snippet}
 
   {#snippet actions()}
-    {#if exportStatus}
-      <span class="annotation-editor__export-status" role="status">{exportStatus}</span>
+    {#if options.showExport !== false}
+      {#if exportStatus}
+        <span class="annotation-editor__export-status" role="status">{exportStatus}</span>
+      {/if}
+      <ExportMenu
+        kinds={exportKinds}
+        annotationCount={userAnnotations.length}
+        hasStructures={savedStructures.length > 0}
+        structuresUnsaved={contentsDirty}
+        onexport={handleExport}
+      />
     {/if}
-    <ExportMenu
-      kinds={exportKinds}
-      annotationCount={userAnnotations.length}
-      hasStructures={savedStructures.length > 0}
-      structuresUnsaved={contentsDirty}
-      onexport={handleExport}
-    />
     {#if normalisedConfig.showSettings !== false}
       <SettingsMenu {theme} onthemechange={changeTheme} />
     {/if}
@@ -1046,6 +1097,7 @@
           selectedRegionId={shapeId}
           onselect={onShapeSelect}
           onregioncreate={onRegionCreate}
+          onregionupdate={onRegionUpdate}
           onregiondelete={onRegionDelete}
           oncanceldraw={cancelDraw}
           eventTarget={eventTarget ?? root}

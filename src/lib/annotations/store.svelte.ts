@@ -15,10 +15,16 @@ export class AnnotationStore {
   regions = $state.raw<Region[]>([]);
   records = $state.raw<UserRecord[]>([]);
   existing = $state.raw<Annotation[]>([]);
+  /** Ids of manifest/host annotations promoted into `records` via edit during this session. */
+  modifiedExistingIds = $state.raw<string[]>([]);
+  /** Ids of manifest/host annotations deleted during this session. */
+  deletedExistingIds = $state.raw<string[]>([]);
   /** The table of contents the user is writing. */
   sections = $state.raw<Section[]>([]);
   /** The table of contents as it was opened or last saved. */
   savedSections = $state.raw<Section[]>([]);
+  /** The table of contents as originally opened from the manifest or host. */
+  initialSections = $state.raw<Section[]>([]);
   /** The manifest's own `structures` have been opened (or the host set them). */
   sectionsLoaded = false;
 
@@ -26,7 +32,30 @@ export class AnnotationStore {
   setSections(sections: Section[]): void {
     this.sections = sections;
     this.savedSections = sections;
+    this.initialSections = sections;
     this.sectionsLoaded = true;
+  }
+
+  markExistingModified(id: string): void {
+    if (!this.modifiedExistingIds.includes(id)) {
+      this.modifiedExistingIds = [...this.modifiedExistingIds, id];
+    }
+    if (this.deletedExistingIds.includes(id)) {
+      this.deletedExistingIds = this.deletedExistingIds.filter((entry) => entry !== id);
+    }
+  }
+
+  markExistingDeleted(id: string): void {
+    if (this.modifiedExistingIds.includes(id)) {
+      this.modifiedExistingIds = this.modifiedExistingIds.filter((entry) => entry !== id);
+    }
+    if (!this.deletedExistingIds.includes(id)) {
+      this.deletedExistingIds = [...this.deletedExistingIds, id];
+    }
+  }
+
+  isModifiedExisting(id: string): boolean {
+    return this.modifiedExistingIds.includes(id);
   }
 
   upsertRegion(region: Region): void {
@@ -60,6 +89,8 @@ export class AnnotationStore {
   clear(): void {
     this.regions = [];
     this.records = [];
+    this.modifiedExistingIds = [];
+    this.deletedExistingIds = [];
   }
 }
 

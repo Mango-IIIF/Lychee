@@ -44,6 +44,7 @@
   /* The element is defined on first use, so image-only pages never load it. */
   let tag = $state('');
   let loadError = $state('');
+  let hasTranscript = $state(false);
 
   $effect(() => {
     loadAVMedia()
@@ -53,9 +54,9 @@
 
   /* The editor's list under the player has the annotations, so the player's own tab is left out. */
   let config: AVPlayerConfig = $derived({
-    panels: { transcript: true, chapters, annotations: false, metadata: false, supplementalFiles: false },
+    panels: { transcript: hasTranscript, chapters, annotations: false, metadata: false, supplementalFiles: false },
     controls: { playbackRate: true, pictureInPicture: true, download: false },
-    activePanel: 'transcript',
+    activePanel: hasTranscript ? 'transcript' : chapters ? 'chapters' : 'none',
     preferredLanguages: [language, 'none'],
     strings: {
       transcript: $t('annotate.av.tabs.transcript'),
@@ -79,6 +80,7 @@
     const element = media;
     const json = manifest;
     if (!tag || !element) return;
+    hasTranscript = false;
     playback = { time: 0, duration: 0, ready: false, playing: false, error: false };
     element.manifest = $state.snapshot(json) as Record<string, unknown>;
   });
@@ -98,7 +100,16 @@
   $effect(() => {
     const controller = tag ? media?.controller : undefined;
     if (!controller) return;
-    return controller.on('av-statechange', ({ detail }) => onState(detail));
+    const syncTranscript = () => {
+      hasTranscript = Boolean(controller.canvas?.transcripts.length);
+    };
+    syncTranscript();
+    const offs = [
+      controller.on('av-ready', syncTranscript),
+      controller.on('av-canvaschange', syncTranscript),
+      controller.on('av-statechange', ({ detail }) => onState(detail)),
+    ];
+    return () => offs.forEach((off) => off());
   });
 
   /* Our recording picker drives the player. */

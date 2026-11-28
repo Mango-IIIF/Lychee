@@ -263,8 +263,9 @@ test.describe("contents of a recording", () => {
   const outline = (page: Page) => contents(page).getByRole("navigation", { name: "Chapters" });
 
   test("opens the recording's own chapters and keeps what it does not edit", async ({ page }) => {
-    // The chapters are in the sidebar, so the player has no Chapters tab of its own.
-    await expect(page.getByRole("tab", { name: "Transcript" })).toBeVisible();
+    // The chapters are in the sidebar, so the player shows the transcript directly without a tab bar.
+    await expect(page.getByRole("region", { name: "Transcript" })).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Transcript" })).toHaveCount(0);
     await expect(page.getByRole("tab", { name: "Chapters" })).toHaveCount(0);
 
     const before = await structures(page);
